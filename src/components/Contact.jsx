@@ -1,23 +1,14 @@
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { FaEnvelope, FaLinkedin, FaGithub, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt } from 'react-icons/fa';
+import { socialLinks, CONTACT_EMAIL } from '../data/social';
 
 const contactLinks = [
-  {
-    icon: FaEnvelope,
-    label: 'rahulisatiitr@gmail.com',
-    href: 'mailto:rahulisatiitr@gmail.com',
-  },
-  {
-    icon: FaLinkedin,
-    label: 'LinkedIn Profile',
-    href: 'https://www.linkedin.com/in/rahul-agar/',
-  },
-  {
-    icon: FaGithub,
-    label: 'GitHub Profile',
-    href: 'https://github.com/Rahul4u-stack',
-  },
+  ...socialLinks.map((link) => ({
+    icon: link.icon,
+    label: link.label === 'Email' ? CONTACT_EMAIL : `${link.label} Profile`,
+    href: link.href,
+  })),
   {
     icon: FaMapMarkerAlt,
     label: 'Jaipur, India',
@@ -49,7 +40,7 @@ export default function Contact() {
     const body = encodeURIComponent(
       `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
     );
-    window.location.href = `mailto:rahulisatiitr@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
 
     setSubmitted(true);
     setTimeout(() => {

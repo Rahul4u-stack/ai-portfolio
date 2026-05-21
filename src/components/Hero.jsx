@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { FaLinkedin, FaGithub, FaEnvelope } from 'react-icons/fa'
+import { socialLinks } from '../data/social'
 
 const titles = ['Product Manager', 'AI Builder', 'Fintech Expert']
 
@@ -165,31 +165,22 @@ export default function Hero() {
           variants={itemVariants}
           className="flex items-center justify-center gap-6"
         >
-          <a
-            href="https://www.linkedin.com/in/rahul-agar/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-slate-400 hover:text-blue-500 transition-colors duration-300"
-            aria-label="LinkedIn"
-          >
-            <FaLinkedin size={24} />
-          </a>
-          <a
-            href="https://github.com/Rahul4u-stack"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-slate-400 hover:text-blue-500 transition-colors duration-300"
-            aria-label="GitHub"
-          >
-            <FaGithub size={24} />
-          </a>
-          <a
-            href="mailto:rahulisatiitr@gmail.com"
-            className="text-slate-400 hover:text-blue-500 transition-colors duration-300"
-            aria-label="Email"
-          >
-            <FaEnvelope size={24} />
-          </a>
+          {socialLinks.map((link) => {
+            const Icon = link.icon
+            const isMail = link.href.startsWith('mailto')
+            return (
+              <a
+                key={link.label}
+                href={link.href}
+                target={isMail ? undefined : '_blank'}
+                rel={isMail ? undefined : 'noopener noreferrer'}
+                className="text-slate-400 hover:text-blue-500 transition-colors duration-300"
+                aria-label={link.label}
+              >
+                <Icon size={24} />
+              </a>
+            )
+          })}
         </motion.div>
       </motion.div>
 

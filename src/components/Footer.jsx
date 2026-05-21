@@ -1,22 +1,4 @@
-import { FaEnvelope, FaLinkedin, FaGithub } from 'react-icons/fa';
-
-const socialLinks = [
-  {
-    icon: FaLinkedin,
-    href: 'https://www.linkedin.com/in/rahul-agar/',
-    label: 'LinkedIn',
-  },
-  {
-    icon: FaGithub,
-    href: 'https://github.com/Rahul4u-stack',
-    label: 'GitHub',
-  },
-  {
-    icon: FaEnvelope,
-    href: 'mailto:rahulisatiitr@gmail.com',
-    label: 'Email',
-  },
-];
+import { socialLinks } from '../data/social';
 
 export default function Footer() {
   return (
