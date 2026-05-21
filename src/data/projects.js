@@ -1,5 +1,14 @@
 export const projects = [
   {
+    title: 'Personal AI News Assistant',
+    subtitle: 'Khabar — a Hermes agent that DMs me daily AI news',
+    description:
+      "A personal agent that lands a 5-story AI news brief in my Telegram every morning at 9 AM IST — covering research, products, industry, new models, and policy. Built on NousResearch's Hermes 3 agent framework with minimax/minimax-m2.5 via OpenRouter. RSS feeds were too unreliable, so the agent does LLM-driven web search instead. A Hermes scheduler fires the run; the script posts to Telegram via the Bot API. Delivery-only by design — no inbox noise, no web app to babysit.",
+    tech: ['Hermes 3', 'OpenRouter', 'MiniMax M2.5', 'Telegram Bot API', 'Python', 'Cron / Scheduler'],
+    icon: '📰',
+    highlight: 'Agent + scheduler + LLM-driven retrieval — running daily since 2026-05-12',
+  },
+  {
     title: 'YouTube Summarizer',
     subtitle: 'Long-context AI with prompt caching',
     description:
