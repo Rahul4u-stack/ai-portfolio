@@ -1,5 +1,16 @@
 export const projects = [
   {
+    title: 'YouTube Summarizer',
+    subtitle: 'Long-context AI with prompt caching',
+    description:
+      "Paste a YouTube URL, get a structured summary back — executive summary, key insights, action items, topics. The pipeline (yt-dlp → Whisper.cpp → Claude Sonnet 4.6 with prompt caching) handles full-length videos in one API call instead of chunking, dropping cost by ~90% on repeat lookups. Live site runs in demo mode; the real pipeline runs locally — see the README.",
+    tech: ['React', 'Vite', 'Tailwind CSS', 'Flask', 'Claude Sonnet 4.6', 'Whisper.cpp', 'yt-dlp', 'Pydantic'],
+    github: 'https://github.com/Rahul4u-stack/youtube-summarizer',
+    live: 'https://youtube-summarizer-plum.vercel.app',
+    icon: '📺',
+    highlight: 'Anthropic prompt caching cut repeat-call cost by ~90% on 15-minute videos',
+  },
+  {
     title: 'Calorie Estimator',
     subtitle: 'AI-Powered Food Photo Analysis',
     description:
