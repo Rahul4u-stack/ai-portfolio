@@ -1,5 +1,16 @@
 export const projects = [
   {
+    title: 'Personal Chatbot with Memory',
+    subtitle: 'Payments-domain assistant that remembers across sessions',
+    description:
+      "A chat UI where the bot remembers who you are across sessions — your role, depth preference, interview prep, topics covered. Built around Anthropic's Memory Tool: Claude itself decides what to write to a per-user memory folder and what to recall. Streaming SSE responses, per-user filesystem sandbox (path-traversal-safe), payments-domain system prompt cached at ~90% discount on every turn. Deployed in demo mode (Render free tier wipes state on cold-start) — clone the repo for the full live-memory pipeline.",
+    tech: ['React', 'Vite', 'Tailwind CSS', 'Flask', 'Claude Sonnet 4.6', 'Anthropic Memory Tool', 'SSE Streaming', 'SQLite', 'Prompt Caching'],
+    github: 'https://github.com/Rahul4u-stack/personal-chatbot',
+    live: 'https://personal-chatbot-rust.vercel.app/',
+    icon: '🧠',
+    highlight: "Anthropic's Memory Tool — model-managed persistence with adversarial sandbox",
+  },
+  {
     title: 'Personal AI News Assistant',
     subtitle: 'Khabar — a Hermes agent that DMs me daily AI news',
     description:
