@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { socialLinks, CONTACT_EMAIL } from '../data/social';
+import SectionHeading from './ui/SectionHeading';
+import useReducedMotion from '../hooks/useReducedMotion';
 
 const contactLinks = [
   ...socialLinks.map((link) => ({
@@ -19,6 +21,7 @@ const contactLinks = [
 export default function Contact() {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
+  const prefersReducedMotion = useReducedMotion();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -50,31 +53,30 @@ export default function Contact() {
   };
 
   const inputClasses =
-    'bg-[#0f172a] border border-slate-700 rounded-lg px-4 py-3 text-slate-50 focus:border-blue-500 focus:outline-none transition w-full placeholder:text-slate-500';
+    'bg-surface-elevated border border-border-subtle rounded-lg px-4 py-3 text-text-primary focus:border-accent focus:outline-none transition w-full placeholder:text-text-muted';
 
   return (
-    <section id="contact" className="py-20 px-6 bg-[#0f172a]">
+    <section id="contact" className="py-20 px-6 bg-surface">
       <div className="max-w-2xl mx-auto" ref={sectionRef}>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6 }}
+        <SectionHeading
+          title="Let's Connect"
+          className="mb-6"
+        />
+        <motion.p
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : (prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 })}
+          transition={{ duration: prefersReducedMotion ? 0 : 0.6 }}
+          className="text-text-muted mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-50 mb-4">
-            Let's Connect
-          </h2>
-          <div className="w-20 h-1 bg-blue-500 rounded mb-6" />
-          <p className="text-slate-400 mb-12">
-            I'm always open to discussing product management, AI, payments, or
-            potential collaborations.
-          </p>
-        </motion.div>
+          I'm always open to discussing product management, AI, payments, or
+          potential collaborations.
+        </motion.p>
 
         <motion.form
           onSubmit={handleSubmit}
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : (prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 40 })}
+          transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.2 }}
           className="space-y-5"
         >
           <div>
@@ -128,7 +130,7 @@ export default function Contact() {
           <div>
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-8 rounded-lg transition"
+              className="bg-accent hover:bg-accent-hover text-surface font-medium py-3 px-8 rounded-lg transition"
             >
               {submitted ? 'Opening email client...' : 'Send Message'}
             </button>
@@ -136,19 +138,19 @@ export default function Contact() {
         </motion.form>
 
         {/* Divider */}
-        <div className="border-t border-slate-700 my-12" />
+        <div className="border-t border-border-subtle my-12" />
 
         {/* Contact Links */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : (prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 })}
+          transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.4 }}
           className="grid grid-cols-1 sm:grid-cols-2 gap-4"
         >
           {contactLinks.map((link) => {
             const Icon = link.icon;
             const content = (
-              <span className="flex items-center gap-3 text-slate-400 hover:text-blue-500 transition">
+              <span className="flex items-center gap-3 text-text-muted hover:text-accent transition">
                 <Icon className="text-lg flex-shrink-0" />
                 <span className="text-sm">{link.label}</span>
               </span>

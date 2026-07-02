@@ -9,6 +9,8 @@ export const projects = [
     live: 'https://personal-chatbot-rust.vercel.app/',
     icon: '🧠',
     highlight: "Anthropic's Memory Tool — model-managed persistence with adversarial sandbox",
+    featured: true,
+    embedUrl: null,
   },
   {
     title: 'Personal AI News Assistant',

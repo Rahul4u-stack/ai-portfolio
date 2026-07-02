@@ -1,51 +1,9 @@
-import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { socialLinks } from '../data/social'
-
-const titles = ['Product Manager', 'AI Builder', 'Fintech Expert']
+import useReducedMotion from '../hooks/useReducedMotion'
 
 export default function Hero() {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [displayText, setDisplayText] = useState('')
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [cursorVisible, setCursorVisible] = useState(true)
-
-  // Blinking cursor
-  useEffect(() => {
-    const cursorInterval = setInterval(() => {
-      setCursorVisible((prev) => !prev)
-    }, 530)
-    return () => clearInterval(cursorInterval)
-  }, [])
-
-  // Typing effect
-  useEffect(() => {
-    const currentTitle = titles[currentIndex]
-    let timeout
-
-    if (!isDeleting) {
-      if (displayText.length < currentTitle.length) {
-        timeout = setTimeout(() => {
-          setDisplayText(currentTitle.slice(0, displayText.length + 1))
-        }, 100)
-      } else {
-        timeout = setTimeout(() => {
-          setIsDeleting(true)
-        }, 2000)
-      }
-    } else {
-      if (displayText.length > 0) {
-        timeout = setTimeout(() => {
-          setDisplayText(displayText.slice(0, -1))
-        }, 50)
-      } else {
-        setIsDeleting(false)
-        setCurrentIndex((prev) => (prev + 1) % titles.length)
-      }
-    }
-
-    return () => clearTimeout(timeout)
-  }, [displayText, isDeleting, currentIndex])
+  const prefersReducedMotion = useReducedMotion()
 
   const handleScroll = (e, href) => {
     e.preventDefault()
@@ -59,28 +17,30 @@ export default function Hero() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.3,
-      },
+      transition: prefersReducedMotion
+        ? { duration: 0 }
+        : {
+            staggerChildren: 0.15,
+            delayChildren: 0.3,
+          },
     },
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: 'easeOut' },
+      transition: { duration: prefersReducedMotion ? 0 : 0.6, ease: 'easeOut' },
     },
   }
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0f172a]">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-surface">
       {/* Radial gradient background */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/10 rounded-full blur-[120px]" />
-        <div className="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-blue-600/5 rounded-full blur-[80px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent-from/10 rounded-full blur-[120px]" />
+        <div className="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-accent-to/5 rounded-full blur-[80px]" />
       </div>
 
       {/* Subtle grid pattern */}
@@ -102,7 +62,7 @@ export default function Hero() {
         {/* Greeting */}
         <motion.p
           variants={itemVariants}
-          className="text-blue-500 text-lg font-medium mb-4 tracking-wide"
+          className="text-accent text-lg font-medium mb-4 tracking-wide"
         >
           Hello, I'm
         </motion.p>
@@ -110,30 +70,23 @@ export default function Hero() {
         {/* Name */}
         <motion.h1
           variants={itemVariants}
-          className="text-5xl md:text-7xl font-bold text-slate-50 mb-6"
+          className="font-display text-6xl font-bold text-text-primary mb-6"
         >
           Rahul Agarwal
         </motion.h1>
 
-        {/* Typing animation */}
-        <motion.div
+        {/* Static role headline with gradient accent */}
+        <motion.p
           variants={itemVariants}
-          className="text-2xl md:text-3xl text-slate-400 mb-6 h-10 flex items-center justify-center"
+          className="text-2xl md:text-3xl mb-6 bg-gradient-to-r from-accent-from to-accent-to bg-clip-text text-transparent font-semibold"
         >
-          <span className="text-blue-500">{displayText}</span>
-          <span
-            className={`text-blue-500 ml-0.5 ${
-              cursorVisible ? 'opacity-100' : 'opacity-0'
-            } transition-opacity duration-100`}
-          >
-            |
-          </span>
-        </motion.div>
+          Product Manager &amp; AI Builder
+        </motion.p>
 
         {/* One-liner */}
         <motion.p
           variants={itemVariants}
-          className="text-slate-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto"
+          className="text-text-muted text-lg md:text-xl mb-10 max-w-2xl mx-auto"
         >
           Building the future of payments with AI
         </motion.p>
@@ -146,7 +99,7 @@ export default function Hero() {
           <a
             href="#projects"
             onClick={(e) => handleScroll(e, '#projects')}
-            className="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 w-full sm:w-auto text-center"
+            className="px-8 py-3 bg-accent hover:bg-accent-hover text-surface font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-glow-accent w-full sm:w-auto text-center"
           >
             View Projects
           </a>
@@ -154,7 +107,7 @@ export default function Hero() {
             href="/resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-3 border border-blue-500 text-blue-500 hover:bg-blue-500/10 font-medium rounded-lg transition-all duration-300 w-full sm:w-auto text-center"
+            className="px-8 py-3 border border-accent text-accent hover:bg-accent/10 font-medium rounded-lg transition-all duration-300 w-full sm:w-auto text-center"
           >
             Download Resume
           </a>
@@ -174,7 +127,7 @@ export default function Hero() {
                 href={link.href}
                 target={isMail ? undefined : '_blank'}
                 rel={isMail ? undefined : 'noopener noreferrer'}
-                className="text-slate-400 hover:text-blue-500 transition-colors duration-300"
+                className="text-text-muted hover:text-accent transition-colors duration-300"
                 aria-label={link.label}
               >
                 <Icon size={24} />
@@ -188,15 +141,15 @@ export default function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
+        transition={{ delay: prefersReducedMotion ? 0 : 2, duration: prefersReducedMotion ? 0 : 1 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
         <motion.div
-          animate={{ y: [0, 8, 0] }}
+          animate={prefersReducedMotion ? {} : { y: [0, 8, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-          className="w-6 h-10 border-2 border-slate-600 rounded-full flex justify-center pt-2"
+          className="w-6 h-10 border-2 border-border-muted rounded-full flex justify-center pt-2"
         >
-          <div className="w-1 h-2 bg-slate-400 rounded-full" />
+          <div className="w-1 h-2 bg-text-muted rounded-full" />
         </motion.div>
       </motion.div>
     </section>

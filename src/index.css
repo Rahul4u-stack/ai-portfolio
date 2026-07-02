@@ -7,8 +7,29 @@ html {
 }
 
 body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  @apply bg-surface text-text-primary font-sans antialiased;
+}
+
+::selection {
+  background: theme('colors.accent.DEFAULT / 30%');
+  color: theme('colors.text-primary');
+}
+
+:focus-visible {
+  outline: 2px solid theme('colors.accent.DEFAULT');
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 ::-webkit-scrollbar {
@@ -16,14 +37,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: theme('colors.surface');
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: theme('colors.border-muted');
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: theme('colors.neutral.500');
 }
