@@ -20,8 +20,8 @@ export default function Hero() {
       transition: prefersReducedMotion
         ? { duration: 0 }
         : {
-            staggerChildren: 0.15,
-            delayChildren: 0.3,
+            staggerChildren: 0.08,
+            delayChildren: 0.1,
           },
     },
   }
@@ -31,7 +31,7 @@ export default function Hero() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: prefersReducedMotion ? 0 : 0.6, ease: 'easeOut' },
+      transition: { duration: prefersReducedMotion ? 0 : 0.45, ease: 'easeOut' },
     },
   }
 
@@ -141,7 +141,7 @@ export default function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: prefersReducedMotion ? 0 : 2, duration: prefersReducedMotion ? 0 : 1 }}
+        transition={{ delay: prefersReducedMotion ? 0 : 1.2, duration: prefersReducedMotion ? 0 : 0.6 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
         <motion.div
