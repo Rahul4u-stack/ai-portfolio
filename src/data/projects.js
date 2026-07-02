@@ -1,5 +1,18 @@
 export const projects = [
   {
+    title: 'Snake',
+    subtitle: 'Pseudo-3D Snake — vanilla JS, no game engine',
+    description:
+      "Classic Snake rebuilt from first principles — and playable right in this card. A fixed-timestep game loop keeps the speed identical on a 60 Hz laptop and a 144 Hz monitor; the game rules live in a pure-function module covered by 25 headless Vitest tests running in CI; and the 'real snake' look — lit cylindrical body, sphere-shaded head with slit-pupil eyes, glossy apple — is hand-shaded on plain Canvas 2D. No game engine, no WebGL, no backend: high scores live in localStorage and the whole game ships as a static site.",
+    tech: ['Vanilla JavaScript', 'Canvas 2D', 'Vite', 'Vitest', 'GitHub Actions', 'localStorage'],
+    github: 'https://github.com/Rahul4u-stack/snake-game',
+    live: 'https://snake-game-nu-two-85.vercel.app',
+    icon: '🐍',
+    highlight: 'Fixed-timestep loop + pure-logic tests — the game-dev fundamentals project',
+    featured: true,
+    embedUrl: 'https://snake-game-nu-two-85.vercel.app',
+  },
+  {
     title: 'Personal Chatbot with Memory',
     subtitle: 'Payments-domain assistant that remembers across sessions',
     description:
@@ -9,7 +22,7 @@ export const projects = [
     live: 'https://personal-chatbot-rust.vercel.app/',
     icon: '🧠',
     highlight: "Anthropic's Memory Tool — model-managed persistence with adversarial sandbox",
-    featured: true,
+    featured: false,
     embedUrl: null,
   },
   {
