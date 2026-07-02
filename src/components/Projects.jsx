@@ -64,7 +64,7 @@ function FeaturedProjectCard({ project, cardVariants }) {
       className="md:col-span-2 lg:col-span-2 lg:row-span-2 p-[1px] rounded-xl2 bg-gradient-to-br from-accent-from/0 to-accent-to/0 hover:from-accent-from hover:to-accent-to transition-colors duration-300 hover:-translate-y-1"
     >
       <div className="relative before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/5 bg-surface-raised rounded-[calc(1.25rem-1px)] overflow-hidden flex flex-col md:flex-row lg:flex-col h-full">
-        <div className="md:w-2/5 lg:w-full p-6 flex flex-col">
+        <div className="md:w-2/5 lg:w-full p-6 flex flex-col lg:flex-1">
           {project.embedUrl ? (
             <GameEmbed
               embedUrl={project.embedUrl}
@@ -72,15 +72,15 @@ function FeaturedProjectCard({ project, cardVariants }) {
               title={project.title}
             />
           ) : (
-            <div className="h-40 md:h-full lg:h-40 flex items-center justify-center bg-gradient-to-br from-accent-from/10 to-accent-to/10 rounded-lg">
-              <span className="text-5xl" role="img" aria-label={project.title}>
+            <div className="h-40 md:h-full lg:h-auto lg:flex-1 flex items-center justify-center bg-gradient-to-br from-accent-from/10 to-accent-to/10 rounded-lg">
+              <span className="text-5xl lg:text-8xl" role="img" aria-label={project.title}>
                 {project.icon}
               </span>
             </div>
           )}
         </div>
 
-        <div className="p-6 flex flex-col flex-1">
+        <div className="p-6 flex flex-col flex-1 lg:flex-none">
           <span className="inline-block bg-accent/10 text-accent text-xs px-3 py-1 rounded-full mb-3 self-start font-medium">
             Featured
           </span>
@@ -110,15 +110,15 @@ function FeaturedProjectCard({ project, cardVariants }) {
   );
 }
 
-function ProjectCard({ project, cardVariants }) {
+function ProjectCard({ project, cardVariants, compact = false }) {
   return (
     <motion.div
       variants={cardVariants}
       className="p-[1px] rounded-xl2 bg-gradient-to-br from-accent-from/0 to-accent-to/0 hover:from-accent-from hover:to-accent-to transition-colors duration-300 hover:-translate-y-1"
     >
       <div className="relative before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/5 bg-surface-raised rounded-[calc(1.25rem-1px)] overflow-hidden flex flex-col h-full">
-        {/* Icon header */}
-        <div className="h-40 flex items-center justify-center bg-gradient-to-br from-accent-from/10 to-accent-to/10">
+        {/* Icon header (hidden at lg on compact cards flanking the featured one) */}
+        <div className={`${compact ? 'lg:hidden ' : ''}h-40 flex items-center justify-center bg-gradient-to-br from-accent-from/10 to-accent-to/10`}>
           <span className="text-5xl" role="img" aria-label={project.title}>
             {project.icon}
           </span>
@@ -128,7 +128,7 @@ function ProjectCard({ project, cardVariants }) {
         <div className="p-6 flex flex-col flex-1">
           <h3 className="text-xl font-bold text-text-primary">{project.title}</h3>
           <p className="text-accent text-sm font-medium mb-3">{project.subtitle}</p>
-          <p className="text-text-muted text-sm mb-4">{project.description}</p>
+          <p className="text-text-muted text-sm mb-4 line-clamp-5">{project.description}</p>
 
           {/* Highlight badge */}
           <span className="inline-block bg-accent/10 text-accent text-xs px-3 py-1 rounded-full mb-4 self-start">
@@ -183,8 +183,13 @@ export default function Projects() {
               cardVariants={cardVariants}
             />
           ))}
-          {restProjects.map((project) => (
-            <ProjectCard key={project.title} project={project} cardVariants={cardVariants} />
+          {restProjects.map((project, i) => (
+            <ProjectCard
+              key={project.title}
+              project={project}
+              cardVariants={cardVariants}
+              compact={i < 2}
+            />
           ))}
         </motion.div>
       </div>
