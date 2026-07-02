@@ -35,7 +35,8 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],
-        display: ['Manrope', ...defaultTheme.fontFamily.sans],
+        display: ['Space Grotesk', ...defaultTheme.fontFamily.sans],
+        mono: ['JetBrains Mono', ...defaultTheme.fontFamily.mono],
       },
       fontSize: {
         xs: 'clamp(0.75rem, 0.72rem + 0.15vw, 0.8rem)',
@@ -55,6 +56,15 @@ export default {
       boxShadow: {
         'glow-accent': '0 0 40px -10px rgba(124,92,255,0.35)',
         card: '0 4px 24px -8px rgba(0,0,0,0.4)',
+      },
+      keyframes: {
+        'gradient-x': {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
+      },
+      animation: {
+        'gradient-x': 'gradient-x 4s ease infinite',
       },
     },
   },

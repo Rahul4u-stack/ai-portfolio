@@ -10,9 +10,9 @@ export default function Education() {
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <section id="education" className="py-20 px-6 bg-surface">
+    <section id="education" className="py-20 px-6 bg-surface-raised">
       <div className="max-w-6xl mx-auto" ref={sectionRef}>
-        <SectionHeading title="Education" />
+        <SectionHeading title="Education" number="05" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {educationData.map((item, index) => (

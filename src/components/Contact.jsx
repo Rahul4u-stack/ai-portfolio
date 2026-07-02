@@ -60,6 +60,7 @@ export default function Contact() {
       <div className="max-w-2xl mx-auto" ref={sectionRef}>
         <SectionHeading
           title="Let's Connect"
+          number="06"
           className="mb-6"
         />
         <motion.p

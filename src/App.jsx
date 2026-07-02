@@ -10,7 +10,7 @@ import Footer from './components/Footer'
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="relative z-[2] min-h-screen bg-surface">
       <Navbar />
       <Hero />
       <About />

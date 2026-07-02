@@ -15,11 +15,14 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('')
+  const [progress, setProgress] = useState(0)
   const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50)
+      const scrollableHeight = document.body.scrollHeight - window.innerHeight
+      setProgress(scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0)
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
@@ -68,6 +71,10 @@ export default function Navbar() {
 
   return (
     <>
+      <div
+        className="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-accent-from to-accent-to z-[60]"
+        style={{ width: `${progress * 100}%` }}
+      />
       <motion.nav
         initial={prefersReducedMotion ? { y: 0 } : { y: -100 }}
         animate={{ y: 0 }}

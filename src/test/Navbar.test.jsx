@@ -96,3 +96,44 @@ describe('Navbar scroll-spy', () => {
     expect(scrollSpy).toHaveBeenCalledWith({ behavior: 'smooth' })
   })
 })
+
+describe('Navbar scroll-progress bar', () => {
+  afterEach(() => {
+    // Restore jsdom's default (0) so other tests aren't affected.
+    Object.defineProperty(document.body, 'scrollHeight', {
+      configurable: true,
+      value: 0,
+    })
+    window.scrollY = 0
+  })
+
+  it('renders at 0% width before any scrolling has happened', () => {
+    const { container } = renderNavbarWithSections()
+    const progressBar = container.querySelector('.fixed.top-0.left-0.h-\\[2px\\]')
+    expect(progressBar).toBeInTheDocument()
+    expect(progressBar).toHaveStyle({ width: '0%' })
+  })
+
+  it('updates its width in proportion to scroll position on scroll', () => {
+    const { container } = renderNavbarWithSections()
+
+    // Simulate a document that is 1000px taller than the viewport, scrolled
+    // halfway down.
+    Object.defineProperty(document.body, 'scrollHeight', {
+      configurable: true,
+      value: 1600,
+    })
+    Object.defineProperty(window, 'innerHeight', {
+      configurable: true,
+      value: 600,
+    })
+    window.scrollY = 500 // halfway through the 1000px scrollable range
+
+    act(() => {
+      window.dispatchEvent(new Event('scroll'))
+    })
+
+    const progressBar = container.querySelector('.fixed.top-0.left-0.h-\\[2px\\]')
+    expect(progressBar).toHaveStyle({ width: '50%' })
+  })
+})

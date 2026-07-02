@@ -62,7 +62,7 @@ export default function Hero() {
         {/* Greeting */}
         <motion.p
           variants={itemVariants}
-          className="text-accent text-lg font-medium mb-4 tracking-wide"
+          className="text-xs font-mono uppercase tracking-[0.2em] text-accent mb-4"
         >
           Hello, I'm
         </motion.p>
@@ -70,7 +70,7 @@ export default function Hero() {
         {/* Name */}
         <motion.h1
           variants={itemVariants}
-          className="font-display text-6xl font-bold text-text-primary mb-6"
+          className="text-6xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight text-text-primary mb-6"
         >
           Rahul Agarwal
         </motion.h1>
@@ -78,7 +78,9 @@ export default function Hero() {
         {/* Static role headline with gradient accent */}
         <motion.p
           variants={itemVariants}
-          className="text-2xl md:text-3xl mb-6 bg-gradient-to-r from-accent-from to-accent-to bg-clip-text text-transparent font-semibold"
+          className={`text-2xl md:text-3xl mb-6 bg-gradient-to-r from-accent-from to-accent-to bg-clip-text text-transparent font-semibold ${
+            prefersReducedMotion ? '' : 'bg-[length:200%_auto] animate-gradient-x'
+          }`}
         >
           Product Manager &amp; AI Builder
         </motion.p>
@@ -145,11 +147,12 @@ export default function Hero() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
         <motion.div
-          animate={prefersReducedMotion ? {} : { y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-          className="w-6 h-10 border-2 border-border-muted rounded-full flex justify-center pt-2"
+          animate={prefersReducedMotion ? {} : { opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+          className="flex flex-col items-center gap-2"
         >
-          <div className="w-1 h-2 bg-text-muted rounded-full" />
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">Scroll</span>
+          <div className="w-px h-10 bg-gradient-to-b from-accent to-transparent" />
         </motion.div>
       </motion.div>
     </section>

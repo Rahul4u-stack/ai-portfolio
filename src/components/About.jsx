@@ -80,9 +80,9 @@ export default function About() {
   }
 
   return (
-    <section id="about" className="py-20 px-6 bg-surface">
+    <section id="about" className="py-20 px-6 bg-surface-raised">
       <div className="max-w-7xl mx-auto">
-        <SectionHeading title="About Me" align="center" />
+        <SectionHeading title="About Me" number="01" align="center" />
 
         {/* Two-column layout */}
         <motion.div

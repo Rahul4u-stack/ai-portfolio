@@ -19,7 +19,13 @@ function TimelineCard({ experience, index }) {
       }`}
     >
       {/* Timeline dot — centered on the line (desktop only) */}
-      <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-accent rounded-full border-4 border-surface z-10" />
+      <div
+        className={`hidden md:block absolute left-1/2 -translate-x-1/2 w-3 h-3 bg-accent shadow-[0_0_12px_2px_rgba(138,109,255,0.6)] rounded-full border-4 border-surface z-10 ${
+          prefersReducedMotion
+            ? ''
+            : 'before:absolute before:inset-0 before:rounded-full before:bg-accent/40 before:animate-ping'
+        }`}
+      />
 
       {/* Card */}
       <motion.div
@@ -52,12 +58,12 @@ export default function Experience() {
   return (
     <section id="experience" className="py-20 px-6 bg-surface">
       <div className="max-w-6xl mx-auto">
-        <SectionHeading title="Experience" />
+        <SectionHeading title="Experience" number="02" />
 
         {/* Timeline container */}
         <div className="relative">
           {/* Center line (desktop only) */}
-          <div className="hidden md:block absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-0.5 bg-accent/30" />
+          <div className="hidden md:block absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-accent-from/50 via-accent-to/30 to-transparent" />
 
           {experiences.map((experience, index) => (
             <TimelineCard key={index} experience={experience} index={index} />

@@ -23,7 +23,7 @@ function SkillCard({ category, cardVariants }) {
         {category.skills.map((skill) => (
           <span
             key={skill}
-            className="bg-accent/10 text-accent text-sm px-3 py-1 rounded-full"
+            className="font-mono text-xs px-2 py-1 rounded border border-accent/20 text-text-secondary bg-surface-elevated/50"
           >
             {skill}
           </span>
@@ -59,7 +59,7 @@ export default function Skills() {
   return (
     <section id="skills" className="py-20 px-6 bg-surface">
       <div className="max-w-6xl mx-auto">
-        <SectionHeading title="Skills" />
+        <SectionHeading title="Skills" number="04" />
 
         {/* Skills grid */}
         <motion.div
