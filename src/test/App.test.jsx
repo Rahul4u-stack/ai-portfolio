@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import App from '../App'
 
@@ -32,5 +32,20 @@ describe('App', () => {
       const label = id.charAt(0).toUpperCase() + id.slice(1)
       expect(screen.getByRole('link', { name: label })).toHaveAttribute('href', `#${id}`)
     }
+  })
+
+  it('renders at least 3 links to case study pages on the homepage', () => {
+    renderApp()
+    const caseStudyLinks = screen
+      .getAllByRole('link')
+      .filter((link) => link.getAttribute('href')?.startsWith('/case-study/'))
+    expect(caseStudyLinks.length).toBeGreaterThanOrEqual(3)
+  })
+
+  it('renders the case study page at /case-study/:slug', async () => {
+    renderApp(['/case-study/snake'])
+    await waitFor(() =>
+      expect(screen.getByRole('heading', { name: /Case Study: Snake/i })).toBeInTheDocument()
+    )
   })
 })

@@ -96,9 +96,14 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <a
-              href="#"
+              href="/"
               onClick={(e) => {
                 e.preventDefault()
+                setIsOpen(false)
+                if (location.pathname !== '/') {
+                  navigate('/')
+                  return
+                }
                 window.scrollTo({ top: 0, behavior: 'smooth' })
               }}
               className="font-display text-2xl font-bold text-accent hover:text-accent-hover transition-colors"

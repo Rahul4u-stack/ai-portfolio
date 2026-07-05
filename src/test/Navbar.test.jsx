@@ -1,6 +1,6 @@
 import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { MockIntersectionObserver } from './mocks'
 
@@ -95,6 +95,40 @@ describe('Navbar scroll-spy', () => {
 
     await user.click(screen.getByRole('link', { name: 'Projects' }))
     expect(scrollSpy).toHaveBeenCalledWith({ behavior: 'smooth' })
+  })
+})
+
+describe('Navbar logo', () => {
+  it('scrolls to top instead of navigating when already on the homepage', async () => {
+    const user = userEvent.setup()
+    renderNavbarWithSections()
+
+    const scrollToSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
+    await user.click(screen.getByRole('link', { name: 'RA' }))
+
+    expect(scrollToSpy).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' })
+    scrollToSpy.mockRestore()
+  })
+
+  it('navigates to the homepage when clicked from a case-study page', async () => {
+    const user = userEvent.setup()
+    render(
+      <MemoryRouter initialEntries={['/case-study/snake']}>
+        <Routes>
+          <Route path="/" element={<Navbar />} />
+          <Route path="/case-study/:slug" element={<Navbar />} />
+        </Routes>
+      </MemoryRouter>
+    )
+
+    const scrollToSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
+    await user.click(screen.getByRole('link', { name: 'RA' }))
+
+    // Navigating away from the case-study route unmounts this Navbar and
+    // mounts a fresh one at "/" — window.scrollTo should NOT have been used
+    // for the case-study-page click itself.
+    expect(scrollToSpy).not.toHaveBeenCalled()
+    scrollToSpy.mockRestore()
   })
 })
 
