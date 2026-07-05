@@ -41,6 +41,8 @@ export const projects = [
     icon: '🎥',
     highlight: '94s of coded animation. 7 scenes. Synced TTS narration. Shipped in a week.',
     featured: true,
+    videoUrl: '/video/video-resume.mp4',
+    posterUrl: '/video/video-resume-poster.webp',
   },
   {
     title: 'YouTube Summarizer',

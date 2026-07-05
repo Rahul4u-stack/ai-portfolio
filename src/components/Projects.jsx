@@ -5,6 +5,7 @@ import { FaExternalLinkAlt, FaGithub } from 'react-icons/fa';
 import { projects } from '../data/projects';
 import SectionHeading from './ui/SectionHeading';
 import GameEmbed from './ui/GameEmbed';
+import VideoEmbed from './ui/VideoEmbed';
 import useReducedMotion from '../hooks/useReducedMotion';
 
 function useMotionVariants(prefersReducedMotion) {
@@ -78,6 +79,12 @@ function FeaturedProjectCard({ project, cardVariants }) {
             <GameEmbed
               embedUrl={project.embedUrl}
               coverImage={project.coverImage}
+              title={project.title}
+            />
+          ) : project.videoUrl ? (
+            <VideoEmbed
+              videoUrl={project.videoUrl}
+              posterUrl={project.posterUrl}
               title={project.title}
             />
           ) : (
