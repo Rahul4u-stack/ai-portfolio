@@ -29,9 +29,9 @@ function useMotionVariants(prefersReducedMotion) {
   return { containerVariants, cardVariants };
 }
 
-function ProjectLinks({ project }) {
+function ProjectLinks({ project, className = 'mt-auto' }) {
   return (
-    <div className="mt-auto flex items-center gap-4">
+    <div className={`${className} flex items-center gap-4 shrink-0`}>
       {project.github && (
         <a
           href={project.github}
@@ -97,9 +97,11 @@ function FeaturedProjectCard({ project, cardVariants }) {
           <p className="text-accent text-sm font-medium mb-3">{project.subtitle}</p>
           <p className="text-text-muted text-sm mb-4">{project.description}</p>
 
-          <p className="text-text-secondary text-sm font-semibold mb-4">
+          <p className="text-text-secondary text-sm font-semibold mb-2">
             {project.highlight}
           </p>
+
+          <p className="font-mono text-accent text-xs mb-4">{project.metric}</p>
 
           <div className="flex flex-wrap gap-2 mb-5">
             {project.tech.map((t) => (
@@ -119,45 +121,24 @@ function FeaturedProjectCard({ project, cardVariants }) {
   );
 }
 
-function ProjectCard({ project, cardVariants, compact = false }) {
+function CompactProjectRow({ project, cardVariants }) {
   return (
     <motion.div
       variants={cardVariants}
-      className="p-[1px] rounded-xl2 bg-gradient-to-br from-accent-from/0 to-accent-to/0 hover:from-accent-from hover:to-accent-to transition-colors duration-300 hover:-translate-y-1"
+      className="p-[1px] rounded-xl2 bg-gradient-to-br from-accent-from/0 to-accent-to/0 hover:from-accent-from hover:to-accent-to transition-colors duration-300"
     >
-      <div className="relative before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/5 bg-surface-raised rounded-[calc(1.25rem-1px)] overflow-hidden flex flex-col h-full">
-        {/* Icon header (hidden at lg on compact cards flanking the featured one) */}
-        <div className={`${compact ? 'lg:hidden ' : ''}h-40 flex items-center justify-center bg-gradient-to-br from-accent-from/10 to-accent-to/10`}>
-          <span className="text-5xl" role="img" aria-label={project.title}>
-            {project.icon}
-          </span>
+      <div className="relative before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/5 bg-surface-raised rounded-[calc(1.25rem-1px)] p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+        <span className="text-3xl shrink-0" role="img" aria-label={project.title}>
+          {project.icon}
+        </span>
+
+        <div className="flex-1 min-w-0">
+          <h3 className="text-base font-bold text-text-primary">{project.title}</h3>
+          <p className="text-text-muted text-sm">{project.description}</p>
+          <p className="font-mono text-accent text-xs mt-1">{project.metric}</p>
         </div>
 
-        {/* Card body */}
-        <div className="p-6 flex flex-col flex-1">
-          <h3 className="text-xl font-bold text-text-primary">{project.title}</h3>
-          <p className="text-accent text-sm font-medium mb-3">{project.subtitle}</p>
-          <p className="text-text-muted text-sm mb-4 line-clamp-5">{project.description}</p>
-
-          {/* Highlight badge */}
-          <span className="inline-block bg-accent/10 text-accent text-xs px-3 py-1 rounded-full mb-4 self-start">
-            {project.highlight}
-          </span>
-
-          {/* Tech tags */}
-          <div className="flex flex-wrap gap-2 mb-5">
-            {project.tech.map((t) => (
-              <span
-                key={t}
-                className="font-mono text-xs px-2 py-1 rounded border border-accent/20 text-text-secondary bg-surface-elevated/50"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-
-          <ProjectLinks project={project} />
-        </div>
+        <ProjectLinks project={project} className="" />
       </div>
     </motion.div>
   );
@@ -177,13 +158,13 @@ export default function Projects() {
       <div className="max-w-6xl mx-auto">
         <SectionHeading title="Projects" number="03" />
 
-        {/* Project grid */}
+        {/* Featured project grid */}
         <motion.div
           ref={ref}
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:auto-rows-[minmax(280px,auto)] gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:auto-rows-[minmax(280px,auto)] gap-6"
         >
           {featuredProjects.map((project) => (
             <FeaturedProjectCard
@@ -192,15 +173,25 @@ export default function Projects() {
               cardVariants={cardVariants}
             />
           ))}
-          {restProjects.map((project, i) => (
-            <ProjectCard
-              key={project.title}
-              project={project}
-              cardVariants={cardVariants}
-              compact={i < 2}
-            />
-          ))}
         </motion.div>
+
+        {/* Compact list for the rest */}
+        {restProjects.length > 0 && (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            className="mt-6 flex flex-col gap-4"
+          >
+            {restProjects.map((project) => (
+              <CompactProjectRow
+                key={project.title}
+                project={project}
+                cardVariants={cardVariants}
+              />
+            ))}
+          </motion.div>
+        )}
       </div>
     </section>
   );
