@@ -97,14 +97,14 @@ export default function About() {
           {/* Left: Profile Photo */}
           <motion.div variants={itemVariants} className="flex justify-center">
             <figure className="relative">
-              <div className="rounded-2xl overflow-hidden border border-warm-200 shadow-card-lift">
+              <div className="rounded-2xl overflow-hidden border border-warm-200 shadow-card-lift group">
                 <img
                   src={heroPhoto}
                   alt="Rahul Agarwal, Technical Product Manager"
                   width={480}
                   height={480}
                   loading="eager"
-                  className="w-72 h-72 md:w-80 md:h-80 object-cover"
+                  className="w-72 h-72 md:w-80 md:h-80 object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
               <figcaption className="mt-4 text-center font-mono text-xs uppercase tracking-[0.2em] text-warm-text">
@@ -163,7 +163,7 @@ export default function About() {
                 key={stat.label}
                 initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
                 animate={statsInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: prefersReducedMotion ? 0 : 0.5, delay: prefersReducedMotion ? 0 : index * 0.1 }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : index * 0.12 }}
                 className="bg-surface-raised rounded-xl2 p-6 text-center border border-border-subtle hover:border-accent/30 transition-colors duration-300"
               >
                 <div className="text-3xl font-bold text-accent mb-2">

@@ -42,7 +42,7 @@ export default function Skills() {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: prefersReducedMotion ? 0 : 0.1
+        staggerChildren: prefersReducedMotion ? 0 : 0.12
       }
     }
   };
@@ -52,7 +52,7 @@ export default function Skills() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: prefersReducedMotion ? 0 : 0.45, ease: "easeOut" }
+      transition: { duration: prefersReducedMotion ? 0 : 0.6, ease: "easeOut" }
     }
   };
 

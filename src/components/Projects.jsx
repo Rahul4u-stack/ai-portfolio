@@ -13,7 +13,7 @@ function useMotionVariants(prefersReducedMotion) {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: prefersReducedMotion ? 0 : 0.15,
+        staggerChildren: prefersReducedMotion ? 0 : 0.18,
       },
     },
   };
@@ -23,7 +23,7 @@ function useMotionVariants(prefersReducedMotion) {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: prefersReducedMotion ? 0 : 0.5, ease: 'easeOut' },
+      transition: { duration: prefersReducedMotion ? 0 : 0.65, ease: 'easeOut' },
     },
   };
 

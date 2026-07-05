@@ -38,7 +38,7 @@ export default function Hero() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: prefersReducedMotion ? 0 : 0.45, ease: 'easeOut' },
+      transition: { duration: prefersReducedMotion ? 0 : 0.6, ease: 'easeOut' },
     },
   }
 

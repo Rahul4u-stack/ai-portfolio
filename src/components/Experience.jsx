@@ -31,7 +31,7 @@ function TimelineCard({ experience, index }) {
       <motion.div
         initial={{ opacity: 0, x: hiddenX }}
         animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: hiddenX }}
-        transition={{ duration: prefersReducedMotion ? 0 : 0.6, ease: "easeOut" }}
+        transition={{ duration: prefersReducedMotion ? 0 : 0.75, ease: "easeOut" }}
         className={`w-full md:w-[45%] bg-surface-raised rounded-xl2 p-6 border border-border-subtle hover:border-accent/50 transition-colors duration-300 ${
           isLeft ? 'md:mr-auto' : 'md:ml-auto'
         }`}

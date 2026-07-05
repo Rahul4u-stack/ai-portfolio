@@ -9,7 +9,7 @@ export default function SectionHeading({ title, number, align = 'left', classNam
       initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: prefersReducedMotion ? 0 : 0.5 }}
+      transition={{ duration: prefersReducedMotion ? 0 : 0.7, ease: 'easeOut' }}
       className={`relative ${align === 'center' ? 'text-center' : ''} mb-16 ${className}`}
     >
       {number && (
