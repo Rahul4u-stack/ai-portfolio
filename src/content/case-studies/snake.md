@@ -6,7 +6,7 @@ A playable, fully tested Snake game — embedded live on my portfolio, built in 
 
 ## 2. Why this exists — the problem
 
-My portfolio was entirely chat-shaped: useful AI apps a recruiter can only evaluate by reading. Playable software is assessable in five seconds — and building it requires the real-time fundamentals (game loop, collision, input handling) that my upcoming AI-game projects (natural-language level generation, a 3D voxel sandbox) all build on. Snake is the first of four small games, each shipped as its own repo with one distinct engineering lesson; Snake's is the **game loop**.
+My portfolio was entirely chat-shaped: useful AI apps a visitor can only evaluate by reading. Playable software is assessable in five seconds — and building it requires the real-time fundamentals (game loop, collision, input handling) that my upcoming AI-game projects (natural-language level generation, a 3D voxel sandbox) all build on. Snake is the first of four small games, each shipped as its own repo with one distinct engineering lesson; Snake's is the **game loop**.
 
 ## 3. AI capability demonstrated
 
@@ -42,13 +42,8 @@ Vanilla JavaScript + Canvas 2D (no engine, no libraries) · Vite · Vitest (25 h
 - **Repo:** https://github.com/Rahul4u-stack/snake-game — 25/25 tests in CI (~20 s per push)
 - **Footprint:** ~10.5 kB of JavaScript (3.7 kB gzipped), no backend, no runtime dependencies
 
-## 9. Interview defense — 3 likely questions
+## 9. The hardest bug
 
-**Q1: "Why build a game with no engine — isn't that reinventing the wheel?"**
-Deliberate sequencing. These four games are the vocabulary lesson — game loop, collision, state machines, feel — and the next project uses Phaser precisely because I'll then know what the engine is abstracting. As a PM I make build-vs-buy calls constantly; this portfolio arc is that call made consciously in both directions, and I can defend each side.
+Pause looked like it corrupted state — resuming "restarted" the game. Root cause: pausing stopped the game loop, but keyboard input was only processed *inside* the loop, so every overlay made the keyboard deaf, and the only clickable button was Restart. The fix inverted the model: never stop the loop; gate the *simulation* instead. The design lesson: pause the simulation, never the machinery that listens for un-pausing.
 
-**Q2: "Where's the AI in a Snake clone?"**
-In the process, measurably. A read-only supervisor agent caught a localStorage failure-path bug by reading code — before anything ran, in a path play-testing can't reach. Then the inverse: after 25 tests were green and a scripted browser bot passed, a human play-test caught dead keyboard controls the automation missed, because the bot clicked buttons instead of trusting the key labels. I can talk concretely about what each verification layer catches and what it structurally cannot.
-
-**Q3: "What was the hardest bug?"**
-Pause looked like it corrupted state — resuming "restarted" the game. Root cause: pausing stopped the game loop, but keyboard input was only processed *inside* the loop, so every overlay made the keyboard deaf, and the only clickable button was Restart. The fix inverted the model: never stop the loop; gate the *simulation* instead. The design lesson — pause the simulation, never the machinery that listens for un-pausing — and the meta-lesson about "all tests green ≠ works" both came from this one bug.
+There's a meta-lesson too. After 25 tests were green and a scripted browser bot passed, it took a human play-test to catch this — the bot clicked buttons instead of trusting the key labels. Each verification layer catches something specific, and each has things it structurally cannot see. All tests green ≠ works.

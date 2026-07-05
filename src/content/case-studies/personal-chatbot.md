@@ -4,8 +4,6 @@
 > **Live demo:** https://personal-chatbot-rust.vercel.app/ (runs in TEST_MODE — see [§5 deployment trade-offs](#deployment-trade-off-worth-knowing-about))
 > **Repo:** https://github.com/Rahul4u-stack/personal-chatbot
 
-This is the recruiter-facing case study. It follows my [9-section AI PM framework](https://github.com/Rahul4u-stack/ai-portfolio): pitch, problem, AI capability, AI tools, full-stack tech, architecture decisions, what I'd do differently, outcome, interview defense.
-
 ---
 
 ## 1. One-line pitch
@@ -52,7 +50,7 @@ Every turn reads ~3–4k cached tokens at ~10% of full input rate. The system pr
 
 ---
 
-## 4. AI tools used (the stack proof)
+## 4. AI tools used
 
 - **`claude-sonnet-4-6`** (Anthropic Messages API) — chat brain + tool orchestration. Used the model alias rather than the dated ID because dated IDs deprecate (the `claude-sonnet-4-20250514` ID retires 2026-06-15)
 - **Anthropic Memory Tool** (`memory_20250818`) — model-managed persistent memory, instantiated via the SDK's `BetaLocalFilesystemMemoryTool`
@@ -64,7 +62,7 @@ Why the Memory Tool over a manual vector-DB approach? See §6.1.
 
 ---
 
-## 5. Other tech (full-stack signal)
+## 5. Other tech
 
 - **Frontend:** React 18 + Vite 5 + Tailwind CSS 3 + `eventsource-parser` v2 for SSE consumption — same proven stack as my [Calorie Estimator](https://calorie-estimator.vercel.app) and [YouTube Summarizer](https://youtube-summarizer-plum.vercel.app). 39 vitest tests across 9 files.
 - **Backend:** Python 3.11 + Flask 3 + Anthropic SDK ≥0.97 + gunicorn (with `--timeout 120` for SSE keepalive) + SQLite for conversation history. 43 pytest tests covering sandbox attacks, the tool-use loop, prompt caching parameter shape, error paths, history rehydration, and a live integration test gated on `ANTHROPIC_LIVE_TEST=1`.
@@ -79,15 +77,15 @@ I deliberately deployed the backend in `TEST_MODE` — it returns stub responses
 - The headline feature of the project is *memory persistence across sessions*; deploying in live mode would let a visitor experience exactly one session of memory, then lose it
 - Free-tier 60-second proxy timeouts truncate long Claude responses mid-stream
 
-So the live URL works reliably for portfolio visitors: they see the streaming UX, the tool-use chip lifecycle, the Demo Mode banner, and the polished frontend. But the real Memory Tool pipeline runs locally — two commands in the README. The interview answer for "why didn't you deploy the full pipeline?" is: *"I picked correctness-of-demo over feature-parity in the hosted environment. The hosted demo's claim is the API contract + UX. The repo's claim is the full pipeline. Both are true; they're not the same artifact. v2 swaps Render free tier for paid disk."*
+So the live URL works reliably for portfolio visitors: they see the streaming UX, the tool-use chip lifecycle, the Demo Mode banner, and the polished frontend. But the real Memory Tool pipeline runs locally — two commands in the README. Why not deploy the full pipeline? I picked correctness-of-demo over feature-parity in the hosted environment: the hosted demo's claim is the API contract + UX, the repo's claim is the full pipeline. Both are true; they're not the same artifact. v2 swaps Render free tier for paid disk.
 
 That's the same trade-off I made for the YouTube Summarizer and for the same reason. Free hosting tiers are great for stateless API gateways and terrible for stateful AI workloads.
 
 ---
 
-## 6. Architecture decisions & trade-offs ⭐
+## 6. Architecture decisions & trade-offs
 
-The five most defensible decisions, each in the "Chose X over Y because Z" form recruiters expect.
+The five decisions that shaped the product, each in "Chose X over Y because Z" form.
 
 ### 6.1 Chose Anthropic Memory Tool (model-managed) over a manual vector DB (app-managed)
 
@@ -100,7 +98,7 @@ The five most defensible decisions, each in the "Chose X over Y because Z" form 
 
 **Why model-managed:** The Memory Tool collapses ~2 weeks of engineering (embedding-on-write, retrieval relevance, write-policy heuristics) into a single tool definition the API ships natively. For a portfolio piece, time-to-ship matters; for a v1 product, Claude's write policy is *better* than the heuristics I'd write in a week. The trade-off I accepted: less control + lower auditability. At >10k users I'd switch to app-managed memory because compliance teams need to know exactly what's stored about each user. That's the v2 migration path — and surfacing the migration trigger ("at what scale would we need to switch?") is the PM-thinking part of the answer.
 
-The interview moment: *"How would you build an AI assistant that gets smarter the more a user talks to it?"* — and I walk them through this trade-off using real numbers.
+This design answers the question *"how do you build an AI assistant that gets smarter the more a user talks to it?"* — with real numbers behind the trade-off.
 
 ### 6.2 Chose per-user filesystem sandbox over a single global folder
 
@@ -118,7 +116,7 @@ The sandbox enforces:
 - Each user_id maps to its own `BetaLocalFilesystemMemoryTool(base_path=./memory_data/<user_id>/)` — the SDK's path validation runs inside that scope
 - Negative tests for path-traversal, absolute paths, symlink escapes, and invalid user_ids were written **before** the happy-path implementation
 
-The interview moment: *"How do you keep AI features secure?"* — and I describe the three layers of defense + show the negative tests in the repo.
+The question this answers: *"how do you keep AI features secure?"* — three layers of defense, with the negative tests to prove it in the repo.
 
 ### 6.3 Chose streaming SSE responses over wait-and-display
 
@@ -161,7 +159,7 @@ So the naive "save what just streamed" approach saves the `tool_use` blocks but 
 
 The general lesson: when an SDK gives you a "runner" / "agent" / "orchestrator" object, treat *its* accumulated state as the source of truth, not the stream chunks you observed. Trying to reconstitute conversation history from streaming events is the wrong abstraction — you'll miss the synthetic glue the orchestrator generates between iterations.
 
-This is the bug I would walk a senior engineer through in an interview when asked *"tell me about a debugging story."*
+This is my favorite debugging story from the project.
 
 ---
 
@@ -183,7 +181,7 @@ This is the bug I would walk a senior engineer through in an interview when aske
 
 ## 8. Outcome
 
-- **Ship date:** 2026-06-04 (3 days ahead of the planned Week 3 close of 2026-06-01... actually 3 days behind, but with 5 extra interview-grade findings)
+- **Ship date:** 2026-06-04 — 3 days past the planned Week 3 close, traded for 5 extra documented findings
 - **Frontend:** https://personal-chatbot-rust.vercel.app/
 - **Backend:** Render Blueprint deployed, TEST_MODE on (live mode runs locally via `git clone`)
 - **Repo:** https://github.com/Rahul4u-stack/personal-chatbot
@@ -195,15 +193,15 @@ The case study you're reading is part of the deliverable — it's the artifact t
 
 ---
 
-## 9. Interview defense — three likely questions, prepared answers
+## 9. Design questions, answered
 
-### Q1: Why Anthropic's Memory Tool over building memory yourself with a vector DB?
+### Why Anthropic's Memory Tool over building memory yourself with a vector DB?
 
-**A:** Two reasons. First, the Memory Tool collapses ~2 weeks of engineering (embeddings, retrieval relevance, write-policy heuristics) into a single tool definition — for a portfolio piece, time-to-ship matters. Second, Claude itself decides *what* to remember and *what* to recall, which is exactly the heuristic I'd otherwise spend weeks hand-tuning. The trade-off I accepted: less control + lower auditability. At >10k users I'd switch to app-managed memory because compliance teams need to know exactly what's stored about each user. That's the v2 migration trigger — and being explicit about *when* to migrate is what separates a junior "I picked the new shiny thing" answer from a senior "I picked the right tool for v1, here's the lifecycle plan" answer.
+Two reasons. First, the Memory Tool collapses ~2 weeks of engineering (embeddings, retrieval relevance, write-policy heuristics) into a single tool definition — for a portfolio piece, time-to-ship matters. Second, Claude itself decides *what* to remember and *what* to recall, which is exactly the heuristic I'd otherwise spend weeks hand-tuning. The trade-off I accepted: less control + lower auditability. At >10k users I'd switch to app-managed memory because compliance teams need to know exactly what's stored about each user. That's the v2 migration trigger — being explicit about *when* to migrate matters as much as the initial choice.
 
-### Q2: How do you handle prompt injection that targets the memory layer?
+### How does it handle prompt injection that targets the memory layer?
 
-**A:** Three layers of defense.
+Three layers of defense.
 
 1. **Per-user filesystem sandbox.** Claude can request any path it wants, but the backend rewrites the request to be inside `./memory_data/<user_id>/` only. The SDK's `BetaLocalFilesystemMemoryTool` enforces `os.path.realpath` validation — symlink escape and `../` traversal are blocked at the OS level, not by string matching.
 
@@ -213,9 +211,9 @@ The case study you're reading is part of the deliverable — it's the artifact t
 
 Negative tests for all three layers were written *before* the happy-path implementation. Repo has 12 sandbox tests covering path traversal, absolute paths, symlink escapes, unicode in user_ids, leading hyphens, double slashes, and the length cap. Every one of them is a test that should never have been needed — and that's the point.
 
-### Q3: What breaks at 10× users, and what's the fix?
+### What breaks at 10× users, and what's the fix?
 
-**A:** Three things, in priority order.
+Three things, in priority order.
 
 1. **Render free-tier filesystem loses memory on cold-start.** Already documented as a v1 limitation. Fix: paid Render tier with persistent disk + Postgres. ~$7/month.
 
@@ -229,4 +227,4 @@ The architecture decision that *doesn't* break at 10× users: model-managed memo
 
 ## Acknowledgements
 
-Built end-to-end by Claude Code using the 4-agent build pattern: supervisor → frontend-builder + backend-builder in parallel → testing agent. The full per-phase strategy documents live in `.agents/strategy*.md`. The per-phase blocker log (with 20+ interview-grade findings across the six phases) lives in the internal planning doc.
+Built end-to-end by Claude Code using the 4-agent build pattern: supervisor → frontend-builder + backend-builder in parallel → testing agent. The per-phase strategy documents live in `.agents/strategy*.md` in the repo. A blocker log with 20+ findings was kept throughout the six build phases.
