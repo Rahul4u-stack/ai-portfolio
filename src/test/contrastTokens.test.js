@@ -27,16 +27,26 @@ function contrastRatio(hex1, hex2) {
 const { colors } = tailwindConfig.theme.extend
 const PAPER = colors.paper // page background, #F9F7F3
 
-describe('contrast-safe color tokens (Week 6c regression guard)', () => {
-  it('accent.text (link/small-text color) resolves to the darkened AA-safe value', () => {
-    // This is the #1 risk fix from the Week 6c strategy: small terracotta text/links
-    // must use the darkened accent.text token, never the bright accent.DEFAULT.
-    expect(colors.accent.text.toLowerCase()).toBe('#b8432e')
-  })
+// Every background a small accent-text element can actually sit on. The original
+// guard only checked PAPER and missed that accent-text also renders on the raised
+// card surface AND on the hero radial-vignette (measured ~#e9e6e4, darker than any
+// flat token). Lighthouse caught #b8432e failing at 4.36:1 on the vignette. The
+// guard now tests the WORST-CASE surface, plus a slightly-darker guard tone for margin.
+const ACCENT_TEXT_BACKGROUNDS = {
+  paper: PAPER, // #F9F7F3
+  raised: colors['surface-raised'], // #f2f1f0
+  vignette: '#e9e6e4', // hero radial-gradient darkest measured point
+  guard: '#e2ded9', // conservative buffer below the vignette
+}
 
-  it('accent.text passes AA body-text contrast (>=4.5:1) against paper background', () => {
-    const ratio = contrastRatio(colors.accent.text, PAPER)
-    expect(ratio).toBeGreaterThanOrEqual(4.5)
+describe('contrast-safe color tokens (Week 6c regression guard)', () => {
+  it('accent.text passes AA body-text contrast (>=4.5:1) on EVERY surface it renders on', () => {
+    // The bug this prevents: a terracotta that passes on paper but fails on the
+    // darker raised/vignette surfaces. Must clear 4.5:1 on all of them.
+    for (const [name, bg] of Object.entries(ACCENT_TEXT_BACKGROUNDS)) {
+      const ratio = contrastRatio(colors.accent.text, bg)
+      expect(ratio, `accent.text on ${name} (${bg})`).toBeGreaterThanOrEqual(4.5)
+    }
   })
 
   it('bright accent.DEFAULT fails AA body-text contrast, confirming it must stay large/bold-only', () => {

@@ -29,7 +29,7 @@ export default {
         },
         accent: {
           DEFAULT: '#d1543e',
-          text: '#b8432e',
+          text: '#a83a27',
           hover: '#9c3520',
         },
         surface: '#F9F7F3',
