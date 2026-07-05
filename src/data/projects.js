@@ -11,6 +11,7 @@ export const projects = [
     highlight: 'Fixed-timestep loop + pure-logic tests — the game-dev fundamentals project',
     featured: true,
     embedUrl: 'https://snake-game-nu-two-85.vercel.app',
+    caseStudy: 'snake',
   },
   {
     title: 'Personal Chatbot with Memory',
@@ -24,6 +25,7 @@ export const projects = [
     highlight: "Anthropic's Memory Tool — model-managed persistence with adversarial sandbox",
     featured: false,
     embedUrl: null,
+    caseStudy: 'personal-chatbot',
   },
   {
     title: 'Personal AI News Assistant',
@@ -45,6 +47,7 @@ export const projects = [
     live: 'https://youtube-summarizer-plum.vercel.app',
     icon: '📺',
     highlight: 'Anthropic prompt caching cut repeat-call cost by ~90% on 15-minute videos',
+    caseStudy: 'youtube-summarizer',
   },
   {
     title: 'Calorie Estimator',

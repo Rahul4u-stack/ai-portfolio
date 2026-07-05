@@ -1,3 +1,5 @@
+import { lazy, Suspense } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
@@ -8,10 +10,11 @@ import Education from './components/Education'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 
-export default function App() {
+const CaseStudyPage = lazy(() => import('./components/CaseStudyPage'))
+
+function HomePage() {
   return (
-    <div className="relative z-[2] min-h-screen bg-surface">
-      <Navbar />
+    <>
       <Hero />
       <About />
       <Experience />
@@ -20,6 +23,25 @@ export default function App() {
       <Education />
       <Contact />
       <Footer />
+    </>
+  )
+}
+
+export default function App() {
+  return (
+    <div className="relative z-[2] min-h-screen bg-surface">
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/case-study/:slug"
+          element={
+            <Suspense fallback={<div className="min-h-screen bg-surface" />}>
+              <CaseStudyPage />
+            </Suspense>
+          }
+        />
+      </Routes>
     </div>
   )
 }

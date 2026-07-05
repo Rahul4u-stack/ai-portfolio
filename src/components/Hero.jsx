@@ -1,12 +1,19 @@
 import { motion } from 'framer-motion'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { socialLinks } from '../data/social'
 import useReducedMotion from '../hooks/useReducedMotion'
 
 export default function Hero() {
   const prefersReducedMotion = useReducedMotion()
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const handleScroll = (e, href) => {
     e.preventDefault()
+    if (location.pathname !== '/') {
+      navigate('/' + href)
+      return
+    }
     const target = document.querySelector(href)
     if (target) {
       target.scrollIntoView({ behavior: 'smooth' })

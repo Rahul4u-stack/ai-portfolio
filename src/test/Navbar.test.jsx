@@ -1,5 +1,6 @@
 import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { MockIntersectionObserver } from './mocks'
 
@@ -14,12 +15,12 @@ const NAV_LINKS = [
 
 function renderNavbarWithSections() {
   return render(
-    <>
+    <MemoryRouter>
       <Navbar />
       {NAV_LINKS.map(({ id }) => (
         <section key={id} id={id} />
       ))}
-    </>
+    </MemoryRouter>
   )
 }
 

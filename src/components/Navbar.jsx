@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLocation, useNavigate } from 'react-router-dom'
 import useReducedMotion from '../hooks/useReducedMotion'
 
 const navLinks = [
@@ -17,6 +18,8 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState('')
   const [progress, setProgress] = useState(0)
   const prefersReducedMotion = useReducedMotion()
+  const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,6 +66,10 @@ export default function Navbar() {
   const handleLinkClick = (e, href) => {
     e.preventDefault()
     setIsOpen(false)
+    if (location.pathname !== '/') {
+      navigate('/' + href)
+      return
+    }
     const target = document.querySelector(href)
     if (target) {
       target.scrollIntoView({ behavior: 'smooth' })

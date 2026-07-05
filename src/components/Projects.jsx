@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { FaExternalLinkAlt, FaGithub } from 'react-icons/fa';
 import { projects } from '../data/projects';
 import SectionHeading from './ui/SectionHeading';
@@ -52,6 +53,14 @@ function ProjectLinks({ project }) {
           <FaExternalLinkAlt />
           <span>Live</span>
         </a>
+      )}
+      {project.caseStudy && (
+        <Link
+          to={`/case-study/${project.caseStudy}`}
+          className="text-text-muted hover:text-accent transition-colors duration-200 flex items-center gap-1.5 text-sm"
+        >
+          <span>Case Study</span>
+        </Link>
       )}
     </div>
   );
