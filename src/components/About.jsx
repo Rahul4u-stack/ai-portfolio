@@ -81,7 +81,8 @@ export default function About() {
   }
 
   return (
-    <section id="about" className="py-20 px-6 bg-surface-raised">
+    <section id="about" className="relative py-20 px-6 bg-surface-raised">
+      <div className="absolute inset-x-0 top-0 h-24 -translate-y-full bg-fade-to-raised pointer-events-none" />
       <div className="max-w-7xl mx-auto">
         <SectionHeading title="About Me" number="01" align="center" />
 
@@ -95,10 +96,8 @@ export default function About() {
         >
           {/* Left: Profile Photo */}
           <motion.div variants={itemVariants} className="flex justify-center">
-            <div className="relative">
-              {/* Accent glow behind photo */}
-              <div className="absolute -inset-2 bg-accent/20 rounded-2xl blur-xl" />
-              <div className="relative rounded-2xl overflow-hidden border-2 border-accent/30 shadow-2xl shadow-glow-accent">
+            <figure className="relative">
+              <div className="rounded-2xl overflow-hidden border border-warm-200 shadow-card-lift">
                 <img
                   src={heroPhoto}
                   alt="Rahul Agarwal, Technical Product Manager"
@@ -108,7 +107,10 @@ export default function About() {
                   className="w-72 h-72 md:w-80 md:h-80 object-cover"
                 />
               </div>
-            </div>
+              <figcaption className="mt-4 text-center font-mono text-xs uppercase tracking-[0.2em] text-warm-text">
+                Rahul Agarwal — Jaipur, India
+              </figcaption>
+            </figure>
           </motion.div>
 
           {/* Right: Bio Text */}

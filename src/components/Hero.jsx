@@ -44,21 +44,10 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-surface">
-      {/* Radial gradient background */}
+      {/* Soft warm wash — restraint over glow, per editorial direction */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent-from/10 rounded-full blur-[120px]" />
-        <div className="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-accent-to/5 rounded-full blur-[80px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-warm-200/40 rounded-full blur-[120px]" />
       </div>
-
-      {/* Subtle grid pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
-        }}
-      />
 
       <motion.div
         variants={containerVariants}
@@ -69,7 +58,7 @@ export default function Hero() {
         {/* Greeting */}
         <motion.p
           variants={itemVariants}
-          className="text-xs font-mono uppercase tracking-[0.2em] text-accent mb-4"
+          className="text-xs font-mono uppercase tracking-[0.2em] text-accent-text mb-4"
         >
           Hello, I'm
         </motion.p>
@@ -82,12 +71,10 @@ export default function Hero() {
           Rahul Agarwal
         </motion.h1>
 
-        {/* Static role headline with gradient accent */}
+        {/* Static role headline */}
         <motion.p
           variants={itemVariants}
-          className={`text-2xl md:text-3xl mb-6 bg-gradient-to-r from-accent-from to-accent-to bg-clip-text text-transparent font-semibold ${
-            prefersReducedMotion ? '' : 'bg-[length:200%_auto] animate-gradient-x'
-          }`}
+          className="text-2xl md:text-3xl mb-6 text-accent font-display font-semibold"
         >
           Product Manager &amp; AI Builder
         </motion.p>
@@ -108,7 +95,7 @@ export default function Hero() {
           <a
             href="#projects"
             onClick={(e) => handleScroll(e, '#projects')}
-            className="px-8 py-3 bg-accent hover:bg-accent-hover text-surface font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-glow-accent w-full sm:w-auto text-center"
+            className="px-8 py-3 bg-accent-hover hover:bg-accent text-paper font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-card-lift w-full sm:w-auto text-center"
           >
             View Projects
           </a>
@@ -116,7 +103,7 @@ export default function Hero() {
             href="/resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-3 border border-accent text-accent hover:bg-accent/10 font-medium rounded-lg transition-all duration-300 w-full sm:w-auto text-center"
+            className="px-8 py-3 border border-accent text-accent-text hover:bg-accent/10 font-medium rounded-lg transition-all duration-300 w-full sm:w-auto text-center"
           >
             Download Resume
           </a>
@@ -136,7 +123,7 @@ export default function Hero() {
                 href={link.href}
                 target={isMail ? undefined : '_blank'}
                 rel={isMail ? undefined : 'noopener noreferrer'}
-                className="text-text-muted hover:text-accent transition-colors duration-300"
+                className="text-text-muted hover:text-accent-text transition-colors duration-300"
                 aria-label={link.label}
               >
                 <Icon size={24} />

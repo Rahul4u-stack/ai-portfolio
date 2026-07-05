@@ -79,7 +79,7 @@ export default function Navbar() {
   return (
     <>
       <div
-        className="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-accent-from to-accent-to z-[60]"
+        className="fixed top-0 left-0 h-[2px] bg-accent-text z-[60]"
         style={{ width: `${progress * 100}%` }}
       />
       <motion.nav
@@ -88,7 +88,7 @@ export default function Navbar() {
         transition={{ duration: prefersReducedMotion ? 0 : 0.5, ease: 'easeOut' }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-surface/95 backdrop-blur-md shadow-lg shadow-black/20 border-b border-border-subtle'
+            ? 'bg-paper shadow-card border-b border-border-subtle'
             : 'bg-transparent'
         }`}
       >
@@ -122,12 +122,12 @@ export default function Navbar() {
                     onClick={(e) => handleLinkClick(e, link.href)}
                     aria-current={isActive ? 'page' : undefined}
                     className={`transition-colors text-sm font-medium relative group ${
-                      isActive ? 'text-accent' : 'text-text-muted hover:text-text-primary'
+                      isActive ? 'text-accent-text' : 'text-text-muted hover:text-text-primary'
                     }`}
                   >
                     {link.label}
                     <span
-                      className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-accent-from to-accent-to transition-all duration-300 ${
+                      className={`absolute -bottom-1 left-0 h-0.5 bg-accent transition-all duration-300 ${
                         isActive ? 'w-full' : 'w-0 group-hover:w-full'
                       }`}
                     />
@@ -167,7 +167,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
-            className="fixed inset-0 z-40 bg-surface/98 backdrop-blur-lg flex items-center justify-center"
+            className="fixed inset-0 z-40 bg-paper flex items-center justify-center"
           >
             <motion.div
               initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
@@ -185,7 +185,7 @@ export default function Navbar() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: prefersReducedMotion ? 0 : 0.3, delay: prefersReducedMotion ? 0 : 0.1 + index * 0.05 }}
-                  className="text-2xl font-medium text-text-primary hover:text-accent transition-colors"
+                  className="text-2xl font-medium text-text-primary hover:text-accent-text transition-colors"
                 >
                   {link.label}
                 </motion.a>

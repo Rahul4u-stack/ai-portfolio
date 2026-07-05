@@ -15,8 +15,7 @@ export default function SectionHeading({ title, number, align = 'left', classNam
       {number && (
         <span
           aria-hidden="true"
-          className={`absolute -top-8 ${align === 'center' ? 'left-1/2 -translate-x-1/2' : 'left-0'} text-[6rem] md:text-[8rem] font-display font-bold leading-none text-transparent select-none pointer-events-none`}
-          style={{ WebkitTextStroke: '1px rgba(247,246,248,0.06)' }}
+          className="block font-mono text-xs uppercase tracking-[0.3em] text-warm-text mb-3"
         >
           {number}
         </span>
@@ -25,7 +24,7 @@ export default function SectionHeading({ title, number, align = 'left', classNam
         {title}
       </h2>
       <div
-        className={`relative w-20 h-1 rounded-full bg-gradient-to-r from-accent-from to-accent-to ${
+        className={`relative w-20 h-1 rounded-full bg-accent ${
           align === 'center' ? 'mx-auto' : ''
         }`}
       />

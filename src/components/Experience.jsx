@@ -20,7 +20,7 @@ function TimelineCard({ experience, index }) {
     >
       {/* Timeline dot — centered on the line (desktop only) */}
       <div
-        className={`hidden md:block absolute left-1/2 -translate-x-1/2 w-3 h-3 bg-accent shadow-[0_0_12px_2px_rgba(138,109,255,0.6)] rounded-full border-4 border-surface z-10 ${
+        className={`hidden md:block absolute left-1/2 -translate-x-1/2 w-3 h-3 bg-accent shadow-[0_0_8px_1px_rgba(209,84,62,0.4)] rounded-full border-4 border-surface z-10 ${
           prefersReducedMotion
             ? ''
             : 'before:absolute before:inset-0 before:rounded-full before:bg-accent/40 before:animate-ping'
@@ -37,7 +37,7 @@ function TimelineCard({ experience, index }) {
         }`}
       >
         <h3 className="text-xl font-bold text-text-primary">{experience.company}</h3>
-        <p className="text-accent font-medium mt-1">{experience.role}</p>
+        <p className="text-accent-text font-medium mt-1">{experience.role}</p>
         <p className="text-text-muted text-sm mt-1">
           {experience.period} &middot; {experience.location}
         </p>
@@ -63,7 +63,7 @@ export default function Experience() {
         {/* Timeline container */}
         <div className="relative">
           {/* Center line (desktop only) */}
-          <div className="hidden md:block absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-accent-from/50 via-accent-to/30 to-transparent" />
+          <div className="hidden md:block absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-0.5 bg-warm-200" />
 
           {experiences.map((experience, index) => (
             <TimelineCard key={index} experience={experience} index={index} />

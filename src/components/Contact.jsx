@@ -131,7 +131,7 @@ export default function Contact() {
           <div>
             <button
               type="submit"
-              className="bg-accent hover:bg-accent-hover text-surface font-medium py-3 px-8 rounded-lg transition"
+              className="bg-accent-hover hover:bg-accent text-paper font-medium py-3 px-8 rounded-lg transition"
             >
               {submitted ? 'Opening email client...' : 'Send Message'}
             </button>
@@ -139,7 +139,7 @@ export default function Contact() {
         </motion.form>
 
         {/* Divider */}
-        <div className="border-t border-border-subtle my-12" />
+        <div className="h-px bg-fade-from-raised my-12" />
 
         {/* Contact Links */}
         <motion.div
@@ -151,7 +151,7 @@ export default function Contact() {
           {contactLinks.map((link) => {
             const Icon = link.icon;
             const content = (
-              <span className="flex items-center gap-3 text-text-muted hover:text-accent transition">
+              <span className="flex items-center gap-3 text-text-muted hover:text-accent-text transition">
                 <Icon className="text-lg flex-shrink-0" />
                 <span className="text-sm">{link.label}</span>
               </span>

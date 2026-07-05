@@ -10,7 +10,8 @@ export default function Education() {
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <section id="education" className="py-20 px-6 bg-surface-raised">
+    <section id="education" className="relative py-20 px-6 bg-surface-raised">
+      <div className="absolute inset-x-0 top-0 h-24 -translate-y-full bg-fade-to-raised pointer-events-none" />
       <div className="max-w-6xl mx-auto" ref={sectionRef}>
         <SectionHeading title="Education" number="05" />
 
@@ -29,7 +30,7 @@ export default function Education() {
               <h3 className="text-xl font-bold text-text-primary mt-4">
                 {item.institution}
               </h3>
-              <p className="text-accent text-sm font-medium mt-2">
+              <p className="text-accent-text text-sm font-medium mt-2">
                 {item.degree}
               </p>
               <p className="text-text-muted text-sm mt-2">{item.period}</p>
