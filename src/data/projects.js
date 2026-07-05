@@ -1,3 +1,8 @@
+import snakeImage from '../assets/projects/snake.webp';
+import personalChatbotImage from '../assets/projects/personal-chatbot.webp';
+import youtubeSummarizerImage from '../assets/projects/youtube-summarizer.webp';
+import calorieEstimatorImage from '../assets/projects/calorie-estimator.webp';
+
 export const projects = [
   {
     title: 'Snake',
@@ -13,6 +18,7 @@ export const projects = [
     featured: true,
     embedUrl: 'https://snake-game-nu-two-85.vercel.app',
     caseStudy: 'snake',
+    image: snakeImage,
   },
   {
     title: 'Personal Chatbot with Memory',
@@ -28,6 +34,7 @@ export const projects = [
     featured: true,
     embedUrl: null,
     caseStudy: 'personal-chatbot',
+    image: personalChatbotImage,
   },
   {
     title: 'AI Video Resume',
@@ -43,6 +50,7 @@ export const projects = [
     featured: true,
     videoUrl: '/video/video-resume.mp4',
     posterUrl: '/video/video-resume-poster.webp',
+    image: '/video/video-resume-poster.webp',
   },
   {
     title: 'YouTube Summarizer',
@@ -57,6 +65,7 @@ export const projects = [
     highlight: 'Anthropic prompt caching cut repeat-call cost by ~90% on 15-minute videos',
     featured: true,
     caseStudy: 'youtube-summarizer',
+    image: youtubeSummarizerImage,
   },
   {
     title: 'Calorie Estimator',
@@ -70,6 +79,7 @@ export const projects = [
     icon: '🍽️',
     highlight: "Uses Claude Sonnet's vision capabilities to analyze food images",
     featured: false,
+    image: calorieEstimatorImage,
   },
   {
     title: 'Personal AI News Assistant',
@@ -82,6 +92,7 @@ export const projects = [
     icon: '📰',
     highlight: 'Agent + scheduler + LLM-driven retrieval — running daily since 2026-05-12',
     featured: false,
+    image: null,
   },
   {
     title: 'AI Portfolio Website',
@@ -95,5 +106,6 @@ export const projects = [
     icon: '🌐',
     highlight: 'End-to-end built by AI agents orchestrated through Claude Code',
     featured: false,
+    image: null, // captured post-Week-6c-deploy — old dark theme would be wrong to ship
   },
 ];

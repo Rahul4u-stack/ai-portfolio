@@ -32,7 +32,7 @@ const markdownComponents = {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-accent hover:text-accent-hover underline underline-offset-2"
+      className="text-accent-text hover:text-accent-hover underline underline-offset-2"
     >
       {children}
     </a>
@@ -98,7 +98,7 @@ export default function CaseStudyPage() {
       <div className="max-w-[70ch] mx-auto">
         <Link
           to="/#projects"
-          className="inline-flex items-center gap-2 text-text-muted hover:text-accent transition-colors duration-200 text-sm mb-10"
+          className="inline-flex items-center gap-2 text-text-muted hover:text-accent-text transition-colors duration-200 text-sm mb-10"
         >
           ← Back to Projects
         </Link>
