@@ -2,6 +2,7 @@ import snakeImage from '../assets/projects/snake.webp';
 import personalChatbotImage from '../assets/projects/personal-chatbot.webp';
 import youtubeSummarizerImage from '../assets/projects/youtube-summarizer.webp';
 import calorieEstimatorImage from '../assets/projects/calorie-estimator.webp';
+import aiPortfolioImage from '../assets/projects/ai-portfolio.webp';
 
 export const projects = [
   {
@@ -106,6 +107,6 @@ export const projects = [
     icon: '🌐',
     highlight: 'End-to-end built by AI agents orchestrated through Claude Code',
     featured: false,
-    image: null, // captured post-Week-6c-deploy — old dark theme would be wrong to ship
+    image: aiPortfolioImage,
   },
 ];
