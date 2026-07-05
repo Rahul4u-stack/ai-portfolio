@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import SectionHeading from './ui/SectionHeading'
 import useReducedMotion from '../hooks/useReducedMotion'
+import heroPhoto from '../assets/rahul-hero.webp'
 
 const stats = [
   { label: 'Years Experience', value: 7, suffix: '+' },
@@ -11,12 +12,12 @@ const stats = [
 ]
 
 function AnimatedCounter({ value, suffix = '', prefix = '', decimals = 0, inView }) {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(value)
+  const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
-    if (!inView) return
+    if (!inView || prefersReducedMotion) return
 
-    let start = 0
     const end = value
     const duration = 2000
     const startTime = performance.now()
@@ -37,7 +38,7 @@ function AnimatedCounter({ value, suffix = '', prefix = '', decimals = 0, inView
     }
 
     requestAnimationFrame(animate)
-  }, [inView, value])
+  }, [inView, value, prefersReducedMotion])
 
   const display = decimals > 0 ? count.toFixed(decimals) : Math.floor(count)
 
@@ -99,8 +100,11 @@ export default function About() {
               <div className="absolute -inset-2 bg-accent/20 rounded-2xl blur-xl" />
               <div className="relative rounded-2xl overflow-hidden border-2 border-accent/30 shadow-2xl shadow-glow-accent">
                 <img
-                  src="/profile.jpg"
-                  alt="Rahul Agarwal"
+                  src={heroPhoto}
+                  alt="Rahul Agarwal, Technical Product Manager"
+                  width={480}
+                  height={480}
+                  loading="eager"
                   className="w-72 h-72 md:w-80 md:h-80 object-cover"
                 />
               </div>
