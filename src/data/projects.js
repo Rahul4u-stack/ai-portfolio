@@ -1,4 +1,5 @@
 import snakeImage from '../assets/projects/snake.webp';
+import breakoutImage from '../assets/projects/breakout.webp';
 import personalChatbotImage from '../assets/projects/personal-chatbot.webp';
 import youtubeSummarizerImage from '../assets/projects/youtube-summarizer.webp';
 import calorieEstimatorImage from '../assets/projects/calorie-estimator.webp';
@@ -20,6 +21,21 @@ export const projects = [
     embedUrl: 'https://snake-game-nu-two-85.vercel.app',
     caseStudy: 'snake',
     image: snakeImage,
+  },
+  {
+    title: 'Breakout',
+    subtitle: 'True-3D Breakout — Three.js over pure tested game logic',
+    description:
+      'Arkanoid-cabinet Breakout rendered in real WebGL: lit candy bricks, glossy ball, angled 3D camera. The 2D physics stayed pure functions — swapping the whole renderer to Three.js touched zero logic lines and zero tests.',
+    metric: 'Shipped in 1 day · 33/33 tests in CI · 60fps',
+    tech: ['Three.js', 'WebGL', 'Vanilla JavaScript', 'Vite', 'Vitest', 'GitHub Actions', 'localStorage'],
+    github: 'https://github.com/Rahul4u-stack/breakout-game',
+    live: 'https://breakout-game-delta.vercel.app',
+    icon: '🧱',
+    highlight: 'Collision math in true 3D — circle-vs-rect detection, reflection-axis selection, paddle english',
+    featured: false,
+    embedUrl: null,
+    image: breakoutImage,
   },
   {
     title: 'Personal Chatbot with Memory',
