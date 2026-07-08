@@ -11,8 +11,8 @@ body {
 }
 
 ::selection {
-  background: theme('colors.accent.DEFAULT / 20%');
-  color: theme('colors.ink');
+  background: theme('colors.accent.text / 30%');
+  color: theme('colors.surface');
 }
 
 :focus-visible {
@@ -46,5 +46,5 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: theme('colors.neutral.500');
+  background: theme('colors.text-muted');
 }

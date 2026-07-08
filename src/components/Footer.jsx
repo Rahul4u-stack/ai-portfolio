@@ -3,7 +3,6 @@ import { socialLinks } from '../data/social';
 export default function Footer() {
   return (
     <footer className="relative bg-surface">
-      <div className="absolute inset-x-0 top-0 h-16 -translate-y-full bg-fade-from-raised pointer-events-none" />
       <div className="max-w-6xl mx-auto py-8 px-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-text-muted text-sm">

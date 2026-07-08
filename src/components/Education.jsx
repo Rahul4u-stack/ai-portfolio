@@ -11,7 +11,6 @@ export default function Education() {
 
   return (
     <section id="education" className="relative py-20 px-6 bg-surface-raised">
-      <div className="absolute inset-x-0 top-0 h-24 -translate-y-full bg-fade-to-raised pointer-events-none" />
       <div className="max-w-6xl mx-auto" ref={sectionRef}>
         <SectionHeading title="Education" number="05" />
 
@@ -22,7 +21,7 @@ export default function Education() {
               initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : (prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 40 })}
               transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.2 + index * 0.15 }}
-              className="bg-surface-raised rounded-xl2 p-8 border border-border-subtle hover:border-accent/50 transition"
+              className="bg-white/[0.05] border-white/[0.08] hover:border-white/[0.16] backdrop-blur-sm rounded-xl2 p-8 border transition"
             >
               <span className="text-4xl" role="img" aria-label={item.institution}>
                 {item.icon}

@@ -3,6 +3,9 @@ import useReducedMotion from '../../hooks/useReducedMotion'
 
 export default function SectionHeading({ title, number, align = 'left', className = '' }) {
   const prefersReducedMotion = useReducedMotion()
+  const words = title.split(' ')
+  const lastWord = words.pop()
+  const leadingText = words.length > 0 ? `${words.join(' ')} ` : ''
 
   return (
     <motion.div
@@ -15,13 +18,14 @@ export default function SectionHeading({ title, number, align = 'left', classNam
       {number && (
         <span
           aria-hidden="true"
-          className="block font-mono text-xs uppercase tracking-[0.3em] text-warm-text mb-3"
+          className="block font-mono text-xs uppercase tracking-[0.3em] text-text-muted mb-3"
         >
           {number}
         </span>
       )}
       <h2 className="relative text-4xl font-display font-bold text-text-primary mb-4">
-        {title}
+        {leadingText}
+        <span className="bg-brand-gradient bg-clip-text text-transparent">{lastWord}</span>
       </h2>
       <div
         className={`relative w-20 h-1 rounded-full bg-accent ${

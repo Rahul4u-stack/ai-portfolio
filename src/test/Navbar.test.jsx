@@ -144,7 +144,7 @@ describe('Navbar scroll-progress bar', () => {
 
   it('renders at 0% width before any scrolling has happened', () => {
     const { container } = renderNavbarWithSections()
-    const progressBar = container.querySelector('.fixed.top-0.left-0.h-\\[2px\\]')
+    const progressBar = container.querySelector('.fixed.top-0.left-0.h-\\[3px\\]')
     expect(progressBar).toBeInTheDocument()
     expect(progressBar).toHaveStyle({ width: '0%' })
   })
@@ -168,7 +168,7 @@ describe('Navbar scroll-progress bar', () => {
       window.dispatchEvent(new Event('scroll'))
     })
 
-    const progressBar = container.querySelector('.fixed.top-0.left-0.h-\\[2px\\]')
+    const progressBar = container.querySelector('.fixed.top-0.left-0.h-\\[3px\\]')
     expect(progressBar).toHaveStyle({ width: '50%' })
   })
 })

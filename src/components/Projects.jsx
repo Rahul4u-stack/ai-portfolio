@@ -71,7 +71,7 @@ function FeaturedProjectCard({ project, cardVariants }) {
   return (
     <motion.div
       variants={cardVariants}
-      className="md:col-span-2 lg:col-span-2 lg:row-span-2 border border-warm-200 hover:border-accent transition-colors duration-300 hover:-translate-y-1 bg-surface-raised rounded-xl2 overflow-hidden flex flex-col md:flex-row lg:flex-col h-full"
+      className="md:col-span-2 lg:col-span-2 lg:row-span-2 border border-white/[0.08] hover:border-white/[0.16] transition-colors duration-300 hover:-translate-y-1 bg-white/[0.05] backdrop-blur-sm rounded-xl2 overflow-hidden flex flex-col md:flex-row lg:flex-col h-full"
     >
       <div className="md:w-2/5 lg:w-full p-6 flex flex-col lg:flex-1">
         {project.embedUrl ? (
@@ -95,13 +95,13 @@ function FeaturedProjectCard({ project, cardVariants }) {
             />
           </div>
         ) : (
-          <div className="h-40 md:h-full lg:h-auto lg:flex-1 flex items-center justify-center bg-paper-raised rounded-lg">
+          <div className="h-40 md:h-full lg:h-auto lg:flex-1 flex items-center justify-center bg-white/[0.05] rounded-lg">
             <span className="text-5xl lg:text-8xl" role="img" aria-label={project.title}>
               {project.icon}
             </span>
           </div>
         )}
-        <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-warm-text mt-3">
+        <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-text-muted mt-3">
           {project.title} — {project.tech[0]}
         </p>
       </div>
@@ -141,7 +141,7 @@ function CompactProjectRow({ project, cardVariants }) {
   return (
     <motion.div
       variants={cardVariants}
-      className="border border-warm-200 hover:border-accent transition-colors duration-300 bg-surface-raised rounded-xl2 p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6"
+      className="border border-white/[0.08] hover:border-white/[0.16] transition-colors duration-300 bg-white/[0.05] backdrop-blur-sm rounded-xl2 p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6"
     >
       {project.image ? (
         <img
@@ -177,7 +177,6 @@ export default function Projects() {
 
   return (
     <section id="projects" className="relative py-20 px-6 bg-surface-raised">
-      <div className="absolute inset-x-0 top-0 h-24 -translate-y-full bg-fade-to-raised pointer-events-none" />
       <div className="max-w-6xl mx-auto">
         <SectionHeading title="Projects" number="03" />
 

@@ -44,11 +44,6 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-surface">
-      {/* Soft warm wash — restraint over glow, per editorial direction */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-warm-200/40 rounded-full blur-[120px]" />
-      </div>
-
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -74,7 +69,7 @@ export default function Hero() {
         {/* Static role headline */}
         <motion.p
           variants={itemVariants}
-          className="text-2xl md:text-3xl mb-6 text-accent font-display font-semibold"
+          className="text-2xl md:text-3xl mb-6 text-accent-text font-display font-semibold"
         >
           Product Manager &amp; AI Builder
         </motion.p>
@@ -95,7 +90,7 @@ export default function Hero() {
           <a
             href="#projects"
             onClick={(e) => handleScroll(e, '#projects')}
-            className="px-8 py-3 bg-accent-hover hover:bg-accent text-paper font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-card-lift w-full sm:w-auto text-center"
+            className="px-8 py-3 bg-accent-hover hover:brightness-110 text-white font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-card-lift w-full sm:w-auto text-center"
           >
             View Projects
           </a>

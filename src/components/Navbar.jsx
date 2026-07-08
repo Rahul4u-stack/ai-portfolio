@@ -79,7 +79,7 @@ export default function Navbar() {
   return (
     <>
       <div
-        className="fixed top-0 left-0 h-[2px] bg-accent-text z-[60]"
+        className="fixed top-0 left-0 h-[3px] bg-brand-gradient z-[60]"
         style={{ width: `${progress * 100}%` }}
       />
       <motion.nav
@@ -88,7 +88,7 @@ export default function Navbar() {
         transition={{ duration: prefersReducedMotion ? 0 : 0.5, ease: 'easeOut' }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-paper shadow-card border-b border-border-subtle'
+            ? 'bg-surface/80 backdrop-blur-md border-b border-white/[0.05]'
             : 'bg-transparent'
         }`}
       >
@@ -106,13 +106,16 @@ export default function Navbar() {
                 }
                 window.scrollTo({ top: 0, behavior: 'smooth' })
               }}
-              className="font-display text-2xl font-bold text-accent hover:text-accent-hover transition-colors"
+              className="flex items-center gap-2"
             >
-              RA
+              <span aria-hidden="true" className="w-8 h-8 rounded-lg bg-brand-gradient shrink-0" />
+              <span className="font-display text-2xl font-bold text-text-primary">
+                R<span className="bg-brand-gradient bg-clip-text text-transparent">A</span>
+              </span>
             </a>
 
             {/* Desktop Nav Links */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center gap-1 rounded-full bg-white/[0.05] backdrop-blur-md border border-white/[0.08] px-2 py-1.5">
               {navLinks.map((link) => {
                 const isActive = activeSection === link.href.slice(1)
                 return (
@@ -121,16 +124,13 @@ export default function Navbar() {
                     href={link.href}
                     onClick={(e) => handleLinkClick(e, link.href)}
                     aria-current={isActive ? 'page' : undefined}
-                    className={`transition-colors text-sm font-medium relative group ${
-                      isActive ? 'text-accent-text' : 'text-text-muted hover:text-text-primary'
+                    className={`transition-colors text-sm font-medium px-4 py-2 rounded-full ${
+                      isActive
+                        ? 'bg-[#4f46e5] text-white'
+                        : 'text-text-muted hover:text-text-primary'
                     }`}
                   >
                     {link.label}
-                    <span
-                      className={`absolute -bottom-1 left-0 h-0.5 bg-accent transition-all duration-300 ${
-                        isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                      }`}
-                    />
                   </a>
                 )
               })}
@@ -167,7 +167,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
-            className="fixed inset-0 z-40 bg-paper flex items-center justify-center"
+            className="fixed inset-0 z-40 bg-surface/95 backdrop-blur-xl flex items-center justify-center"
           >
             <motion.div
               initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}

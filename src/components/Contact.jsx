@@ -53,7 +53,7 @@ export default function Contact() {
   };
 
   const inputClasses =
-    'bg-surface-elevated border border-border-subtle rounded-lg px-4 py-3 text-text-primary focus:border-accent focus:outline-none transition w-full placeholder:text-text-muted';
+    'bg-surface-elevated border border-border-subtle rounded-lg px-4 py-3 text-text-primary focus:border-accent focus:ring-2 focus:ring-accent/40 focus:outline-none transition w-full placeholder:text-text-muted';
 
   return (
     <section id="contact" className="py-20 px-6 bg-surface">
@@ -131,7 +131,7 @@ export default function Contact() {
           <div>
             <button
               type="submit"
-              className="bg-accent-hover hover:bg-accent text-paper font-medium py-3 px-8 rounded-lg transition"
+              className="bg-accent-hover hover:brightness-110 text-white font-medium py-3 px-8 rounded-lg transition"
             >
               {submitted ? 'Opening email client...' : 'Send Message'}
             </button>
@@ -139,7 +139,7 @@ export default function Contact() {
         </motion.form>
 
         {/* Divider */}
-        <div className="h-px bg-fade-from-raised my-12" />
+        <div className="h-px bg-white/[0.08] my-12" />
 
         {/* Contact Links */}
         <motion.div

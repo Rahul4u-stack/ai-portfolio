@@ -82,7 +82,6 @@ export default function About() {
 
   return (
     <section id="about" className="relative py-20 px-6 bg-surface-raised">
-      <div className="absolute inset-x-0 top-0 h-24 -translate-y-full bg-fade-to-raised pointer-events-none" />
       <div className="max-w-7xl mx-auto">
         <SectionHeading title="About Me" number="01" align="center" />
 
@@ -97,7 +96,7 @@ export default function About() {
           {/* Left: Profile Photo */}
           <motion.div variants={itemVariants} className="flex justify-center">
             <figure className="relative">
-              <div className="rounded-2xl overflow-hidden border border-warm-200 shadow-card-lift group">
+              <div className="rounded-2xl overflow-hidden border border-white/[0.08] shadow-card-lift group">
                 <img
                   src={heroPhoto}
                   alt="Rahul Agarwal, Technical Product Manager"
@@ -107,7 +106,7 @@ export default function About() {
                   className="w-72 h-72 md:w-80 md:h-80 object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
-              <figcaption className="mt-4 text-center font-mono text-xs uppercase tracking-[0.2em] text-warm-text">
+              <figcaption className="mt-4 text-center font-mono text-xs uppercase tracking-[0.2em] text-text-muted">
                 Rahul Agarwal — Jaipur, India
               </figcaption>
             </figure>
@@ -164,9 +163,9 @@ export default function About() {
                 initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
                 animate={statsInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : index * 0.12 }}
-                className="bg-surface-raised rounded-xl2 p-6 text-center border border-border-subtle hover:border-accent/30 transition-colors duration-300"
+                className="bg-white/[0.05] border-white/[0.08] hover:border-white/[0.16] backdrop-blur-sm rounded-xl2 p-6 text-center border transition-colors duration-300"
               >
-                <div className="text-3xl font-bold text-accent mb-2">
+                <div className="text-3xl font-bold text-accent-text mb-2">
                   <AnimatedCounter
                     value={stat.value}
                     suffix={stat.suffix}

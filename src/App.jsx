@@ -9,6 +9,8 @@ import Skills from './components/Skills'
 import Education from './components/Education'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
+import Atmosphere from './components/ui/Atmosphere'
+import BackToTop from './components/ui/BackToTop'
 
 const CaseStudyPage = lazy(() => import('./components/CaseStudyPage'))
 
@@ -30,6 +32,7 @@ function HomePage() {
 export default function App() {
   return (
     <div className="relative z-[2] min-h-screen bg-surface">
+      <Atmosphere />
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -42,6 +45,7 @@ export default function App() {
           }
         />
       </Routes>
+      <BackToTop />
     </div>
   )
 }
