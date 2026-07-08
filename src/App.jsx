@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import Hero from './components/Hero'
+import HomeIntro from './components/HomeIntro'
 import About from './components/About'
 import Experience from './components/Experience'
 import Projects from './components/Projects'
@@ -17,7 +17,7 @@ const CaseStudyPage = lazy(() => import('./components/CaseStudyPage'))
 function HomePage() {
   return (
     <>
-      <Hero />
+      <HomeIntro />
       <About />
       <Experience />
       <Projects />

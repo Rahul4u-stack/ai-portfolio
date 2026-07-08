@@ -38,27 +38,63 @@ export function resetIntersectionObserverMock() {
   MockIntersectionObserver.instances = []
 }
 
-const mediaQueryState = { prefersReducedMotion: false }
-const mediaQueryListeners = new Set()
+const mediaQueryState = {
+  prefersReducedMotion: false,
+  isMobile: false,
+  isCoarsePointer: false,
+}
+const mediaQueryListeners = new Map()
+
+function matchesForQuery(query) {
+  if (query.includes('prefers-reduced-motion')) return mediaQueryState.prefersReducedMotion
+  if (query.includes('max-width')) return mediaQueryState.isMobile
+  if (query.includes('pointer: coarse') || query.includes('pointer:coarse')) {
+    return mediaQueryState.isCoarsePointer
+  }
+  return false
+}
+
+function listenersFor(query) {
+  if (!mediaQueryListeners.has(query)) {
+    mediaQueryListeners.set(query, new Set())
+  }
+  return mediaQueryListeners.get(query)
+}
 
 export function installMatchMediaMock() {
   window.matchMedia = (query) => ({
     get matches() {
-      return query.includes('prefers-reduced-motion')
-        ? mediaQueryState.prefersReducedMotion
-        : false
+      return matchesForQuery(query)
     },
     media: query,
     onchange: null,
-    addListener: (cb) => mediaQueryListeners.add(cb),
-    removeListener: (cb) => mediaQueryListeners.delete(cb),
-    addEventListener: (_event, cb) => mediaQueryListeners.add(cb),
-    removeEventListener: (_event, cb) => mediaQueryListeners.delete(cb),
+    addListener: (cb) => listenersFor(query).add(cb),
+    removeListener: (cb) => listenersFor(query).delete(cb),
+    addEventListener: (_event, cb) => listenersFor(query).add(cb),
+    removeEventListener: (_event, cb) => listenersFor(query).delete(cb),
     dispatchEvent: () => false,
+  })
+}
+
+function notifyMatching(predicate) {
+  mediaQueryListeners.forEach((listeners, query) => {
+    if (!predicate(query)) return
+    const matches = matchesForQuery(query)
+    listeners.forEach((cb) => cb({ matches }))
   })
 }
 
 export function setPrefersReducedMotion(value) {
   mediaQueryState.prefersReducedMotion = value
-  mediaQueryListeners.forEach((cb) => cb({ matches: value }))
+  notifyMatching((query) => query.includes('prefers-reduced-motion'))
+}
+
+export function setViewportMobile(value) {
+  mediaQueryState.isMobile = value
+  notifyMatching((query) => query.includes('max-width'))
+}
+
+export function setCoarsePointer(value) {
+  mediaQueryState.isCoarsePointer = value
+  notifyMatching((query) => query.includes('pointer: coarse') || query.includes('pointer:coarse'))
 }
