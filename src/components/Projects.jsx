@@ -71,9 +71,9 @@ function FeaturedProjectCard({ project, cardVariants }) {
   return (
     <motion.div
       variants={cardVariants}
-      className="md:col-span-2 lg:col-span-2 lg:row-span-2 border border-white/[0.08] hover:border-white/[0.16] transition-colors duration-300 hover:-translate-y-1 bg-white/[0.05] backdrop-blur-sm rounded-xl2 overflow-hidden flex flex-col md:flex-row lg:flex-col h-full"
+      className="border border-white/[0.08] hover:border-white/[0.16] transition-colors duration-300 hover:-translate-y-1 bg-white/[0.05] backdrop-blur-sm rounded-xl2 overflow-hidden flex flex-col h-full"
     >
-      <div className="md:w-2/5 lg:w-full p-6 flex flex-col lg:flex-1">
+      <div className="p-5 pb-0 flex flex-col">
         {project.embedUrl ? (
           <GameEmbed
             embedUrl={project.embedUrl}
@@ -87,16 +87,16 @@ function FeaturedProjectCard({ project, cardVariants }) {
             title={project.title}
           />
         ) : project.image ? (
-          <div className="relative overflow-hidden rounded-lg group">
+          <div className="relative w-full aspect-video overflow-hidden rounded-lg group">
             <img
               src={project.image}
               alt=""
-              className="w-full h-40 md:h-full lg:h-auto lg:flex-1 object-cover transition-transform duration-500 group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           </div>
         ) : (
-          <div className="h-40 md:h-full lg:h-auto lg:flex-1 flex items-center justify-center bg-white/[0.05] rounded-lg">
-            <span className="text-5xl lg:text-8xl" role="img" aria-label={project.title}>
+          <div className="w-full aspect-video flex items-center justify-center bg-white/[0.05] rounded-lg">
+            <span className="text-5xl" role="img" aria-label={project.title}>
               {project.icon}
             </span>
           </div>
@@ -106,7 +106,7 @@ function FeaturedProjectCard({ project, cardVariants }) {
         </p>
       </div>
 
-      <div className="p-6 flex flex-col flex-1 lg:flex-none">
+      <div className="p-5 pt-4 flex flex-col flex-1">
         <span className="inline-block bg-accent/10 text-accent-text text-xs px-3 py-1 rounded-full mb-3 self-start font-medium">
           Featured
         </span>
@@ -186,7 +186,7 @@ export default function Projects() {
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-2 lg:auto-rows-[minmax(280px,auto)] gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           {featuredProjects.map((project) => (
             <FeaturedProjectCard
