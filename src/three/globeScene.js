@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { ARCS, DIVE_TARGET_NODE, getNodeByName, latLonToVec3, GLOBE_RADIUS } from './nodes'
+import { ARCS, NODES, DIVE_TARGET_NODE, getNodeByName, latLonToVec3, GLOBE_RADIUS } from './nodes'
 import { updateAtProgress } from './timeline'
 // Natural Earth land polygons (public domain, via world-atlas) are drawn onto
 // an offscreen equirectangular canvas at scene build and wrapped on the sphere
@@ -38,9 +38,31 @@ function createEarthTexture() {
   canvas.height = H
   const ctx = canvas.getContext('2d')
 
-  // Ocean: slightly lifted from the page background so the sphere reads
-  ctx.fillStyle = '#0d0d16'
+  // Ocean: near-black with a whisper of violet depth toward the equator
+  const ocean = ctx.createLinearGradient(0, 0, 0, H)
+  ocean.addColorStop(0, '#0b0b13')
+  ocean.addColorStop(0.5, '#100f1c')
+  ocean.addColorStop(1, '#0b0b13')
+  ctx.fillStyle = ocean
   ctx.fillRect(0, 0, W, H)
+
+  // Graticule: faint cartographic lat/lon grid every 15 degrees
+  ctx.strokeStyle = 'rgba(255,255,255,0.035)'
+  ctx.lineWidth = 1
+  for (let lon = -180; lon <= 180; lon += 15) {
+    const x = ((lon + 180) / 360) * W
+    ctx.beginPath()
+    ctx.moveTo(x, 0)
+    ctx.lineTo(x, H)
+    ctx.stroke()
+  }
+  for (let lat = -75; lat <= 75; lat += 15) {
+    const y = ((90 - lat) / 180) * H
+    ctx.beginPath()
+    ctx.moveTo(0, y)
+    ctx.lineTo(W, y)
+    ctx.stroke()
+  }
 
   const land = feature(landTopo, landTopo.objects.land)
   const geometries = land.features ? land.features.map((f) => f.geometry) : [land.geometry]
@@ -48,9 +70,25 @@ function createEarthTexture() {
     g.type === 'MultiPolygon' ? g.coordinates : [g.coordinates]
   )
 
-  ctx.fillStyle = '#1f1f36'
-  ctx.strokeStyle = 'rgba(129,140,248,0.45)'
-  ctx.lineWidth = 1.6
+  // Land fill: the site's brand gradient wrapped around the globe, desaturated
+  // and darkened so it reads as tint, not paint
+  const landFill = ctx.createLinearGradient(0, 0, W, 0)
+  landFill.addColorStop(0, '#232043')   // indigo-tinted (Americas)
+  landFill.addColorStop(0.42, '#2c1e38') // pink-tinted (Europe/Africa)
+  landFill.addColorStop(0.78, '#1d2740') // sky-tinted (Asia)
+  landFill.addColorStop(1, '#232043')
+  // Coastlines: same gradient, luminous
+  const coast = ctx.createLinearGradient(0, 0, W, 0)
+  coast.addColorStop(0, 'rgba(129,140,248,0.75)')  // indigo-400
+  coast.addColorStop(0.42, 'rgba(244,114,182,0.65)') // pink-400
+  coast.addColorStop(0.78, 'rgba(56,189,248,0.7)')  // sky-400
+  coast.addColorStop(1, 'rgba(129,140,248,0.75)')
+
+  ctx.fillStyle = landFill
+  ctx.strokeStyle = coast
+  ctx.lineWidth = 1.8
+  ctx.shadowColor = 'rgba(129,140,248,0.35)'
+  ctx.shadowBlur = 6
   for (const poly of polygons) {
     ctx.beginPath()
     for (const ring of poly) {
@@ -65,6 +103,7 @@ function createEarthTexture() {
     ctx.fill('evenodd')
     ctx.stroke()
   }
+  ctx.shadowBlur = 0
 
   const texture = new THREE.CanvasTexture(canvas)
   // Canvas pixels are sRGB; without declaring it, three treats them as linear
@@ -152,6 +191,25 @@ export function buildScene(canvas) {
     return sprite
   })
 
+  // Hub city markers: a small glow anchored at every payment-hub node
+  const hubSprites = NODES.map((node, i) => {
+    const pos = latLonToVec3(node.lat, node.lon, GLOBE_RADIUS * 1.002)
+    const material = new THREE.SpriteMaterial({
+      map: pulseTexture,
+      color: new THREE.Color(BRAND_COLORS[i % 3]),
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      opacity: 0.9,
+      depthWrite: false,
+    })
+    const sprite = new THREE.Sprite(material)
+    sprite.position.set(pos.x, pos.y, pos.z)
+    sprite.scale.set(0.09, 0.09, 1)
+    sprite.renderOrder = 4
+    globeGroup.add(sprite)
+    return sprite
+  })
+
   const mumbai = getNodeByName(DIVE_TARGET_NODE)
   const mumbaiPos = latLonToVec3(mumbai.lat, mumbai.lon, GLOBE_RADIUS)
   const bloomMaterial = new THREE.SpriteMaterial({
@@ -167,6 +225,21 @@ export function buildScene(canvas) {
   bloomSprite.scale.set(0.1, 0.1, 1)
   bloomSprite.renderOrder = 10
   globeGroup.add(bloomSprite)
+
+  // Halo: soft backlight behind the sphere for depth (does not rotate)
+  const haloMaterial = new THREE.SpriteMaterial({
+    map: pulseTexture,
+    color: new THREE.Color(0x4f46e5),
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    opacity: 0.16,
+    depthWrite: false,
+  })
+  const halo = new THREE.Sprite(haloMaterial)
+  halo.position.set(0, 0, -0.4)
+  halo.scale.set(GLOBE_RADIUS * 3.4, GLOBE_RADIUS * 3.4, 1)
+  halo.renderOrder = -1
+  scene.add(halo)
 
   scene.add(globeGroup)
 
@@ -201,6 +274,8 @@ export function buildScene(canvas) {
   }
 
   function dispose() {
+    hubSprites.forEach((sprite) => sprite.material.dispose())
+    haloMaterial.dispose()
     earth.geometry.dispose()
     earth.material.map.dispose()
     earth.material.dispose()
