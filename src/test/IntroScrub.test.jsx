@@ -25,9 +25,27 @@ describe('IntroScrub', () => {
     expect(screen.getByLabelText('Intro')).toBeInTheDocument()
   })
 
-  it('hides the canvas from assistive tech', () => {
+  it('hides the scrub medium (video or canvas) from assistive tech', () => {
     const { container } = renderIntroScrub()
-    expect(container.querySelector('canvas')).toHaveAttribute('aria-hidden', 'true')
+    const video = container.querySelector('video')
+    const canvas = container.querySelector('canvas')
+    const medium = video || canvas
+    expect(medium).not.toBeNull()
+    // the medium itself or its wrapper must be aria-hidden
+    expect(
+      medium.getAttribute('aria-hidden') === 'true' ||
+        medium.closest('[aria-hidden="true"]') !== null
+    ).toBe(true)
+  })
+
+  it('scrub video is muted, inline, and preloaded for scrubbing', () => {
+    const { container } = renderIntroScrub()
+    const video = container.querySelector('video')
+    expect(video).not.toBeNull()
+    expect(video.muted).toBe(true)
+    expect(video).toHaveAttribute('playsinline')
+    expect(video).toHaveAttribute('preload', 'auto')
+    expect(video.getAttribute('src')).toMatch(/intro-scrub\.mp4$/)
   })
 
   it('renders the real HeroContent name, CTA, and socials', () => {
