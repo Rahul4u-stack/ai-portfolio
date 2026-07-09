@@ -44,7 +44,7 @@ export default function IntroScrub() {
               inside the overlay so it fades out with the text. */}
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-[radial-gradient(ellipse_60%_55%_at_center,rgba(10,10,15,0.72)_0%,rgba(10,10,15,0.3)_55%,transparent_78%)]"
+            className="absolute inset-0 bg-[radial-gradient(ellipse_65%_62%_at_center,rgba(10,10,15,0.82)_0%,rgba(10,10,15,0.45)_55%,transparent_85%)]"
           />
           <HeroContent />
         </div>

@@ -53,7 +53,7 @@ export default function HeroContent() {
         {/* Greeting */}
         <motion.p
           variants={itemVariants}
-          className="text-xs font-mono uppercase tracking-[0.2em] text-accent-text mb-4"
+          className="text-xs font-mono uppercase tracking-[0.2em] text-accent-text mb-4 [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]"
         >
           Hello, I'm
         </motion.p>
@@ -61,7 +61,7 @@ export default function HeroContent() {
         {/* Name */}
         <motion.h1
           variants={itemVariants}
-          className="text-6xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight text-text-primary mb-6"
+          className="text-6xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight text-text-primary mb-6 [text-shadow:0_2px_6px_rgba(0,0,0,0.85),0_10px_36px_rgba(0,0,0,0.75)]"
         >
           Rahul Agarwal
         </motion.h1>
@@ -69,7 +69,7 @@ export default function HeroContent() {
         {/* Static role headline */}
         <motion.p
           variants={itemVariants}
-          className="text-2xl md:text-3xl mb-6 text-accent-text font-display font-semibold"
+          className="text-2xl md:text-3xl mb-6 text-accent-text font-display font-semibold [text-shadow:0_2px_5px_rgba(0,0,0,0.85),0_8px_28px_rgba(0,0,0,0.7)]"
         >
           Product Manager &amp; AI Builder
         </motion.p>
@@ -77,7 +77,7 @@ export default function HeroContent() {
         {/* One-liner */}
         <motion.p
           variants={itemVariants}
-          className="text-text-muted text-lg md:text-xl mb-10 max-w-2xl mx-auto"
+          className="text-text-secondary text-lg md:text-xl mb-10 max-w-2xl mx-auto [text-shadow:0_1px_4px_rgba(0,0,0,0.9),0_6px_20px_rgba(0,0,0,0.7)]"
         >
           Building the future of payments with AI
         </motion.p>
@@ -90,7 +90,7 @@ export default function HeroContent() {
           <a
             href="#projects"
             onClick={(e) => handleScroll(e, '#projects')}
-            className="px-8 py-3 bg-accent-hover hover:brightness-110 text-white font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-card-lift w-full sm:w-auto text-center"
+            className="px-8 py-3 bg-accent-hover hover:brightness-110 text-white font-medium rounded-lg transition-all duration-300 shadow-lg shadow-black/50 hover:shadow-card-lift w-full sm:w-auto text-center"
           >
             View Projects
           </a>
@@ -98,7 +98,7 @@ export default function HeroContent() {
             href="/resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-3 border border-accent text-accent-text hover:bg-accent/10 font-medium rounded-lg transition-all duration-300 w-full sm:w-auto text-center"
+            className="px-8 py-3 border border-accent text-accent-text bg-surface/60 backdrop-blur-sm hover:bg-accent/15 font-medium rounded-lg transition-all duration-300 shadow-lg shadow-black/40 w-full sm:w-auto text-center"
           >
             Download Resume
           </a>
@@ -118,7 +118,7 @@ export default function HeroContent() {
                 href={link.href}
                 target={isMail ? undefined : '_blank'}
                 rel={isMail ? undefined : 'noopener noreferrer'}
-                className="text-text-muted hover:text-accent-text transition-colors duration-300"
+                className="text-text-secondary hover:text-accent-text transition-colors duration-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
                 aria-label={link.label}
               >
                 <Icon size={24} />
