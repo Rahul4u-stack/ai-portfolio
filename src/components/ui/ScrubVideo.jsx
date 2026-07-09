@@ -6,7 +6,7 @@ const LERP_FACTOR = 0.08
 // bright final video frame hands off seamlessly into <About/>.
 const HANDOFF_FADE_START = 0.9
 
-export default function ScrubVideo({ src, progressRef, overlayRef, runwayRef }) {
+export default function ScrubVideo({ src, posterSrc, progressRef, overlayRef, runwayRef }) {
   const videoRef = useRef(null)
   const fadeRef = useRef(null)
 
@@ -17,6 +17,7 @@ export default function ScrubVideo({ src, progressRef, overlayRef, runwayRef }) 
     let inView = true
     let observer = null
     let duration = 0
+    let fetchStarted = false
 
     const video = videoRef.current
     if (!video) return undefined
@@ -28,6 +29,22 @@ export default function ScrubVideo({ src, progressRef, overlayRef, runwayRef }) 
     function handleMeta() {
       duration = video.duration || 0
     }
+
+    // The video is ~10MB — fetching it during page load wrecks Speed Index
+    // for zero user benefit (the poster shows the identical first frame).
+    // Fetch on the visitor's first interaction instead: they always scroll
+    // or move the mouse well before reaching scrubbing depth.
+    const interactionEvents = ['scroll', 'mousemove', 'touchstart', 'keydown']
+    function startFetch() {
+      if (fetchStarted) return
+      fetchStarted = true
+      interactionEvents.forEach((ev) => window.removeEventListener(ev, startFetch))
+      video.preload = 'auto'
+      video.load()
+    }
+    interactionEvents.forEach((ev) =>
+      window.addEventListener(ev, startFetch, { passive: true, once: false })
+    )
 
     function tick() {
       rafId = requestAnimationFrame(tick)
@@ -74,6 +91,7 @@ export default function ScrubVideo({ src, progressRef, overlayRef, runwayRef }) 
       if (rafId) cancelAnimationFrame(rafId)
       video.removeEventListener('loadedmetadata', handleMeta)
       document.removeEventListener('visibilitychange', handleVisibility)
+      interactionEvents.forEach((ev) => window.removeEventListener(ev, startFetch))
       if (observer) observer.disconnect()
     }
   }, [progressRef, overlayRef, runwayRef])
@@ -83,9 +101,10 @@ export default function ScrubVideo({ src, progressRef, overlayRef, runwayRef }) 
       <video
         ref={videoRef}
         src={src}
+        poster={posterSrc}
         muted
         playsInline
-        preload="auto"
+        preload="none"
         disablePictureInPicture
         className="absolute inset-0 h-full w-full object-cover"
       />

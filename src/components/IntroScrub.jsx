@@ -8,6 +8,7 @@ import ScrubVideo from './ui/ScrubVideo'
 // or 'globe' (the WebGL transaction-network globe). One-line swap.
 const INTRO_MEDIA = 'video'
 const INTRO_VIDEO_SRC = '/video/intro-scrub.mp4'
+const INTRO_VIDEO_POSTER = '/video/intro-scrub-poster.webp'
 
 export default function IntroScrub() {
   const runwayRef = useRef(null)
@@ -29,6 +30,7 @@ export default function IntroScrub() {
         {INTRO_MEDIA === 'video' ? (
           <ScrubVideo
             src={INTRO_VIDEO_SRC}
+            posterSrc={INTRO_VIDEO_POSTER}
             progressRef={progressRef}
             overlayRef={overlayRef}
             runwayRef={runwayRef}

@@ -38,13 +38,16 @@ describe('IntroScrub', () => {
     ).toBe(true)
   })
 
-  it('scrub video is muted, inline, and preloaded for scrubbing', () => {
+  it('scrub video is muted, inline, poster-backed, and lazy (preload none)', () => {
     const { container } = renderIntroScrub()
     const video = container.querySelector('video')
     expect(video).not.toBeNull()
     expect(video.muted).toBe(true)
     expect(video).toHaveAttribute('playsinline')
-    expect(video).toHaveAttribute('preload', 'auto')
+    // 10MB video must NOT download during page load (Speed Index); it is
+    // fetched on first user interaction while the poster shows frame one.
+    expect(video).toHaveAttribute('preload', 'none')
+    expect(video.getAttribute('poster')).toMatch(/intro-scrub-poster\.webp$/)
     expect(video.getAttribute('src')).toMatch(/intro-scrub\.mp4$/)
   })
 
