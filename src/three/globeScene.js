@@ -1,9 +1,13 @@
 import * as THREE from 'three'
 import { ARCS, DIVE_TARGET_NODE, getNodeByName, latLonToVec3, GLOBE_RADIUS } from './nodes'
 import { updateAtProgress } from './timeline'
+// Precomputed at build time from Natural Earth land polygons (public domain)
+// by scripts/generate-land-points.mjs — dots sit on landmasses only, so the
+// sphere reads as Earth and the Mumbai dive visibly lands on India.
+import landPoints from './landPoints.json'
 
 const ATMOSPHERE_RADIUS = 2.65
-const POINT_COUNT = 2000
+const OCEAN_POINT_COUNT = 900
 const BRAND_COLORS = [0x6366f1, 0xec4899, 0x38bdf8]
 
 function createPulseTexture() {
@@ -21,22 +25,19 @@ function createPulseTexture() {
   return new THREE.CanvasTexture(canvas)
 }
 
-function buildPointsSphere() {
-  const positions = new Float32Array(POINT_COUNT * 3)
-  const colors = new Float32Array(POINT_COUNT * 3)
+// Continents: one dot per precomputed land coordinate, brand-tinted.
+function buildLandPoints() {
+  const count = landPoints.length
+  const positions = new Float32Array(count * 3)
+  const colors = new Float32Array(count * 3)
   const color = new THREE.Color()
-  const goldenAngle = Math.PI * (3 - Math.sqrt(5))
 
-  for (let i = 0; i < POINT_COUNT; i += 1) {
-    const y = 1 - (i / (POINT_COUNT - 1)) * 2
-    const radiusAtY = Math.sqrt(Math.max(0, 1 - y * y))
-    const theta = goldenAngle * i
-    const x = Math.cos(theta) * radiusAtY
-    const z = Math.sin(theta) * radiusAtY
-
-    positions[i * 3] = x * GLOBE_RADIUS
-    positions[i * 3 + 1] = y * GLOBE_RADIUS
-    positions[i * 3 + 2] = z * GLOBE_RADIUS
+  for (let i = 0; i < count; i += 1) {
+    const [lat, lon] = landPoints[i]
+    const p = latLonToVec3(lat, lon, GLOBE_RADIUS)
+    positions[i * 3] = p.x
+    positions[i * 3 + 1] = p.y
+    positions[i * 3 + 2] = p.z
 
     color.set(BRAND_COLORS[i % 3])
     colors[i * 3] = color.r
@@ -49,10 +50,40 @@ function buildPointsSphere() {
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
 
   const material = new THREE.PointsMaterial({
-    size: 0.03,
+    size: 0.035,
     vertexColors: true,
     transparent: true,
-    opacity: 0.85,
+    opacity: 0.9,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  })
+
+  return new THREE.Points(geometry, material)
+}
+
+// Oceans: a sparse, very dim full-sphere layer so the planet keeps its
+// silhouette where there is no land facing the camera.
+function buildOceanPoints() {
+  const positions = new Float32Array(OCEAN_POINT_COUNT * 3)
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5))
+
+  for (let i = 0; i < OCEAN_POINT_COUNT; i += 1) {
+    const y = 1 - (i / (OCEAN_POINT_COUNT - 1)) * 2
+    const radiusAtY = Math.sqrt(Math.max(0, 1 - y * y))
+    const theta = goldenAngle * i
+    positions[i * 3] = Math.cos(theta) * radiusAtY * GLOBE_RADIUS
+    positions[i * 3 + 1] = y * GLOBE_RADIUS
+    positions[i * 3 + 2] = Math.sin(theta) * radiusAtY * GLOBE_RADIUS
+  }
+
+  const geometry = new THREE.BufferGeometry()
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+
+  const material = new THREE.PointsMaterial({
+    size: 0.02,
+    color: 0x6366f1,
+    transparent: true,
+    opacity: 0.18,
     blending: THREE.AdditiveBlending,
     depthWrite: false,
   })
@@ -96,9 +127,10 @@ export function buildScene(canvas) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5))
 
   const globeGroup = new THREE.Group()
-  const points = buildPointsSphere()
+  const landDots = buildLandPoints()
+  const oceanDots = buildOceanPoints()
   const atmosphere = buildAtmosphere()
-  globeGroup.add(points, atmosphere)
+  globeGroup.add(landDots, oceanDots, atmosphere)
 
   const pulseTexture = createPulseTexture()
 
@@ -181,8 +213,10 @@ export function buildScene(canvas) {
   }
 
   function dispose() {
-    points.geometry.dispose()
-    points.material.dispose()
+    landDots.geometry.dispose()
+    landDots.material.dispose()
+    oceanDots.geometry.dispose()
+    oceanDots.material.dispose()
     atmosphere.geometry.dispose()
     atmosphere.material.dispose()
     arcLines.forEach((line) => {
