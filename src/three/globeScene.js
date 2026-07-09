@@ -1,13 +1,14 @@
 import * as THREE from 'three'
 import { ARCS, DIVE_TARGET_NODE, getNodeByName, latLonToVec3, GLOBE_RADIUS } from './nodes'
 import { updateAtProgress } from './timeline'
-// Precomputed at build time from Natural Earth land polygons (public domain)
-// by scripts/generate-land-points.mjs — dots sit on landmasses only, so the
-// sphere reads as Earth and the Mumbai dive visibly lands on India.
-import landPoints from './landPoints.json'
+// Natural Earth land polygons (public domain, via world-atlas) are drawn onto
+// an offscreen equirectangular canvas at scene build and wrapped on the sphere
+// as a texture — real continent shapes, and the Mumbai dive visibly lands on
+// India. Bundled into this lazy chunk at build time; nothing is fetched.
+import { feature } from 'topojson-client'
+import landTopo from 'world-atlas/land-110m.json'
 
 const ATMOSPHERE_RADIUS = 2.65
-const OCEAN_POINT_COUNT = 900
 const BRAND_COLORS = [0x6366f1, 0xec4899, 0x38bdf8]
 
 function createPulseTexture() {
@@ -25,70 +26,58 @@ function createPulseTexture() {
   return new THREE.CanvasTexture(canvas)
 }
 
-// Continents: one dot per precomputed land coordinate, brand-tinted.
-function buildLandPoints() {
-  const count = landPoints.length
-  const positions = new Float32Array(count * 3)
-  const colors = new Float32Array(count * 3)
-  const color = new THREE.Color()
+// Draw the Natural Earth land polygons onto an equirectangular canvas.
+// x = (lon+180)/360, y = (90-lat)/180 — matches both latLonToVec3 and
+// three.js SphereGeometry UVs (CanvasTexture flipY puts canvas-top at the
+// north pole), so continents align with the arc/node coordinates exactly.
+function createEarthTexture() {
+  const W = 2048
+  const H = 1024
+  const canvas = document.createElement('canvas')
+  canvas.width = W
+  canvas.height = H
+  const ctx = canvas.getContext('2d')
 
-  for (let i = 0; i < count; i += 1) {
-    const [lat, lon] = landPoints[i]
-    const p = latLonToVec3(lat, lon, GLOBE_RADIUS)
-    positions[i * 3] = p.x
-    positions[i * 3 + 1] = p.y
-    positions[i * 3 + 2] = p.z
+  // Ocean: slightly lifted from the page background so the sphere reads
+  ctx.fillStyle = '#0d0d16'
+  ctx.fillRect(0, 0, W, H)
 
-    color.set(BRAND_COLORS[i % 3])
-    colors[i * 3] = color.r
-    colors[i * 3 + 1] = color.g
-    colors[i * 3 + 2] = color.b
+  const land = feature(landTopo, landTopo.objects.land)
+  const geometries = land.features ? land.features.map((f) => f.geometry) : [land.geometry]
+  const polygons = geometries.flatMap((g) =>
+    g.type === 'MultiPolygon' ? g.coordinates : [g.coordinates]
+  )
+
+  ctx.fillStyle = '#1f1f36'
+  ctx.strokeStyle = 'rgba(129,140,248,0.45)'
+  ctx.lineWidth = 1.6
+  for (const poly of polygons) {
+    ctx.beginPath()
+    for (const ring of poly) {
+      ring.forEach(([lon, lat], i) => {
+        const x = ((lon + 180) / 360) * W
+        const y = ((90 - lat) / 180) * H
+        if (i === 0) ctx.moveTo(x, y)
+        else ctx.lineTo(x, y)
+      })
+      ctx.closePath()
+    }
+    ctx.fill('evenodd')
+    ctx.stroke()
   }
 
-  const geometry = new THREE.BufferGeometry()
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
-
-  const material = new THREE.PointsMaterial({
-    size: 0.035,
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.9,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-  })
-
-  return new THREE.Points(geometry, material)
+  const texture = new THREE.CanvasTexture(canvas)
+  // Canvas pixels are sRGB; without declaring it, three treats them as linear
+  // and the dark land tones render several stops too bright.
+  texture.colorSpace = THREE.SRGBColorSpace
+  texture.anisotropy = 4
+  return texture
 }
 
-// Oceans: a sparse, very dim full-sphere layer so the planet keeps its
-// silhouette where there is no land facing the camera.
-function buildOceanPoints() {
-  const positions = new Float32Array(OCEAN_POINT_COUNT * 3)
-  const goldenAngle = Math.PI * (3 - Math.sqrt(5))
-
-  for (let i = 0; i < OCEAN_POINT_COUNT; i += 1) {
-    const y = 1 - (i / (OCEAN_POINT_COUNT - 1)) * 2
-    const radiusAtY = Math.sqrt(Math.max(0, 1 - y * y))
-    const theta = goldenAngle * i
-    positions[i * 3] = Math.cos(theta) * radiusAtY * GLOBE_RADIUS
-    positions[i * 3 + 1] = y * GLOBE_RADIUS
-    positions[i * 3 + 2] = Math.sin(theta) * radiusAtY * GLOBE_RADIUS
-  }
-
-  const geometry = new THREE.BufferGeometry()
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-
-  const material = new THREE.PointsMaterial({
-    size: 0.02,
-    color: 0x6366f1,
-    transparent: true,
-    opacity: 0.18,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-  })
-
-  return new THREE.Points(geometry, material)
+function buildEarthSphere() {
+  const geometry = new THREE.SphereGeometry(GLOBE_RADIUS, 96, 96)
+  const material = new THREE.MeshBasicMaterial({ map: createEarthTexture() })
+  return new THREE.Mesh(geometry, material)
 }
 
 function buildAtmosphere() {
@@ -127,10 +116,9 @@ export function buildScene(canvas) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5))
 
   const globeGroup = new THREE.Group()
-  const landDots = buildLandPoints()
-  const oceanDots = buildOceanPoints()
+  const earth = buildEarthSphere()
   const atmosphere = buildAtmosphere()
-  globeGroup.add(landDots, oceanDots, atmosphere)
+  globeGroup.add(earth, atmosphere)
 
   const pulseTexture = createPulseTexture()
 
@@ -213,10 +201,9 @@ export function buildScene(canvas) {
   }
 
   function dispose() {
-    landDots.geometry.dispose()
-    landDots.material.dispose()
-    oceanDots.geometry.dispose()
-    oceanDots.material.dispose()
+    earth.geometry.dispose()
+    earth.material.map.dispose()
+    earth.material.dispose()
     atmosphere.geometry.dispose()
     atmosphere.material.dispose()
     arcLines.forEach((line) => {
