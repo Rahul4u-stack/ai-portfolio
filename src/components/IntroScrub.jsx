@@ -10,6 +10,12 @@ const INTRO_MEDIA = 'video'
 const INTRO_VIDEO_SRC = '/video/intro-scrub.mp4'
 const INTRO_VIDEO_POSTER = '/video/intro-scrub-poster.webp'
 
+// Scrub speed: how many viewport-heights of scrolling the intro occupies.
+// Higher = slower, more deliberate scrub (more scroll distance per video
+// second); lower = snappier. The video's own duration doesn't matter — scroll
+// progress 0..1 always maps to the full clip.
+const RUNWAY_VH = 280
+
 export default function IntroScrub() {
   const runwayRef = useRef(null)
   const overlayRef = useRef(null)
@@ -25,7 +31,7 @@ export default function IntroScrub() {
   })
 
   return (
-    <div ref={runwayRef} aria-label="Intro" className="relative h-[280vh]">
+    <div ref={runwayRef} aria-label="Intro" className="relative" style={{ height: `${RUNWAY_VH}vh` }}>
       <div className="sticky top-0 h-screen overflow-hidden bg-surface">
         {INTRO_MEDIA === 'video' ? (
           <ScrubVideo
