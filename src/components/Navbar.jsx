@@ -106,11 +106,21 @@ export default function Navbar() {
                 }
                 window.scrollTo({ top: 0, behavior: 'smooth' })
               }}
-              className="flex items-center gap-2"
+              className="flex items-center gap-3"
             >
-              <span aria-hidden="true" className="w-8 h-8 rounded-lg bg-brand-gradient shrink-0" />
-              <span className="font-display text-2xl font-bold text-text-primary">
-                R<span className="bg-brand-gradient bg-clip-text text-transparent">A</span>
+              <span
+                aria-hidden="true"
+                className="w-10 h-10 rounded-xl bg-brand-gradient shrink-0 flex items-center justify-center font-display text-lg font-bold text-white"
+              >
+                RA
+              </span>
+              <span className="flex flex-col leading-tight">
+                <span className="font-display text-lg font-bold text-text-primary">
+                  Rahul Agarwal
+                </span>
+                <span className="font-mono text-[10px] font-medium uppercase tracking-[0.25em] text-accent-text">
+                  PM &amp; AI Builder
+                </span>
               </span>
             </a>
 

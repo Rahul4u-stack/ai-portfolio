@@ -104,7 +104,7 @@ describe('Navbar logo', () => {
     renderNavbarWithSections()
 
     const scrollToSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
-    await user.click(screen.getByRole('link', { name: 'RA' }))
+    await user.click(screen.getByRole('link', { name: /Rahul Agarwal/ }))
 
     expect(scrollToSpy).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' })
     scrollToSpy.mockRestore()
@@ -122,7 +122,7 @@ describe('Navbar logo', () => {
     )
 
     const scrollToSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
-    await user.click(screen.getByRole('link', { name: 'RA' }))
+    await user.click(screen.getByRole('link', { name: /Rahul Agarwal/ }))
 
     // Navigating away from the case-study route unmounts this Navbar and
     // mounts a fresh one at "/" — window.scrollTo should NOT have been used

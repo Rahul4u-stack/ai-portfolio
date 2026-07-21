@@ -2,7 +2,19 @@ export const skillCategories = [
   {
     title: 'AI & LLMs',
     icon: '🧠',
-    skills: ['Claude', 'ChatGPT', 'Gemini', 'Claude Code', 'Prompt Engineering', 'Vision APIs'],
+    skills: [
+      'Claude',
+      'ChatGPT',
+      'Gemini',
+      'Claude Code',
+      'Prompt Engineering',
+      'Vision APIs',
+      'RAG & Embeddings',
+      'Tool Use / Agents',
+      'Prompt Caching',
+      'Multi-Agent Workflows',
+      'Anthropic Memory Tool',
+    ],
   },
   {
     title: 'Product Management',

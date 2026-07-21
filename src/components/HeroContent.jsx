@@ -2,6 +2,8 @@ import { motion } from 'framer-motion'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { socialLinks } from '../data/social'
 import useReducedMotion from '../hooks/useReducedMotion'
+import AvailabilityBadge from './ui/AvailabilityBadge'
+import TypingAnimation from './ui/TypingAnimation'
 
 export default function HeroContent() {
   const prefersReducedMotion = useReducedMotion()
@@ -50,10 +52,15 @@ export default function HeroContent() {
         animate="visible"
         className="relative z-10 text-center px-4 max-w-4xl mx-auto"
       >
+        {/* Availability pill */}
+        <motion.div variants={itemVariants} className="mb-3">
+          <AvailabilityBadge />
+        </motion.div>
+
         {/* Greeting */}
         <motion.p
           variants={itemVariants}
-          className="text-xs font-mono uppercase tracking-[0.2em] text-accent-text mb-4 [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]"
+          className="text-sm font-mono font-bold uppercase tracking-[0.2em] text-accent-text mb-4 [text-shadow:0_1px_3px_rgba(0,0,0,0.95),0_2px_12px_rgba(0,0,0,0.9)]"
         >
           Hello, I'm
         </motion.p>
@@ -66,13 +73,13 @@ export default function HeroContent() {
           Rahul Agarwal
         </motion.h1>
 
-        {/* Static role headline */}
-        <motion.p
-          variants={itemVariants}
-          className="text-2xl md:text-3xl mb-6 text-accent-text font-display font-semibold [text-shadow:0_2px_5px_rgba(0,0,0,0.85),0_8px_28px_rgba(0,0,0,0.7)]"
-        >
-          Product Manager &amp; AI Builder
-        </motion.p>
+        {/* Typed role headline */}
+        <motion.div variants={itemVariants}>
+          <TypingAnimation
+            text="Product Manager & AI Builder"
+            className="text-xl sm:text-2xl md:text-3xl mb-6 text-accent-text font-display font-semibold [text-shadow:0_2px_5px_rgba(0,0,0,0.85),0_8px_28px_rgba(0,0,0,0.7)]"
+          />
+        </motion.div>
 
         {/* One-liner */}
         <motion.p

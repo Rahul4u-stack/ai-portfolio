@@ -5,10 +5,10 @@ import useReducedMotion from '../hooks/useReducedMotion'
 import heroPhoto from '../assets/rahul-hero.webp'
 
 const stats = [
-  { label: 'Years Experience', value: 7, suffix: '+' },
+  { label: 'Years in Product', value: 7, suffix: '+' },
+  { label: 'AI Products Shipped', value: 10, suffix: '+' },
+  { label: 'PSP Integrations Led', value: 300, suffix: '+' },
   { label: 'GMV Managed', value: 3.4, suffix: 'M+', prefix: '$', decimals: 1 },
-  { label: 'Integrations Led', value: 300, suffix: '+' },
-  { label: 'Companies', value: 5, suffix: '' },
 ]
 
 function AnimatedCounter({ value, suffix = '', prefix = '', decimals = 0, inView }) {
