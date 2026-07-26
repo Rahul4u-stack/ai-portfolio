@@ -12,6 +12,10 @@ export const projects = [
     description:
       'Classic Snake rebuilt from first principles — playable right in the card. Fixed-timestep game loop, pure-function rules, hand-shaded pseudo-3D look on plain Canvas 2D.',
     metric: 'Shipped in 1 day · 25/25 tests in CI',
+    impact: [
+      { value: '1 day', label: 'Shipped' },
+      { value: '25/25', label: 'Tests in CI' },
+    ],
     tech: ['Vanilla JavaScript', 'Canvas 2D', 'Vite', 'Vitest', 'GitHub Actions', 'localStorage'],
     github: 'https://github.com/Rahul4u-stack/snake-game',
     live: 'https://snake-game-nu-two-85.vercel.app',
@@ -43,6 +47,10 @@ export const projects = [
     description:
       "A payments-domain chatbot that remembers who you are across sessions, built on Anthropic's Memory Tool. Streaming SSE, per-user sandboxed memory, prompt-cached system prompt.",
     metric: '~90% cost cut on repeat turns · 82 tests (43 pytest + 39 vitest)',
+    impact: [
+      { value: '~90%', label: 'Cost cut via caching' },
+      { value: '82', label: 'Tests (43 pytest + 39 vitest)' },
+    ],
     tech: ['React', 'Vite', 'Tailwind CSS', 'Flask', 'Claude Sonnet 4.6', 'Anthropic Memory Tool', 'SSE Streaming', 'SQLite', 'Prompt Caching'],
     github: 'https://github.com/Rahul4u-stack/personal-chatbot',
     live: 'https://personal-chatbot-rust.vercel.app/',
@@ -59,6 +67,10 @@ export const projects = [
     description:
       'A 94-second video resume coded with Hyperframes, narrated by Kokoro TTS, captioned via Whisper — orchestrated end-to-end with Claude Code.',
     metric: '94s coded video · 7 scenes · shipped in a week',
+    impact: [
+      { value: '94s', label: 'Coded video' },
+      { value: '7', label: 'Scenes, 1 week' },
+    ],
     tech: ['Hyperframes', 'GSAP', 'Kokoro TTS', 'Whisper', 'Claude Code', 'FFmpeg'],
     github: 'https://github.com/Rahul4u-stack/video-resume',
     live: 'https://github.com/Rahul4u-stack/video-resume/raw/main/renders/video-resume_2026-05-16_14-00-02.mp4',
@@ -75,6 +87,10 @@ export const projects = [
     description:
       'Paste a YouTube URL, get a structured AI summary — executive summary, key insights, action items. Long-context Claude with prompt caching, no chunking.',
     metric: '~90% cost cut on repeat lookups via prompt caching',
+    impact: [
+      { value: '~90%', label: 'Cost cut via caching' },
+      { value: '55', label: 'Tests (19 vitest + 36 pytest)' },
+    ],
     tech: ['React', 'Vite', 'Tailwind CSS', 'Flask', 'Claude Sonnet 4.6', 'Whisper.cpp', 'yt-dlp', 'Pydantic'],
     github: 'https://github.com/Rahul4u-stack/youtube-summarizer',
     live: 'https://youtube-summarizer-plum.vercel.app',

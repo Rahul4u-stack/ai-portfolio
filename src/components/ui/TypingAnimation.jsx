@@ -61,9 +61,14 @@ export default function TypingAnimation({
   ])
 
   return (
-    <Tag className={className} aria-label={text}>
+    <Tag className={className}>
+      {/* Accessible name: a plain paragraph has no role that supports
+          aria-label (axe: aria-prohibited-attr), so expose the full text as
+          real, screen-reader-only content instead of an ARIA attribute. */}
+      <span className="sr-only">{text}</span>
       {/* Invisible full text reserves the final width so centered layout
-          doesn't reflow while typing; visible text overlays it. */}
+          doesn't reflow while typing; visible text overlays it. Hidden from
+          assistive tech since the sr-only span above is the accessible name. */}
       <span aria-hidden="true" className="relative inline-block">
         <span className="invisible">{text}_</span>
         <span className="absolute inset-0 text-left whitespace-nowrap">

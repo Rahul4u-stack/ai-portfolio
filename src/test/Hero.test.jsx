@@ -15,7 +15,10 @@ describe('Hero', () => {
   it('renders the name headline and role', () => {
     renderHero()
     expect(screen.getByRole('heading', { name: /Rahul Agarwal/ })).toBeInTheDocument()
-    expect(screen.getByText(/Product Manager/)).toBeInTheDocument()
+    // The typed role headline exposes its text via both a visually-hidden
+    // accessible-name node and a width-reserving node, so more than one match
+    // is expected here.
+    expect(screen.getAllByText(/Product Manager/).length).toBeGreaterThan(0)
   })
 
   it('shows a mono "Scroll" label as the scroll indicator', () => {
@@ -45,5 +48,23 @@ describe('Hero', () => {
     // so the badge markup is unconditional but the dot must not be the only content.
     expect(screen.getByText(/Building AI products/)).toBeInTheDocument()
     setPrefersReducedMotion(false)
+  })
+
+  it('renders the POV line with the locked copy', () => {
+    renderHero()
+    expect(
+      screen.getByText(
+        'I taught AI to read payment docs — integrations that took 2 weeks now take 2 days.'
+      )
+    ).toBeInTheDocument()
+  })
+
+  it('renders the credentials line with the locked copy', () => {
+    renderHero()
+    // rendered via &middot; entities, so match on the visible text nodes rather
+    // than the literal HTML entity.
+    expect(screen.getByText(/IIT Roorkee/)).toBeInTheDocument()
+    expect(screen.getByText(/IIM Kozhikode/)).toBeInTheDocument()
+    expect(screen.getByText(/Product @ Paysecure/)).toBeInTheDocument()
   })
 })

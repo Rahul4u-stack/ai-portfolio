@@ -124,7 +124,7 @@ export default function Contact() {
   return (
     <section id="contact" className="py-20 px-6 bg-surface">
       <div className="max-w-6xl mx-auto" ref={sectionRef}>
-        <SectionHeading title="Let's Connect" number="06" className="mb-6" />
+        <SectionHeading title="Let's Connect" number="08" className="mb-6" />
 
         <motion.h3
           {...columnVariants(0)}

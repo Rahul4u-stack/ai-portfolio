@@ -4,6 +4,13 @@ import SectionHeading from './ui/SectionHeading'
 import useReducedMotion from '../hooks/useReducedMotion'
 import heroPhoto from '../assets/rahul-hero.webp'
 
+const exploringTopics = [
+  'Agentic AI workflows',
+  'RAG & retrieval',
+  'Network tokenization',
+  'Payment orchestration',
+]
+
 const stats = [
   { label: 'Years in Product', value: 7, suffix: '+' },
   { label: 'AI Products Shipped', value: 10, suffix: '+' },
@@ -146,6 +153,21 @@ export default function About() {
               IIT Roorkee (CS) + IIM Kozhikode (MBA) — I bridge the gap between
               technology and business.
             </motion.p>
+            <motion.div variants={itemVariants} className="pt-2">
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-text-muted mb-3">
+                Currently exploring
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {exploringTopics.map((topic) => (
+                  <span
+                    key={topic}
+                    className="font-mono text-xs px-2 py-1 rounded border border-accent/20 text-text-secondary bg-surface-elevated/50"
+                  >
+                    {topic}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
           </motion.div>
         </motion.div>
 

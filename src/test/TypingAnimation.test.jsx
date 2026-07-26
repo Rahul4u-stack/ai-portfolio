@@ -40,12 +40,18 @@ describe('TypingAnimation', () => {
     expect(typedText(container)).toBe('AI PM')
   })
 
-  it('exposes the full text to assistive tech while typing', () => {
+  it('exposes the full text to assistive tech via a screen-reader-only node, not aria-label', () => {
     vi.useFakeTimers()
     const { container } = render(
       <TypingAnimation text="AI PM" charDurationMs={10} startDelayMs={0} />
     )
-    expect(container.querySelector('[aria-label="AI PM"]')).toBeInTheDocument()
+    // A plain paragraph has no role that supports aria-label (axe:
+    // aria-prohibited-attr), so the accessible name must come from real
+    // (visually-hidden) text content instead.
+    expect(container.querySelector('[aria-label]')).not.toBeInTheDocument()
+    const srOnly = container.querySelector('.sr-only')
+    expect(srOnly).toBeInTheDocument()
+    expect(srOnly).toHaveTextContent('AI PM')
   })
 
   it('renders the full text immediately under reduced motion', () => {

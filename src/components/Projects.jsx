@@ -118,7 +118,22 @@ function FeaturedProjectCard({ project, cardVariants }) {
           {project.highlight}
         </p>
 
-        <p className="font-mono text-accent-text text-xs mb-4">{project.metric}</p>
+        {project.impact ? (
+          // Impact pairs restate the metric field as scannable chips — showing
+          // both would repeat the same stat twice in a row, so the prose
+          // metric line is dropped whenever a card has structured impact data.
+          <div className="flex flex-wrap items-center gap-2 mb-4 font-mono text-xs">
+            {project.impact.map((item, index) => (
+              <span key={item.label} className="flex items-center gap-2">
+                {index > 0 && <span className="text-text-muted">&middot;</span>}
+                <span className="text-accent-text font-semibold">{item.value}</span>
+                <span className="text-text-muted">{item.label}</span>
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p className="font-mono text-accent-text text-xs mb-4">{project.metric}</p>
+        )}
 
         <div className="flex flex-wrap gap-2 mb-5">
           {project.tech.map((t) => (

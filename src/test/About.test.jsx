@@ -28,4 +28,16 @@ describe('About', () => {
     expect(img).toHaveAttribute('loading', 'eager')
     expect(img.getAttribute('src')).not.toMatch(/profile\.jpg/)
   })
+
+  it('renders the "Currently exploring" chips without disturbing the bio', () => {
+    render(<About />)
+    expect(screen.getByText('Currently exploring')).toBeInTheDocument()
+    expect(screen.getByText('Agentic AI workflows')).toBeInTheDocument()
+    expect(screen.getByText('RAG & retrieval')).toBeInTheDocument()
+    expect(screen.getByText('Network tokenization')).toBeInTheDocument()
+    expect(screen.getByText('Payment orchestration')).toBeInTheDocument()
+
+    // bio paragraphs from the existing 3 tests above must be unaffected
+    expect(screen.getByText(/nearly 7 years of experience/)).toBeInTheDocument()
+  })
 })

@@ -53,14 +53,14 @@ export default function HeroContent() {
         className="relative z-10 text-center px-4 max-w-4xl mx-auto"
       >
         {/* Availability pill */}
-        <motion.div variants={itemVariants} className="mb-3">
+        <motion.div variants={itemVariants} className="mb-2">
           <AvailabilityBadge />
         </motion.div>
 
         {/* Greeting */}
         <motion.p
           variants={itemVariants}
-          className="text-sm font-mono font-bold uppercase tracking-[0.2em] text-accent-text mb-4 [text-shadow:0_1px_3px_rgba(0,0,0,0.95),0_2px_12px_rgba(0,0,0,0.9)]"
+          className="text-sm font-mono font-bold uppercase tracking-[0.2em] text-accent-text mb-3 [text-shadow:0_1px_3px_rgba(0,0,0,0.95),0_2px_12px_rgba(0,0,0,0.9)]"
         >
           Hello, I'm
         </motion.p>
@@ -68,7 +68,7 @@ export default function HeroContent() {
         {/* Name */}
         <motion.h1
           variants={itemVariants}
-          className="text-6xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight text-text-primary mb-6 [text-shadow:0_2px_6px_rgba(0,0,0,0.85),0_10px_36px_rgba(0,0,0,0.75)]"
+          className="text-6xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight text-text-primary mb-4 [text-shadow:0_2px_6px_rgba(0,0,0,0.85),0_10px_36px_rgba(0,0,0,0.75)]"
         >
           Rahul Agarwal
         </motion.h1>
@@ -77,22 +77,38 @@ export default function HeroContent() {
         <motion.div variants={itemVariants}>
           <TypingAnimation
             text="Product Manager & AI Builder"
-            className="text-xl sm:text-2xl md:text-3xl mb-6 text-accent-text font-display font-semibold [text-shadow:0_2px_5px_rgba(0,0,0,0.85),0_8px_28px_rgba(0,0,0,0.7)]"
+            className="text-xl sm:text-2xl md:text-3xl mb-4 text-accent-text font-display font-semibold [text-shadow:0_2px_5px_rgba(0,0,0,0.85),0_8px_28px_rgba(0,0,0,0.7)]"
           />
         </motion.div>
 
         {/* One-liner */}
         <motion.p
           variants={itemVariants}
-          className="text-text-secondary text-lg md:text-xl mb-10 max-w-2xl mx-auto [text-shadow:0_1px_4px_rgba(0,0,0,0.9),0_6px_20px_rgba(0,0,0,0.7)]"
+          className="text-text-secondary text-lg md:text-xl mb-4 max-w-2xl mx-auto [text-shadow:0_1px_4px_rgba(0,0,0,0.9),0_6px_20px_rgba(0,0,0,0.7)]"
         >
           Building the future of payments with AI
+        </motion.p>
+
+        {/* POV line */}
+        <motion.p
+          variants={itemVariants}
+          className="text-base md:text-lg text-text-muted mb-1 max-w-2xl mx-auto [text-shadow:0_1px_4px_rgba(0,0,0,0.9),0_6px_20px_rgba(0,0,0,0.7)]"
+        >
+          I taught AI to read payment docs — integrations that took 2 weeks now take 2 days.
+        </motion.p>
+
+        {/* Credentials line */}
+        <motion.p
+          variants={itemVariants}
+          className="font-mono text-xs uppercase tracking-[0.2em] text-text-muted mb-3 [text-shadow:0_1px_3px_rgba(0,0,0,0.95),0_2px_12px_rgba(0,0,0,0.9)]"
+        >
+          IIT Roorkee &middot; IIM Kozhikode &middot; Product @ Paysecure
         </motion.p>
 
         {/* CTA Buttons */}
         <motion.div
           variants={itemVariants}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4"
         >
           <a
             href="#projects"

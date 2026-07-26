@@ -5,7 +5,9 @@ import HomeIntro from './components/HomeIntro'
 import About from './components/About'
 import Experience from './components/Experience'
 import Projects from './components/Projects'
+import Decisions from './components/Decisions'
 import Skills from './components/Skills'
+import Frameworks from './components/Frameworks'
 import Education from './components/Education'
 import Testimonials from './components/Testimonials'
 import Contact from './components/Contact'
@@ -13,6 +15,7 @@ import Footer from './components/Footer'
 import Atmosphere from './components/ui/Atmosphere'
 import BackToTop from './components/ui/BackToTop'
 import CursorGlow from './components/ui/CursorGlow'
+import PullQuote from './components/ui/PullQuote'
 
 const CaseStudyPage = lazy(() => import('./components/CaseStudyPage'))
 
@@ -23,9 +26,13 @@ function HomePage() {
       <About />
       <Experience />
       <Projects />
+      <Decisions />
+      <PullQuote quote="The best payment integration is the one your merchant never notices." />
       <Skills />
+      <Frameworks />
       <Education />
       <Testimonials />
+      <PullQuote quote="AI doesn't replace product judgment — it removes everything standing between judgment and shipping." />
       <Contact />
       <Footer />
     </>
