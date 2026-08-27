@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import '@fontsource/barlow/400.css'
-import '@fontsource/barlow/500.css'
-import '@fontsource/barlow/600.css'
-import '@fontsource/barlow/700.css'
+// Self-hosted fonts — no external requests, no swap-driven layout shift.
+// Display: Instrument Serif (single weight by design). Body: Archivo variable. Data: JetBrains Mono.
+import '@fontsource/instrument-serif/400.css'
+import '@fontsource-variable/archivo/index.css'
 import '@fontsource/jetbrains-mono/400.css'
 import '@fontsource/jetbrains-mono/500.css'
 import './index.css'
@@ -15,5 +15,5 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </StrictMode>,
+  </StrictMode>
 )

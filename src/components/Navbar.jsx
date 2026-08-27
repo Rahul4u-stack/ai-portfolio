@@ -1,209 +1,291 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import useReducedMotion from '../hooks/useReducedMotion'
 
+/**
+ * Fixed header + mobile menu.
+ *
+ * The mobile menu is a real modal dialog: focus moves in on open, is trapped while open, returns
+ * to the trigger on close, Escape closes it, and background content is `aria-hidden`.
+ *
+ * The scroll-progress bar is the "transaction signal progressing through the site" — a 2px rule,
+ * not a decorative overlay. It is `aria-hidden`; the same information is in the active nav item.
+ */
+
 const navLinks = [
-  { label: 'About', href: '#about' },
+  { label: 'Work', href: '#work' },
+  { label: 'Decisions', href: '#decisions' },
   { label: 'Experience', href: '#experience' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Education', href: '#education' },
+  { label: 'Lab', href: '#lab' },
+  { label: 'About', href: '#about' },
   { label: 'Contact', href: '#contact' },
 ]
+
+const FOCUSABLE = 'a[href], button:not([disabled])'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('')
   const [progress, setProgress] = useState(0)
+
   const prefersReducedMotion = useReducedMotion()
   const location = useLocation()
   const navigate = useNavigate()
 
+  const panelRef = useRef(null)
+  const triggerRef = useRef(null)
+
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
-      const scrollableHeight = document.body.scrollHeight - window.innerHeight
-      setProgress(scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 24)
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight
+      setProgress(scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0)
     }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   useEffect(() => {
-    const sectionIds = navLinks.map((l) => l.href.slice(1))
-    const sections = sectionIds
-      .map((id) => document.getElementById(id))
+    if (typeof IntersectionObserver === 'undefined') return undefined
+    const sections = navLinks
+      .map((link) => document.getElementById(link.href.slice(1)))
       .filter(Boolean)
-    if (sections.length === 0) return
+    if (sections.length === 0) return undefined
+
+    // Track intersection per section rather than reacting to each batch of entries in isolation.
+    // Reading only the latest batch meant that scrolling back to the hero — where no section is
+    // in the observer's band — left the previous section highlighted, because "nothing is
+    // intersecting" arrives as an entry with isIntersecting:false and was simply ignored.
+    const intersecting = new Map()
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
-        if (visible[0]) setActiveSection(visible[0].target.id)
+        for (const entry of entries) {
+          if (entry.isIntersecting) intersecting.set(entry.target.id, entry.intersectionRatio)
+          else intersecting.delete(entry.target.id)
+        }
+        const best = [...intersecting.entries()].sort((a, b) => b[1] - a[1])[0]
+        setActiveSection(best ? best[0] : '')
       },
-      { rootMargin: '-40% 0px -55% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
+      { rootMargin: '-45% 0px -50% 0px', threshold: [0, 0.25, 0.5, 1] }
     )
-
     sections.forEach((section) => observer.observe(section))
     return () => observer.disconnect()
+  }, [location.pathname])
+
+  const closeMenu = useCallback(() => {
+    setIsOpen(false)
+    triggerRef.current?.focus()
   }, [])
 
+  // Dialog behaviour: lock scroll, move focus in, trap Tab, close on Escape.
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isOpen])
+    if (!isOpen) return undefined
 
-  const handleLinkClick = (e, href) => {
-    e.preventDefault()
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    panelRef.current?.querySelector(FOCUSABLE)?.focus()
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        closeMenu()
+        return
+      }
+      if (event.key !== 'Tab') return
+      const items = panelRef.current?.querySelectorAll(FOCUSABLE)
+      if (!items || items.length === 0) return
+      const first = items[0]
+      const last = items[items.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.body.style.overflow = previousOverflow
+    }
+  }, [isOpen, closeMenu])
+
+  const handleLinkClick = (event, href) => {
+    event.preventDefault()
     setIsOpen(false)
     if (location.pathname !== '/') {
       navigate('/' + href)
       return
     }
     const target = document.querySelector(href)
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' })
-    }
+    if (!target) return
+    target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' })
+    // Move focus to the section so keyboard users land where the page just scrolled.
+    target.setAttribute('tabindex', '-1')
+    target.focus({ preventScroll: true })
   }
 
   return (
     <>
-      <div
-        className="fixed top-0 left-0 h-[3px] bg-brand-gradient z-[60]"
-        style={{ width: `${progress * 100}%` }}
-      />
-      <motion.nav
-        initial={prefersReducedMotion ? { y: 0 } : { y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: prefersReducedMotion ? 0 : 0.5, ease: 'easeOut' }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-surface/80 backdrop-blur-md border-b border-white/[0.05]'
-            : 'bg-transparent'
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100]
+          focus:rounded-card focus:bg-indigo focus:px-4 focus:py-3 focus:text-sm focus:font-medium focus:text-white"
+      >
+        Skip to content
+      </a>
+
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-200 ${
+          scrolled ? 'border-b border-rule bg-ink/90 backdrop-blur-md' : 'bg-transparent'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
+        {/* The transaction signal: progress through the page. */}
+        <div aria-hidden="true" className="h-[2px] w-full bg-transparent">
+          <div
+            className="h-full bg-route-rule"
+            style={{ width: `${Math.round(progress * 100)}%` }}
+          />
+        </div>
+
+        <div className="shell">
+          <div className="flex h-16 items-center justify-between gap-4">
             <a
               href="/"
-              onClick={(e) => {
-                e.preventDefault()
+              onClick={(event) => {
+                event.preventDefault()
                 setIsOpen(false)
                 if (location.pathname !== '/') {
                   navigate('/')
                   return
                 }
-                window.scrollTo({ top: 0, behavior: 'smooth' })
+                window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' })
               }}
-              className="flex items-center gap-3"
+              className="flex min-h-[2.75rem] min-w-0 items-center gap-3"
             >
               <span
                 aria-hidden="true"
-                className="w-10 h-10 rounded-xl bg-brand-gradient shrink-0 flex items-center justify-center font-display text-lg font-bold text-white"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-card border border-rule-strong
+                  font-mono text-xs font-medium tracking-tight text-indigo-text"
               >
                 RA
               </span>
-              <span className="flex flex-col leading-tight">
-                <span className="font-display text-lg font-bold text-text-primary">
+              <span className="flex min-w-0 flex-col leading-tight">
+                <span className="truncate font-display text-lg text-text-primary">
                   Rahul Agarwal
                 </span>
-                <span className="font-mono text-[10px] font-medium uppercase tracking-[0.25em] text-accent-text">
-                  PM &amp; AI Builder
-                </span>
+                <span className="label truncate">Payments · AI</span>
               </span>
             </a>
 
-            {/* Desktop Nav Links */}
-            <div className="hidden md:flex items-center gap-1 rounded-full bg-white/[0.05] backdrop-blur-md border border-white/[0.08] px-2 py-1.5">
-              {navLinks.map((link) => {
-                const isActive = activeSection === link.href.slice(1)
-                return (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    onClick={(e) => handleLinkClick(e, link.href)}
-                    aria-current={isActive ? 'page' : undefined}
-                    className={`transition-colors text-sm font-medium px-4 py-2 rounded-full ${
-                      isActive
-                        ? 'bg-[#4f46e5] text-white'
-                        : 'text-text-muted hover:text-text-primary'
-                    }`}
-                  >
-                    {link.label}
-                  </a>
-                )
-              })}
-            </div>
+            <nav aria-label="Sections" className="hidden md:block">
+              <ul className="flex items-center gap-1">
+                {navLinks.map((link) => {
+                  const isActive = activeSection === link.href.slice(1)
+                  return (
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        onClick={(event) => handleLinkClick(event, link.href)}
+                        aria-current={isActive ? 'true' : undefined}
+                        className={`inline-flex min-h-[2.75rem] items-center rounded-card px-3 text-sm transition-colors
+                          ${
+                            isActive
+                              ? 'bg-[rgba(91,91,240,0.18)] text-indigo-text'
+                              : 'text-text-muted hover:text-text-primary'
+                          }`}
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  )
+                })}
+              </ul>
+            </nav>
 
-            {/* Mobile Hamburger */}
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden relative z-50 w-8 h-8 flex flex-col items-center justify-center gap-1.5"
-              aria-label="Toggle menu"
+              ref={triggerRef}
+              type="button"
+              onClick={() => setIsOpen((open) => !open)}
+              aria-expanded={isOpen}
+              // Only reference the dialog while it exists — a dangling aria-controls promises
+              // assistive tech a relationship that isn't in the DOM.
+              aria-controls={isOpen ? 'mobile-menu' : undefined}
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
+              className="btn-secondary md:hidden"
             >
-              <motion.span
-                animate={isOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
-                className="block w-6 h-0.5 bg-text-primary origin-center"
-              />
-              <motion.span
-                animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
-                className="block w-6 h-0.5 bg-text-primary"
-              />
-              <motion.span
-                animate={isOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
-                className="block w-6 h-0.5 bg-text-primary origin-center"
-              />
+              <span aria-hidden="true" className="label normal-case tracking-normal">
+                {isOpen ? 'Close' : 'Menu'}
+              </span>
             </button>
           </div>
         </div>
-      </motion.nav>
+      </header>
 
-      {/* Mobile Full-Screen Overlay */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
-            className="fixed inset-0 z-40 bg-surface/95 backdrop-blur-xl flex items-center justify-center"
-          >
-            <motion.div
-              initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: prefersReducedMotion ? 0 : 0.3, delay: prefersReducedMotion ? 0 : 0.1 }}
-              className="flex flex-col items-center space-y-8"
+      {isOpen && (
+        <div
+          id="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site sections"
+          ref={panelRef}
+          className="fixed inset-0 z-[60] bg-ink/98 backdrop-blur-lg md:hidden"
+        >
+          <div className="shell flex h-16 items-center justify-end">
+            <button
+              type="button"
+              onClick={closeMenu}
+              className="btn-secondary"
+              aria-label="Close menu"
             >
-              {navLinks.map((link, index) => (
-                <motion.a
-                  key={link.label}
-                  href={link.href}
-                  onClick={(e) => handleLinkClick(e, link.href)}
-                  initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
-                  transition={{ duration: prefersReducedMotion ? 0 : 0.3, delay: prefersReducedMotion ? 0 : 0.1 + index * 0.05 }}
-                  className="text-2xl font-medium text-text-primary hover:text-accent-text transition-colors"
-                >
-                  {link.label}
-                </motion.a>
+              <span aria-hidden="true" className="label normal-case tracking-normal">
+                Close
+              </span>
+            </button>
+          </div>
+          <nav aria-label="Sections" className="shell pt-6">
+            <ul className="flex flex-col gap-1">
+              {navLinks.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    onClick={(event) => handleLinkClick(event, link.href)}
+                    className="flex min-h-[3.25rem] items-center justify-between border-b border-rule
+                      font-display text-2xl text-text-primary"
+                  >
+                    {link.label}
+                    <span aria-hidden="true" className="label">
+                      →
+                    </span>
+                  </a>
+                </li>
               ))}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </ul>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="#contact"
+                onClick={(event) => handleLinkClick(event, '#contact')}
+                className="btn-primary"
+              >
+                Get in touch
+              </a>
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary"
+              >
+                Résumé
+              </a>
+            </div>
+          </nav>
+        </div>
+      )}
     </>
   )
 }

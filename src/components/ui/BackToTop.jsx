@@ -1,38 +1,37 @@
 import { useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import { FaArrowUp } from 'react-icons/fa'
 import useReducedMotion from '../../hooks/useReducedMotion'
+
+/** Appears only after 600px of scrolling — deep enough never to overlap hero content. */
+const THRESHOLD = 600
 
 export default function BackToTop() {
   const [visible, setVisible] = useState(false)
   const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
-    const handleScroll = () => setVisible(window.scrollY > 400)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    const onScroll = () => setVisible(window.scrollY > THRESHOLD)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const handleClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  if (!visible) return null
 
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.button
-          type="button"
-          onClick={handleClick}
-          aria-label="Back to top"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
-          className="fixed bottom-6 right-6 z-50 w-11 h-11 flex items-center justify-center rounded-full bg-white/[0.06] backdrop-blur-md border border-white/[0.08] text-text-primary hover:border-white/[0.16] transition-colors duration-300"
-        >
-          <FaArrowUp />
-        </motion.button>
-      )}
-    </AnimatePresence>
+    <button
+      type="button"
+      onClick={() =>
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' })
+      }
+      aria-label="Back to top"
+      // Sized to the 44px touch minimum and kept clear of content.
+      className="fixed bottom-5 right-5 z-40 grid h-11 w-11 place-items-center rounded-card
+        border border-rule-strong bg-ink/90 text-text-secondary backdrop-blur-md
+        transition-colors hover:border-indigo-text hover:text-indigo-text
+        motion-safe:animate-none"
+    >
+      <FaArrowUp aria-hidden="true" size={14} />
+    </button>
   )
 }

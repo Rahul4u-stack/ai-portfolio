@@ -1,0 +1,14 @@
+{
+  "name": "Rahul Agarwal — Payments Product Manager & AI Builder",
+  "short_name": "Rahul Agarwal",
+  "description": "Product Manager with deep fintech experience, building AI workflows that ship payment integrations in days.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0d12",
+  "theme_color": "#0b0d12",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

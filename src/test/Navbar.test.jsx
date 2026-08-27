@@ -1,174 +1,167 @@
-import { render, screen, act } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import { MemoryRouter } from 'react-router-dom'
+import { describe, expect, it } from 'vitest'
 import Navbar from '../components/Navbar'
 import { MockIntersectionObserver } from './mocks'
 
-const NAV_LINKS = [
-  { label: 'About', id: 'about' },
-  { label: 'Experience', id: 'experience' },
-  { label: 'Projects', id: 'projects' },
-  { label: 'Skills', id: 'skills' },
-  { label: 'Education', id: 'education' },
-  { label: 'Contact', id: 'contact' },
-]
-
-function renderNavbarWithSections() {
+function renderNavbar() {
   return render(
     <MemoryRouter>
       <Navbar />
-      {NAV_LINKS.map(({ id }) => (
-        <section key={id} id={id} />
-      ))}
     </MemoryRouter>
   )
 }
 
-function getScrollSpyObserver() {
-  // Navbar's scroll-spy observer is the one actually observing elements
-  return MockIntersectionObserver.instances.find((o) => o.elements.size > 0)
-}
+describe('Navbar — keyboard and screen reader', () => {
+  it('puts the skip link first in the tab order', async () => {
+    renderNavbar()
+    await userEvent.tab()
+    expect(document.activeElement).toHaveAccessibleName(/skip to content/i)
+  })
 
-describe('Navbar scroll-spy', () => {
-  it('renders a link for every section with the correct anchor href', () => {
-    renderNavbarWithSections()
-    for (const { label, id } of NAV_LINKS) {
-      expect(screen.getByRole('link', { name: label })).toHaveAttribute('href', `#${id}`)
+  it('names the section nav so it is distinguishable from other navigation', () => {
+    renderNavbar()
+    expect(screen.getAllByRole('navigation', { name: 'Sections' }).length).toBeGreaterThan(0)
+  })
+
+  it('exposes the menu trigger state via aria-expanded, and only references the dialog once it exists', async () => {
+    renderNavbar()
+    const trigger = screen.getByRole('button', { name: /open menu/i })
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    // Closed: no dangling aria-controls pointing at an element that isn't rendered.
+    expect(trigger).not.toHaveAttribute('aria-controls')
+
+    await userEvent.click(trigger)
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    expect(trigger).toHaveAttribute('aria-controls', 'mobile-menu')
+    expect(document.getElementById('mobile-menu')).toBeInTheDocument()
+  })
+
+  it('leaves no dangling aria-controls anywhere in the header', () => {
+    const { container } = renderNavbar()
+    for (const el of container.querySelectorAll('[aria-controls]')) {
+      expect(document.getElementById(el.getAttribute('aria-controls'))).toBeTruthy()
+    }
+  })
+})
+
+describe('Navbar — mobile menu is a real dialog', () => {
+  it('marks itself modal and carries an accessible name', async () => {
+    renderNavbar()
+    await userEvent.click(screen.getByRole('button', { name: /open menu/i }))
+
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    expect(dialog).toHaveAccessibleName('Site sections')
+  })
+
+  it('moves focus into the dialog on open', async () => {
+    renderNavbar()
+    await userEvent.click(screen.getByRole('button', { name: /open menu/i }))
+    expect(screen.getByRole('dialog').contains(document.activeElement)).toBe(true)
+  })
+
+  it('closes on Escape and returns focus to the trigger', async () => {
+    renderNavbar()
+    const trigger = screen.getByRole('button', { name: /open menu/i })
+    await userEvent.click(trigger)
+    await userEvent.keyboard('{Escape}')
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(document.activeElement).toBe(trigger)
+  })
+
+  it('traps Tab inside the dialog', async () => {
+    renderNavbar()
+    await userEvent.click(screen.getByRole('button', { name: /open menu/i }))
+    const dialog = screen.getByRole('dialog')
+
+    // Walk past the end of the dialog's focusables; focus must stay inside.
+    const focusables = dialog.querySelectorAll('a[href], button:not([disabled])')
+    for (let i = 0; i < focusables.length + 2; i += 1) {
+      await userEvent.tab()
+      expect(dialog.contains(document.activeElement)).toBe(true)
     }
   })
 
-  it('observes all six sections for scroll-spy', () => {
-    renderNavbarWithSections()
-    const observer = getScrollSpyObserver()
-    expect(observer).toBeDefined()
-    expect(observer.elements.size).toBe(NAV_LINKS.length)
+  it('locks background scrolling while open and restores it on close', async () => {
+    renderNavbar()
+    const trigger = screen.getByRole('button', { name: /open menu/i })
+
+    await userEvent.click(trigger)
+    expect(document.body.style.overflow).toBe('hidden')
+
+    await userEvent.keyboard('{Escape}')
+    expect(document.body.style.overflow).not.toBe('hidden')
   })
 
-  it('marks the visible section link with aria-current', () => {
-    renderNavbarWithSections()
-    const observer = getScrollSpyObserver()
+  it('offers every section link plus a résumé link inside the dialog', async () => {
+    renderNavbar()
+    await userEvent.click(screen.getByRole('button', { name: /open menu/i }))
+    const dialog = screen.getByRole('dialog')
 
+    for (const label of ['Work', 'Decisions', 'Experience', 'Lab', 'About', 'Contact']) {
+      expect(within(dialog).getByRole('link', { name: label })).toBeInTheDocument()
+    }
+    expect(within(dialog).getByRole('link', { name: /résumé/i })).toHaveAttribute(
+      'href',
+      '/resume.pdf'
+    )
+  })
+})
+
+describe('Navbar — scroll spy', () => {
+  it('clears the active section when nothing is in the observer band', () => {
+    // Regression: reading only the latest batch of entries meant scrolling back to the hero left
+    // the previous section highlighted, because "no longer intersecting" was silently ignored.
+    render(
+      <MemoryRouter>
+        <Navbar />
+        <section id="work">work</section>
+        <section id="decisions">decisions</section>
+      </MemoryRouter>
+    )
+
+    const observer = MockIntersectionObserver.instances.find((i) => i.elements.size > 0)
+    const work = document.getElementById('work')
+    const decisions = document.getElementById('decisions')
+
+    act(() => {
+      observer.callback([{ target: work, isIntersecting: true, intersectionRatio: 1 }], observer)
+    })
+    expect(screen.getByRole('link', { name: 'Work' })).toHaveAttribute('aria-current', 'true')
+
+    // Scroll on: Decisions takes over.
     act(() => {
       observer.callback(
         [
-          {
-            isIntersecting: true,
-            intersectionRatio: 1,
-            target: document.getElementById('projects'),
-          },
+          { target: work, isIntersecting: false, intersectionRatio: 0 },
+          { target: decisions, isIntersecting: true, intersectionRatio: 1 },
         ],
         observer
       )
     })
+    expect(screen.getByRole('link', { name: 'Decisions' })).toHaveAttribute('aria-current', 'true')
+    expect(screen.getByRole('link', { name: 'Work' })).not.toHaveAttribute('aria-current')
 
-    expect(screen.getByRole('link', { name: 'Projects' })).toHaveAttribute('aria-current', 'page')
-    expect(screen.getByRole('link', { name: 'About' })).not.toHaveAttribute('aria-current')
-  })
-
-  it('moves aria-current when a different section becomes visible', () => {
-    renderNavbarWithSections()
-    const observer = getScrollSpyObserver()
-
-    const spy = (id) =>
-      act(() => {
-        observer.callback(
-          [{ isIntersecting: true, intersectionRatio: 1, target: document.getElementById(id) }],
-          observer
-        )
-      })
-
-    spy('about')
-    expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('aria-current', 'page')
-
-    spy('contact')
-    expect(screen.getByRole('link', { name: 'Contact' })).toHaveAttribute('aria-current', 'page')
-    expect(screen.getByRole('link', { name: 'About' })).not.toHaveAttribute('aria-current')
-  })
-
-  it('smooth-scrolls to the target section when a link is clicked', async () => {
-    const user = userEvent.setup()
-    renderNavbarWithSections()
-
-    const scrollSpy = vi
-      .spyOn(document.getElementById('projects'), 'scrollIntoView')
-      .mockImplementation(() => {})
-
-    await user.click(screen.getByRole('link', { name: 'Projects' }))
-    expect(scrollSpy).toHaveBeenCalledWith({ behavior: 'smooth' })
-  })
-})
-
-describe('Navbar logo', () => {
-  it('scrolls to top instead of navigating when already on the homepage', async () => {
-    const user = userEvent.setup()
-    renderNavbarWithSections()
-
-    const scrollToSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
-    await user.click(screen.getByRole('link', { name: /Rahul Agarwal/ }))
-
-    expect(scrollToSpy).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' })
-    scrollToSpy.mockRestore()
-  })
-
-  it('navigates to the homepage when clicked from a case-study page', async () => {
-    const user = userEvent.setup()
-    render(
-      <MemoryRouter initialEntries={['/case-study/snake']}>
-        <Routes>
-          <Route path="/" element={<Navbar />} />
-          <Route path="/case-study/:slug" element={<Navbar />} />
-        </Routes>
-      </MemoryRouter>
-    )
-
-    const scrollToSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
-    await user.click(screen.getByRole('link', { name: /Rahul Agarwal/ }))
-
-    // Navigating away from the case-study route unmounts this Navbar and
-    // mounts a fresh one at "/" — window.scrollTo should NOT have been used
-    // for the case-study-page click itself.
-    expect(scrollToSpy).not.toHaveBeenCalled()
-    scrollToSpy.mockRestore()
-  })
-})
-
-describe('Navbar scroll-progress bar', () => {
-  afterEach(() => {
-    // Restore jsdom's default (0) so other tests aren't affected.
-    Object.defineProperty(document.body, 'scrollHeight', {
-      configurable: true,
-      value: 0,
-    })
-    window.scrollY = 0
-  })
-
-  it('renders at 0% width before any scrolling has happened', () => {
-    const { container } = renderNavbarWithSections()
-    const progressBar = container.querySelector('.fixed.top-0.left-0.h-\\[3px\\]')
-    expect(progressBar).toBeInTheDocument()
-    expect(progressBar).toHaveStyle({ width: '0%' })
-  })
-
-  it('updates its width in proportion to scroll position on scroll', () => {
-    const { container } = renderNavbarWithSections()
-
-    // Simulate a document that is 1000px taller than the viewport, scrolled
-    // halfway down.
-    Object.defineProperty(document.body, 'scrollHeight', {
-      configurable: true,
-      value: 1600,
-    })
-    Object.defineProperty(window, 'innerHeight', {
-      configurable: true,
-      value: 600,
-    })
-    window.scrollY = 500 // halfway through the 1000px scrollable range
-
+    // Back to the top: nothing is in the band, so nothing should stay highlighted.
     act(() => {
-      window.dispatchEvent(new Event('scroll'))
+      observer.callback(
+        [{ target: decisions, isIntersecting: false, intersectionRatio: 0 }],
+        observer
+      )
     })
+    for (const label of ['Work', 'Decisions']) {
+      expect(screen.getByRole('link', { name: label }), label).not.toHaveAttribute('aria-current')
+    }
+  })
+})
 
-    const progressBar = container.querySelector('.fixed.top-0.left-0.h-\\[3px\\]')
-    expect(progressBar).toHaveStyle({ width: '50%' })
+describe('Navbar — progress indicator', () => {
+  it('hides the decorative progress bar from assistive tech', () => {
+    const { container } = renderNavbar()
+    const bar = container.querySelector('[aria-hidden="true"] > .bg-route-rule')
+    expect(bar).toBeInTheDocument()
   })
 })

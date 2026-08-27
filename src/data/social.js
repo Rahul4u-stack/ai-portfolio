@@ -1,12 +1,12 @@
-import { FaLinkedin, FaGithub, FaEnvelope, FaInstagram } from 'react-icons/fa';
-import { FaXTwitter } from 'react-icons/fa6';
+import { FaLinkedin, FaGithub, FaEnvelope, FaInstagram } from 'react-icons/fa'
+import { FaXTwitter } from 'react-icons/fa6'
 
-export const CONTACT_EMAIL = 'rahulisatiitr@gmail.com';
-export const CONTACT_PHONE = '+91 9634088561';
+export const CONTACT_EMAIL = 'rahulisatiitr@gmail.com'
+export const CONTACT_PHONE = '+91 9634088561'
 
 // Formspree form ID (formspree.io → form endpoint https://formspree.io/f/<id>).
 // Empty string = contact form falls back to a mailto: draft.
-export const FORMSPREE_ID = 'mdaqdnel';
+export const FORMSPREE_ID = 'mdaqdnel'
 
 export const socialLinks = [
   {
@@ -24,7 +24,7 @@ export const socialLinks = [
     href: `mailto:${CONTACT_EMAIL}`,
     icon: FaEnvelope,
   },
-];
+]
 
 // Contact section "Find me on" pills (hero/footer keep the shorter socialLinks)
 export const findMeOnLinks = [
@@ -48,4 +48,4 @@ export const findMeOnLinks = [
     href: 'https://www.instagram.com/rahulagarwal6622/',
     icon: FaInstagram,
   },
-];
+]

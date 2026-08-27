@@ -3,11 +3,14 @@ import { beforeEach } from 'vitest'
 import {
   installIntersectionObserverMock,
   installMatchMediaMock,
+  installResizeObserverMock,
   resetIntersectionObserverMock,
+  resetResizeObserverMock,
   setPrefersReducedMotion,
 } from './mocks'
 
 installIntersectionObserverMock()
+installResizeObserverMock()
 installMatchMediaMock()
 
 // jsdom doesn't implement these; Navbar calls both on link clicks.
@@ -16,5 +19,6 @@ window.scrollTo = () => {}
 
 beforeEach(() => {
   resetIntersectionObserverMock()
+  resetResizeObserverMock()
   setPrefersReducedMotion(false)
 })

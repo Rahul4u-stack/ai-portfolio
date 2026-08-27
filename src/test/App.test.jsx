@@ -1,8 +1,15 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { describe, expect, it } from 'vitest'
 import App from '../App'
+import { selectedWork } from '../data/work'
+import { labProjects } from '../data/lab'
+import { impactMetrics } from '../data/metrics'
+import { decisions } from '../data/decisions'
+import { experiences } from '../data/experience'
 
-const SECTION_IDS = ['about', 'experience', 'projects', 'skills', 'education', 'contact']
+const SECTION_IDS = ['impact', 'work', 'decisions', 'experience', 'lab', 'about', 'contact']
+const NAV_LABELS = ['Work', 'Decisions', 'Experience', 'Lab', 'About', 'Contact']
 
 function renderApp(initialEntries = ['/']) {
   return render(
@@ -12,34 +19,190 @@ function renderApp(initialEntries = ['/']) {
   )
 }
 
-describe('App', () => {
-  it('renders the hero, all six anchored sections, and the footer', () => {
+describe('page structure', () => {
+  it('renders every anchored section', () => {
     const { container } = renderApp()
-
-    // Hero (no section id — identified by the name headline)
-    expect(screen.getAllByText(/Rahul Agarwal/).length).toBeGreaterThan(0)
-
     for (const id of SECTION_IDS) {
-      expect(container.querySelector(`section#${id}`)).toBeInTheDocument()
-    }
-
-    expect(screen.getByText(/All rights reserved/i)).toBeInTheDocument()
-  })
-
-  it('renders the navbar with links to every section', () => {
-    renderApp()
-    for (const id of SECTION_IDS) {
-      const label = id.charAt(0).toUpperCase() + id.slice(1)
-      expect(screen.getByRole('link', { name: label })).toHaveAttribute('href', `#${id}`)
+      expect(container.querySelector(`section#${id}`), `section#${id}`).toBeInTheDocument()
     }
   })
 
-  it('renders at least 3 links to case study pages on the homepage', () => {
+  it('leads with the positioning claim, not a name or a job title', () => {
     renderApp()
-    const caseStudyLinks = screen
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      /I turn payment complexity into shipped AI products/i
+    )
+  })
+
+  it('has exactly one h1', () => {
+    renderApp()
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
+  })
+
+  it('exposes landmark structure: header, main, footer', () => {
+    const { container } = renderApp()
+    expect(container.querySelector('header')).toBeInTheDocument()
+    expect(container.querySelector('main#main')).toBeInTheDocument()
+    expect(container.querySelector('footer')).toBeInTheDocument()
+  })
+
+  it('offers a skip-to-content link that targets main', () => {
+    renderApp()
+    expect(screen.getByRole('link', { name: /skip to content/i })).toHaveAttribute('href', '#main')
+  })
+
+  it('makes the skip-link target focusable, so activating it actually moves focus', () => {
+    // Regression: without tabIndex="-1" on <main>, following the skip link leaves
+    // document.activeElement on <body> and a screen reader announces nothing.
+    const { container } = renderApp()
+    const main = container.querySelector('main#main')
+    expect(main).toHaveAttribute('tabindex', '-1')
+
+    main.focus()
+    expect(document.activeElement).toBe(main)
+  })
+
+  it('labels every section by its own heading', () => {
+    const { container } = renderApp()
+    for (const id of SECTION_IDS) {
+      const section = container.querySelector(`section#${id}`)
+      const labelledBy = section.getAttribute('aria-labelledby')
+      expect(labelledBy, `section#${id} aria-labelledby`).toBeTruthy()
+      expect(container.querySelector(`#${labelledBy}`), `#${labelledBy} target`).toBeInTheDocument()
+    }
+  })
+
+  it('never skips a heading level', () => {
+    renderApp()
+    const levels = screen.getAllByRole('heading').map((h) => Number(h.tagName.slice(1)))
+    for (let i = 1; i < levels.length; i += 1) {
+      expect(levels[i] - levels[i - 1], `${levels[i - 1]} → ${levels[i]}`).toBeLessThanOrEqual(1)
+    }
+  })
+})
+
+describe('hero proof', () => {
+  it('shows the signature outcome above the fold without interaction', () => {
+    const { container } = renderApp()
+    expect(container.textContent).toMatch(/2 wks → 2 days|two weeks to two days/i)
+  })
+
+  it('offers both hero CTAs', () => {
+    renderApp()
+    expect(screen.getByRole('link', { name: /explore selected work/i })).toHaveAttribute(
+      'href',
+      '#work'
+    )
+    expect(screen.getAllByRole('link', { name: /résumé/i })[0]).toHaveAttribute(
+      'href',
+      '/resume.pdf'
+    )
+  })
+
+  it('links LinkedIn and GitHub from the hero with accessible names', () => {
+    renderApp()
+    expect(screen.getByRole('link', { name: /Rahul Agarwal on LinkedIn/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Rahul Agarwal on GitHub/i })).toBeInTheDocument()
+  })
+})
+
+describe('navigation', () => {
+  it('links to every navigable section', () => {
+    renderApp()
+    const nav = screen.getAllByRole('navigation', { name: 'Sections' })[0]
+    for (const label of NAV_LABELS) {
+      expect(within(nav).getByRole('link', { name: label })).toHaveAttribute(
+        'href',
+        `#${label.toLowerCase()}`
+      )
+    }
+  })
+
+  it('every nav target actually exists on the page', () => {
+    const { container } = renderApp()
+    for (const label of NAV_LABELS) {
+      expect(container.querySelector(`#${label.toLowerCase()}`), label).toBeInTheDocument()
+    }
+  })
+})
+
+describe('content is rendered from the data layer', () => {
+  it('renders all six impact metrics with their context and source', () => {
+    const { container } = renderApp()
+    const rail = within(container.querySelector('section#impact'))
+    for (const metric of impactMetrics) {
+      expect(rail.getByText(metric.label), metric.label).toBeInTheDocument()
+      expect(rail.getByText(metric.context), metric.context).toBeInTheDocument()
+      // A number without an attributable source is a vanity number.
+      expect(rail.getAllByText(metric.source).length, metric.source).toBeGreaterThan(0)
+    }
+  })
+
+  it('renders all four featured work items', () => {
+    renderApp()
+    for (const item of selectedWork) {
+      expect(screen.getByText(item.title), item.title).toBeInTheDocument()
+    }
+  })
+
+  it('leads selected work with the payments pipeline, not a game', () => {
+    const { container } = renderApp()
+    const workSection = container.querySelector('section#work')
+    const firstHeading = workSection.querySelector('h3')
+    expect(firstHeading).toHaveTextContent(/AI-assisted PSP integration workflow/i)
+  })
+
+  it('renders all three decision records', () => {
+    renderApp()
+    for (const decision of decisions) {
+      expect(screen.getByText(decision.title), decision.title).toBeInTheDocument()
+    }
+  })
+
+  it('renders every role in the timeline', () => {
+    const { container } = renderApp()
+    const timeline = within(container.querySelector('section#experience'))
+    for (const role of experiences) {
+      expect(timeline.getByText(role.company), role.company).toBeInTheDocument()
+    }
+  })
+
+  it('keeps the hero readout wording distinct from the impact rail, so it does not read as repetition', () => {
+    const { container } = renderApp()
+    const heroLabels = [...container.querySelectorAll('section:first-of-type dt')].map((el) =>
+      el.textContent.trim()
+    )
+    const railLabels = impactMetrics.map((m) => m.label)
+    for (const label of heroLabels) {
+      expect(railLabels, `hero label "${label}" duplicated verbatim in the rail`).not.toContain(
+        label
+      )
+    }
+  })
+
+  it('renders every lab build', () => {
+    renderApp()
+    for (const item of labProjects) {
+      expect(screen.getByText(item.title), item.title).toBeInTheDocument()
+    }
+  })
+})
+
+describe('case studies', () => {
+  it('links to all four case studies from the homepage', () => {
+    renderApp()
+    const hrefs = screen
       .getAllByRole('link')
-      .filter((link) => link.getAttribute('href')?.startsWith('/case-study/'))
-    expect(caseStudyLinks.length).toBeGreaterThanOrEqual(3)
+      .map((link) => link.getAttribute('href'))
+      .filter((href) => href?.startsWith('/case-study/'))
+    expect(new Set(hrefs)).toEqual(
+      new Set([
+        '/case-study/personal-chatbot',
+        '/case-study/youtube-summarizer',
+        '/case-study/snake',
+        '/case-study/payment-intelligence-network',
+      ])
+    )
   })
 
   it('renders the case study page at /case-study/:slug', async () => {
@@ -49,40 +212,55 @@ describe('App', () => {
     )
   })
 
-  it('renders the new Decisions and Frameworks sections (content sections, deliberately not in nav)', () => {
+  it('redirects an unknown case study slug home rather than showing an empty page', async () => {
+    renderApp(['/case-study/does-not-exist'])
+    await waitFor(() => expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument())
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/payment complexity/i)
+  })
+})
+
+describe('unknown routes', () => {
+  it('renders a real not-found page, never an empty shell', () => {
+    // Regression: with no catch-all route, /anything rendered navbar + footer around a blank main.
+    renderApp(['/this/path/does/not/exist'])
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/doesn.t reach a node/i)
+    expect(screen.getByRole('link', { name: /back to the homepage/i })).toHaveAttribute('href', '/')
+  })
+
+  it('keeps the not-found page inside the normal chrome, with one h1', () => {
+    renderApp(['/nope'])
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
+    expect(screen.getAllByRole('navigation', { name: 'Sections' }).length).toBeGreaterThan(0)
+  })
+})
+
+describe('claims removed for being unverifiable', () => {
+  it('does not mention Smart Pantry — no repo, no link, no evidence', () => {
     const { container } = renderApp()
-    expect(container.querySelector('section#decisions')).toBeInTheDocument()
-    expect(container.querySelector('section#frameworks')).toBeInTheDocument()
-    // deliberate scope call: no nav link for either (matches Testimonials precedent)
-    expect(screen.queryByRole('link', { name: 'Decisions' })).not.toBeInTheDocument()
-    expect(screen.queryByRole('link', { name: 'Frameworks' })).not.toBeInTheDocument()
+    expect(container.textContent).not.toMatch(/smart pantry/i)
   })
 
-  it('renders the section ghost numerals in visual order 01 through 08 with no duplicates or gaps', () => {
-    renderApp()
-    const expectedOrder = ['01', '02', '03', '04', '05', '06', '07', '08']
-    const ghosts = expectedOrder.map((n) => screen.getByText(n))
-    for (const ghost of ghosts) {
-      expect(ghost).toHaveAttribute('aria-hidden', 'true')
-    }
-    const positions = ghosts.map((el) => {
-      const rectTop = Array.from(document.body.querySelectorAll('*')).indexOf(el)
-      return rectTop
-    })
-    // DOM-order position should be strictly increasing since the numerals are
-    // rendered in document order top-to-bottom.
-    for (let i = 1; i < positions.length; i++) {
-      expect(positions[i]).toBeGreaterThan(positions[i - 1])
-    }
+  it('never claims 7 years *in product* — product roles start Jun 2021', () => {
+    const { container } = renderApp()
+    expect(container.textContent).not.toMatch(/7\+?\s*years?\s+in\s+product/i)
   })
 
-  it('renders both pull quotes (after Decisions, before Contact)', () => {
+  it('does not inflate the shipped-project count past what the data holds', () => {
+    const { container } = renderApp()
+    expect(container.textContent).not.toMatch(/10\+\s*AI Products Shipped/i)
+  })
+})
+
+describe('external links are safe', () => {
+  it('every external link opens in a new tab with noopener', () => {
     renderApp()
-    expect(
-      screen.getByText(/The best payment integration is the one your merchant never notices/)
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText(/AI doesn't replace product judgment/)
-    ).toBeInTheDocument()
+    const external = screen
+      .getAllByRole('link')
+      .filter((link) => link.getAttribute('href')?.startsWith('http'))
+    expect(external.length).toBeGreaterThan(0)
+    for (const link of external) {
+      expect(link, link.getAttribute('href')).toHaveAttribute('target', '_blank')
+      expect(link.getAttribute('rel')).toContain('noopener')
+    }
   })
 })

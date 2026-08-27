@@ -1,20 +1,23 @@
-import { motion } from 'framer-motion'
-import useReducedMotion from '../../hooks/useReducedMotion'
+import Reveal from './Reveal'
 
+/**
+ * One editorial beat between sections. Deliberately unattributed — it is a stated point of view,
+ * not a testimonial, and must never read as a third-party quote.
+ */
 export default function PullQuote({ quote }) {
-  const prefersReducedMotion = useReducedMotion()
-
   return (
-    <section className="py-16 px-6" aria-label="Pull quote">
-      <motion.blockquote
-        initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: prefersReducedMotion ? 0 : 0.7, ease: 'easeOut' }}
-        className="max-w-4xl mx-auto text-center font-display font-semibold text-3xl md:text-4xl text-text-primary leading-snug"
-      >
-        &ldquo;{quote}&rdquo;
-      </motion.blockquote>
-    </section>
+    <Reveal as="aside" aria-label="Point of view" className="border-y border-rule bg-graphite/40">
+      <div className="shell py-12 sm:py-16">
+        <blockquote className="mx-auto max-w-3xl text-center font-display text-2xl text-text-primary text-balance sm:text-3xl">
+          <span aria-hidden="true" className="text-indigo-text">
+            &ldquo;
+          </span>
+          {quote}
+          <span aria-hidden="true" className="text-indigo-text">
+            &rdquo;
+          </span>
+        </blockquote>
+      </div>
+    </Reveal>
   )
 }

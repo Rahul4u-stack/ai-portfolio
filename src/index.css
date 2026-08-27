@@ -4,24 +4,118 @@
 
 html {
   scroll-behavior: smooth;
+  /* Anchor targets clear the fixed 64px nav without JS offset maths. */
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  @apply bg-surface text-text-primary font-sans antialiased;
+  @apply bg-ink text-text-primary font-sans antialiased;
+  /* Belt-and-braces against a stray wide child ever producing a horizontal scrollbar. */
+  overflow-x: hidden;
 }
 
 ::selection {
-  background: theme('colors.accent.text / 30%');
-  color: theme('colors.surface');
+  background: rgba(91, 91, 240, 0.35);
+  color: #f2efe9;
 }
 
 :focus-visible {
-  outline: 2px solid theme('colors.accent.DEFAULT');
-  outline-offset: 2px;
-  border-radius: 2px;
+  outline: 2px solid #a5a6ff;
+  outline-offset: 3px;
+  border-radius: 3px;
 }
 
+/* Instrument Serif is a single-weight face; never let the browser synthesise a fake bold. */
+.font-display {
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+@layer components {
+  /* --- Layout ------------------------------------------------------------ */
+  .shell {
+    @apply mx-auto w-full max-w-shell px-5 sm:px-8;
+  }
+
+  .section {
+    @apply relative py-12 sm:py-20;
+  }
+
+  /* --- Type ------------------------------------------------------------- */
+  /* Mono is reserved for metrics, labels, payment states, dates, system signals. */
+  .label {
+    @apply font-mono text-[0.6875rem] uppercase tracking-[0.18em] text-text-muted;
+  }
+
+  .metric {
+    @apply font-mono font-medium tabular-nums text-text-primary;
+  }
+
+  /* --- Surfaces --------------------------------------------------------- */
+  .card {
+    @apply rounded-card border border-rule bg-graphite;
+  }
+
+  .card-interactive {
+    @apply card transition-colors duration-200 ease-signal hover:border-rule-strong focus-within:border-rule-strong;
+  }
+
+  /* A single hairline that reads as a routing trace. Section furniture. */
+  .route-rule {
+    @apply h-px w-full bg-route-rule;
+  }
+
+  /* --- Controls --------------------------------------------------------- */
+  /* min-h/min-w 44px so every control clears the touch-target minimum. */
+  .btn {
+    @apply inline-flex min-h-[2.75rem] items-center justify-center gap-2 rounded-card px-5 text-sm font-medium
+      transition-colors duration-200 ease-signal;
+  }
+
+  .btn-primary {
+    @apply btn bg-indigo text-white hover:bg-indigo-deep;
+  }
+
+  .btn-secondary {
+    @apply btn border border-rule-strong text-text-primary hover:border-indigo-text hover:text-indigo-text;
+  }
+
+  .btn-ghost {
+    @apply btn px-3 text-text-muted hover:text-text-primary;
+  }
+
+  /* --- Status pills ----------------------------------------------------- */
+  /* Every pill carries a text label, so state is never communicated by colour alone. */
+  .pill {
+    @apply inline-flex min-h-[1.75rem] items-center gap-1.5 rounded-full px-2.5 font-mono text-[0.6875rem]
+      uppercase tracking-[0.12em];
+  }
+
+  .pill-status {
+    @apply pill bg-[rgba(78,214,155,0.14)] text-status;
+  }
+
+  .pill-signal {
+    @apply pill bg-[rgba(86,220,228,0.14)] text-signal;
+  }
+
+  .pill-indigo {
+    @apply pill bg-[rgba(91,91,240,0.18)] text-indigo-text;
+  }
+
+  .pill-coral {
+    @apply pill bg-[rgba(255,138,115,0.14)] text-coral;
+  }
+}
+
+/* Reduced motion: no transforms, no transitions, no looping animation anywhere.
+   Content is always rendered in its final position — never revealed by animation. */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {
@@ -33,18 +127,18 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: theme('colors.surface');
+  background: #0b0d12;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: theme('colors.border-muted');
-  border-radius: 4px;
+  background: rgba(242, 239, 233, 0.16);
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: theme('colors.text-muted');
+  background: rgba(242, 239, 233, 0.28);
 }

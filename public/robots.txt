@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://ai-portfolio-seven-drab.vercel.app/sitemap.xml

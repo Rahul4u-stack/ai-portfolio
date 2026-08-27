@@ -1,10 +1,8 @@
-import { renderHook } from '@testing-library/react'
+import { act, renderHook } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 import useReducedMotion from '../hooks/useReducedMotion'
 import { setPrefersReducedMotion } from './mocks'
 
-// framer-motion reads the (prefers-reduced-motion) media query once, then keeps
-// it current via the mediaQueryList listener. Each hook mount snapshots the
-// current value, so a fresh renderHook after a preference change sees the update.
 describe('useReducedMotion', () => {
   it('returns false when the user has no reduced-motion preference', () => {
     const { result } = renderHook(() => useReducedMotion())
@@ -22,5 +20,31 @@ describe('useReducedMotion', () => {
     setPrefersReducedMotion(false)
     const { result } = renderHook(() => useReducedMotion())
     expect(result.current).toBe(false)
+  })
+
+  it('reacts to the preference changing while mounted', () => {
+    const { result } = renderHook(() => useReducedMotion())
+    expect(result.current).toBe(false)
+
+    act(() => setPrefersReducedMotion(true))
+    expect(result.current).toBe(true)
+
+    act(() => setPrefersReducedMotion(false))
+    expect(result.current).toBe(false)
+  })
+
+  it('errs toward reduced motion when matchMedia is unavailable', () => {
+    const original = window.matchMedia
+    // Deliberately remove the API: an environment we cannot ask should show content
+    // immediately rather than animate it in.
+    vi.stubGlobal('matchMedia', undefined)
+    window.matchMedia = undefined
+    try {
+      const { result } = renderHook(() => useReducedMotion())
+      expect(result.current).toBe(true)
+    } finally {
+      window.matchMedia = original
+      vi.unstubAllGlobals()
+    }
   })
 })
