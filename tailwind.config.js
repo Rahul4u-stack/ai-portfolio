@@ -17,47 +17,52 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Surfaces
-        ink: '#0b0d12',
-        graphite: '#12151c',
-        panel: '#171b24',
-        // Aliases so any straggling utility class still resolves to the new palette.
-        surface: '#0b0d12',
-        'surface-raised': '#12151c',
-        'surface-elevated': '#171b24',
+        // Every token resolves through a CSS variable so the [data-theme] attribute flips the
+        // whole site. Triplet pattern (rgb(var(--x) / <alpha-value>)) keeps /opacity modifiers
+        // like bg-ink/90 working. Values live in src/index.css, mirrored by src/theme/palette.js.
 
-        // Hairlines
-        rule: 'rgba(242,239,233,0.10)',
-        'rule-strong': 'rgba(242,239,233,0.20)',
-        'border-subtle': 'rgba(242,239,233,0.10)',
-        'border-muted': 'rgba(242,239,233,0.20)',
+        // Surfaces
+        ink: 'rgb(var(--ink) / <alpha-value>)',
+        graphite: 'rgb(var(--graphite) / <alpha-value>)',
+        panel: 'rgb(var(--panel) / <alpha-value>)',
+        // Aliases so any straggling utility class still resolves to the theme.
+        surface: 'rgb(var(--ink) / <alpha-value>)',
+        'surface-raised': 'rgb(var(--graphite) / <alpha-value>)',
+        'surface-elevated': 'rgb(var(--panel) / <alpha-value>)',
+
+        // Hairlines (alpha baked into the variable — no /opacity modifiers used on these)
+        rule: 'var(--rule)',
+        'rule-strong': 'var(--rule-strong)',
+        'border-subtle': 'var(--rule)',
+        'border-muted': 'var(--rule-strong)',
 
         // Text
-        'text-primary': '#f2efe9',
-        'text-secondary': '#c6cad6',
-        'text-muted': '#949aaa',
+        'text-primary': 'rgb(var(--text-primary) / <alpha-value>)',
+        'text-secondary': 'rgb(var(--text-secondary) / <alpha-value>)',
+        'text-muted': 'rgb(var(--text-muted) / <alpha-value>)',
 
         // Brand accent
         indigo: {
-          DEFAULT: '#5b5bf0',
-          text: '#a5a6ff',
-          deep: '#4340d9',
+          DEFAULT: 'rgb(var(--indigo) / <alpha-value>)',
+          text: 'rgb(var(--indigo-text) / <alpha-value>)',
+          deep: 'rgb(var(--indigo-deep) / <alpha-value>)',
+          soft: 'var(--indigo-soft)',
         },
         accent: {
-          DEFAULT: '#5b5bf0',
-          text: '#a5a6ff',
-          hover: '#4340d9',
+          DEFAULT: 'rgb(var(--indigo) / <alpha-value>)',
+          text: 'rgb(var(--indigo-text) / <alpha-value>)',
+          hover: 'rgb(var(--indigo-deep) / <alpha-value>)',
         },
 
         // Signals — routing (cyan), shipped/outcome (green), tension/decision (coral)
         signal: {
-          DEFAULT: '#56dce4',
+          DEFAULT: 'rgb(var(--signal) / <alpha-value>)',
         },
         status: {
-          DEFAULT: '#4ed69b',
+          DEFAULT: 'rgb(var(--status) / <alpha-value>)',
         },
         coral: {
-          DEFAULT: '#ff8a73',
+          DEFAULT: 'rgb(var(--coral) / <alpha-value>)',
         },
       },
 
@@ -103,15 +108,11 @@ export default {
       },
 
       backgroundImage: {
-        // A hairline that fades in from nothing — section furniture, reads as a routing trace.
-        'route-rule':
-          'linear-gradient(90deg, transparent, rgba(91,91,240,0.55) 18%, rgba(86,220,228,0.45) 72%, transparent)',
-        // Ledger grid — the only ambient pattern on the site. No aurora, no blobs.
-        ledger:
-          'linear-gradient(90deg, rgba(242,239,233,0.035) 1px, transparent 1px), linear-gradient(180deg, rgba(242,239,233,0.035) 1px, transparent 1px)',
+        // Theme-aware section furniture; the gradients live in src/index.css per theme.
+        'route-rule': 'var(--route-rule)',
+        ledger: 'var(--ledger)',
       },
 
-      // Named `grid` (not `ledger`) so it can't collide with the `bg-ledger` image utility.
       backgroundSize: {
         grid: '32px 32px',
       },

@@ -2,6 +2,114 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Theme variables. Dark is the brand default and lives on :root; light overrides under
+ * [data-theme='light']. A pre-paint inline script in index.html always sets an explicit
+ * data-theme (localStorage override → prefers-color-scheme → dark), so there is no flash.
+ *
+ * Colour triplets ("R G B") MUST stay in sync with src/theme/palette.js —
+ * src/test/palette.test.js parses this file and fails the build if they drift.
+ */
+:root {
+  --ink: 11 13 18;
+  --graphite: 18 21 28;
+  --panel: 23 27 36;
+  --text-primary: 242 239 233;
+  --text-secondary: 198 202 214;
+  --text-muted: 148 154 170;
+  --indigo: 91 91 240;
+  --indigo-text: 165 166 255;
+  --indigo-deep: 67 64 217;
+  --signal: 86 220 228;
+  --status: 78 214 155;
+  --coral: 255 138 115;
+
+  /* Full-value tokens (alpha baked in — no /opacity modifiers are used on these). */
+  --rule: rgba(242, 239, 233, 0.1);
+  --rule-strong: rgba(242, 239, 233, 0.2);
+  --indigo-soft: rgba(91, 91, 240, 0.18);
+  --focus: #a5a6ff;
+  --selection-bg: rgba(91, 91, 240, 0.35);
+  --selection-text: #f2efe9;
+  --scrollbar-thumb: rgba(242, 239, 233, 0.16);
+  --scrollbar-thumb-hover: rgba(242, 239, 233, 0.28);
+
+  /* Section furniture. */
+  --route-rule: linear-gradient(
+    90deg,
+    transparent,
+    rgba(91, 91, 240, 0.55) 18%,
+    rgba(86, 220, 228, 0.45) 72%,
+    transparent
+  );
+  --ledger:
+    linear-gradient(90deg, rgba(242, 239, 233, 0.035) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(242, 239, 233, 0.035) 1px, transparent 1px);
+
+  /* The routing-network diagram (SVG reads these via style properties). */
+  --net-trunk: rgba(91, 91, 240, 0.42);
+  --net-reroute: rgba(255, 138, 115, 0.42);
+  --net-node: #0b0d12;
+  --net-node-ring: rgba(165, 166, 255, 0.65);
+  --net-node-ring-shipped: rgba(78, 214, 155, 0.85);
+  --net-packet: #56dce4;
+  --net-packet-fail: #ff8a73;
+  --net-label: #949aaa;
+  --net-label-strong: #c6cad6;
+  --net-near-ring: rgba(165, 166, 255, 0.28);
+  --net-gate: rgba(255, 138, 115, 0.45);
+  --net-index: rgba(148, 154, 170, 0.7);
+}
+
+[data-theme='light'] {
+  --ink: 245 243 237;
+  --graphite: 251 250 246;
+  --panel: 255 255 255;
+  --text-primary: 32 36 46;
+  --text-secondary: 61 67 80;
+  --text-muted: 90 97 112;
+  --indigo: 91 91 240;
+  --indigo-text: 67 64 217;
+  --indigo-deep: 67 64 217;
+  --signal: 12 95 107;
+  --status: 10 107 67;
+  --coral: 160 51 24;
+
+  --rule: rgba(32, 36, 46, 0.14);
+  --rule-strong: rgba(32, 36, 46, 0.26);
+  --indigo-soft: rgba(91, 91, 240, 0.18);
+  --focus: #4340d9;
+  --selection-bg: rgba(91, 91, 240, 0.25);
+  --selection-text: #20242e;
+  --scrollbar-thumb: rgba(32, 36, 46, 0.22);
+  --scrollbar-thumb-hover: rgba(32, 36, 46, 0.36);
+
+  --route-rule: linear-gradient(
+    90deg,
+    transparent,
+    rgba(67, 64, 217, 0.6) 18%,
+    rgba(12, 95, 107, 0.5) 72%,
+    transparent
+  );
+  --ledger:
+    linear-gradient(90deg, rgba(32, 36, 46, 0.05) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(32, 36, 46, 0.05) 1px, transparent 1px);
+
+  /* Diagram lines run at 0.7 alpha in light — verified ≥3:1 against the paper surface. */
+  --net-trunk: rgba(67, 64, 217, 0.7);
+  --net-reroute: rgba(160, 51, 24, 0.7);
+  --net-node: #ffffff;
+  --net-node-ring: rgba(67, 64, 217, 0.75);
+  --net-node-ring-shipped: rgba(10, 107, 67, 0.9);
+  --net-packet: #0c5f6b;
+  --net-packet-fail: #a03318;
+  --net-label: #5a6170;
+  --net-label-strong: #3d4350;
+  --net-near-ring: rgba(67, 64, 217, 0.3);
+  --net-gate: rgba(160, 51, 24, 0.5);
+  --net-index: rgba(90, 97, 112, 0.8);
+}
+
 html {
   scroll-behavior: smooth;
   /* Anchor targets clear the fixed 64px nav without JS offset maths. */
@@ -16,12 +124,12 @@ body {
 }
 
 ::selection {
-  background: rgba(91, 91, 240, 0.35);
-  color: #f2efe9;
+  background: var(--selection-bg);
+  color: var(--selection-text);
 }
 
 :focus-visible {
-  outline: 2px solid #a5a6ff;
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
   border-radius: 3px;
 }
@@ -86,26 +194,29 @@ body {
   }
 
   /* --- Status pills ----------------------------------------------------- */
-  /* Every pill carries a text label, so state is never communicated by colour alone. */
+  /* Every pill carries a text label, so state is never communicated by colour alone.
+     Tinted backgrounds derive from the theme triplets — contrast of text-on-tint is
+     asserted for BOTH themes in palette.test.js. */
   .pill {
     @apply inline-flex min-h-[1.75rem] items-center gap-1.5 rounded-full px-2.5 font-mono text-[0.6875rem]
       uppercase tracking-[0.12em];
   }
 
   .pill-status {
-    @apply pill bg-[rgba(78,214,155,0.14)] text-status;
+    @apply pill bg-status/[0.14] text-status;
   }
 
   .pill-signal {
-    @apply pill bg-[rgba(86,220,228,0.14)] text-signal;
+    @apply pill bg-signal/[0.14] text-signal;
   }
 
   .pill-indigo {
-    @apply pill bg-[rgba(91,91,240,0.18)] text-indigo-text;
+    @apply pill text-indigo-text;
+    background: var(--indigo-soft);
   }
 
   .pill-coral {
-    @apply pill bg-[rgba(255,138,115,0.14)] text-coral;
+    @apply pill bg-coral/[0.14] text-coral;
   }
 }
 
@@ -131,14 +242,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0b0d12;
+  background: rgb(var(--ink));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(242, 239, 233, 0.16);
+  background: var(--scrollbar-thumb);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(242, 239, 233, 0.28);
+  background: var(--scrollbar-thumb-hover);
 }

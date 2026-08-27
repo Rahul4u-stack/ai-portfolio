@@ -10,7 +10,8 @@
  * targets under 44px, elements stuck below opacity 0.95, and section heights. Saves full-page
  * screenshots per width.
  *
- * Usage: node scripts/probe.mjs [url=http://127.0.0.1:4400/] [outDir=./probe-out] [--reduced]
+ * Usage: node scripts/probe.mjs [url=http://127.0.0.1:4400/] [outDir=./probe-out] [--reduced] [--light]
+ *   --light seeds localStorage before page scripts run, so the boot script picks the light theme.
  */
 import { spawn } from 'node:child_process'
 import { mkdirSync, writeFileSync } from 'node:fs'
@@ -20,8 +21,9 @@ const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const url = process.argv[2] ?? 'http://127.0.0.1:4400/'
 const outDir = process.argv[3] ?? './probe-out'
 const reduced = process.argv.includes('--reduced')
+const light = process.argv.includes('--light')
 const WIDTHS = [320, 375, 390, 768, 1024, 1440]
-const PORT = 9333 + (reduced ? 1 : 0)
+const PORT = 9333 + (reduced ? 1 : 0) + (light ? 2 : 0)
 
 mkdirSync(outDir, { recursive: true })
 
@@ -84,6 +86,11 @@ await send('Runtime.enable')
 if (reduced) {
   await send('Emulation.setEmulatedMedia', {
     features: [{ name: 'prefers-reduced-motion', value: 'reduce' }],
+  })
+}
+if (light) {
+  await send('Page.addScriptToEvaluateOnNewDocument', {
+    source: "try { localStorage.setItem('theme', 'light') } catch (e) {}",
   })
 }
 
@@ -149,10 +156,10 @@ for (const width of WIDTHS) {
     format: 'png',
     captureBeyondViewport: true,
   })
-  writeFileSync(`${outDir}/${reduced ? 'rm-' : ''}${width}-full.png`, Buffer.from(data, 'base64'))
+  writeFileSync(`${outDir}/${light ? 'light-' : ''}${reduced ? 'rm-' : ''}${width}-full.png`, Buffer.from(data, 'base64'))
 }
 
-writeFileSync(`${outDir}/${reduced ? 'rm-' : ''}report.json`, JSON.stringify(report, null, 2))
+writeFileSync(`${outDir}/${light ? 'light-' : ''}${reduced ? 'rm-' : ''}report.json`, JSON.stringify(report, null, 2))
 
 for (const [width, r] of Object.entries(report)) {
   const overflows = r.scrollW > r.vw + 1

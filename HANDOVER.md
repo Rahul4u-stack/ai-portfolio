@@ -1,8 +1,9 @@
 # HANDOVER
 
 Everything a new maintainer (human or agent) needs to work on this repo without re-deriving it.
-Last substantive change: **2026-08-27** — second improvement pass (case study, 404 route,
-phone-width disclosures, ESLint/Prettier, repo pruning) on top of the 2026-08-01 redesign.
+Last substantive change: **2026-08-27** — pass 3: light/dark theme toggle (all colours now
+CSS-variable-backed, dual-palette WCAG tests), Dubai résumé + new headshot + title sync, on top
+of pass 2 (case study, 404, disclosures, lint/CI) and the 2026-08-01 redesign.
 
 > **Read this before `README.md`.** The README is the public-facing description; this is the
 > working document — conventions, the reasoning behind decisions, the traps, and what's unfinished.
@@ -27,7 +28,7 @@ the site makes at runtime is the Formspree POST from the contact form.
 ```bash
 npm install
 npm run dev      # http://localhost:5173
-npm test         # vitest, 191 tests across 13 files
+npm test         # vitest, 192 tests across 14 files
 npm run lint     # eslint (react, hooks, strict jsx-a11y)
 npm run format:check
 npm run build    # → dist/
@@ -118,7 +119,9 @@ It is never hard-coded and must never become a fake "live" indicator.
 | "…products like Smart Pantry" | No repo, no link, no evidence anywhere. | **Removed.** Re-add the day the repo exists. |
 | "$3.4M+ GMV" | Source bullet says "$3.4M", no plus. | Plus dropped. |
 
-`experience.js` must stay in sync with `public/resume.pdf`. `dataIntegrity.test.js` asserts the
+`experience.js` must stay in sync with `public/resume.pdf` (Dubai résumé since 2026-08-27 —
+Paysecure title is **Technical Product Manager** at **Paysecure Technology Ltd.**; the résumé
+no longer lists Amazon, the site keeps it deliberately — flagged to Rahul). `dataIntegrity.test.js` asserts the
 specific résumé numbers the rest of the site quotes (300+, 2 weeks → 2 days, −20%, $3.4M, 99.9%),
 so if you edit the résumé, that test tells you what else to update.
 
@@ -128,9 +131,16 @@ so if you edit the résumé, that test tells you what else to update.
 
 Full contract in `docs/design-system.md`. The parts people get wrong:
 
-**Concept.** "Fintech control room meets editorial product case study." Deep ink, warm off-white
-type, one electric indigo accent. Cyan and green are *signal* colours (routing state, shipped
-outcomes); coral means tension or a hard call. Used sparingly or they stop signalling.
+**Concept.** "Fintech control room meets editorial product case study." Two themes: dark (deep
+ink, warm off-white type — the brand default) and light (warm paper, ink type). One electric
+indigo accent in both. Cyan and green are *signal* colours (routing state, shipped outcomes);
+coral means tension or a hard call. Used sparingly or they stop signalling.
+
+**Theming (2026-08-27).** `<html data-theme>` is set pre-paint by an inline script in index.html
+(localStorage → prefers-color-scheme → dark). Every colour resolves through CSS variables
+(`src/index.css`), mirrored by `src/theme/palette.js`; `palette.test.js` runs WCAG AA over BOTH
+palettes and fails if css/js drift. SVG colours go through `style={{…: 'var(--…)'}}` — SVG
+presentation attributes cannot resolve var(). Toggle: `ui/ThemeToggle.jsx` + `hooks/useTheme.js`.
 
 **Type.**
 - `font-display` = Instrument Serif, **single weight**. Headlines only. Never apply `font-bold` —

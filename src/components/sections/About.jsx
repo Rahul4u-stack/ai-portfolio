@@ -27,8 +27,8 @@ export default function About() {
             <img
               src={heroPhoto}
               alt="Rahul Agarwal"
-              width={480}
-              height={480}
+              width={720}
+              height={1082}
               loading="lazy"
               decoding="async"
               className="h-full w-full object-cover"

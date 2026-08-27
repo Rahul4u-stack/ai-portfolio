@@ -7,6 +7,22 @@ Read this before touching any component. Deviating breaks cohesion.
 Fintech control room meets editorial product case study. Deep ink, warm off-white type, electric
 indigo accent, cyan/green used only as *signals*, coral only for tension. Restraint over effects.
 
+## Theming (added 2026-08-27)
+
+The site has **two themes**: dark (the brand default — deep ink control room) and light (warm
+paper, same editorial structure). Rules:
+
+- Theme state is `<html data-theme="dark|light">`, decided **before first paint** by the inline
+  script in `index.html`: localStorage override → `prefers-color-scheme` → dark.
+- Every colour resolves through a CSS variable defined in `src/index.css` (dark on `:root`,
+  light under `[data-theme='light']`), mirrored in `src/theme/palette.js`.
+  `palette.test.js` fails if the two drift, and runs WCAG AA over BOTH palettes.
+- **Never hard-code a colour anywhere** — not in a className, not in an SVG attribute. SVG
+  presentation attributes cannot resolve `var()`; use `style={{ fill: 'var(--…)' }}`.
+- The toggle is `src/components/ui/ThemeToggle.jsx` (in the navbar, desktop + mobile dialog);
+  `useTheme` flips the attribute, persists the choice, and updates `<meta name="theme-color">`.
+- Adding a colour = add it to BOTH themes in palette.js + index.css + a contrast assertion.
+
 ## Tokens (defined in `tailwind.config.js` — never hard-code a hex)
 
 | Purpose | Class |
@@ -22,7 +38,7 @@ indigo accent, cyan/green used only as *signals*, coral only for tension. Restra
 | Tension, trade-off, a hard call | `text-coral` |
 
 `indigo.DEFAULT` is 3.89:1 on ink → **large or bold text and non-text only**. White on it is 5.00:1,
-so it is fine as a button fill. Add a `contrastTokens.test.js` assertion for any new text colour.
+so it is fine as a button fill. Add a `palette.test.js` assertion (both themes) for any new text colour.
 
 ## Component classes (defined in `src/index.css` `@layer components`)
 

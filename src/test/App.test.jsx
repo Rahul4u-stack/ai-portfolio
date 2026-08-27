@@ -99,6 +99,13 @@ describe('hero proof', () => {
     )
   })
 
+  it('offers a theme toggle in the header with a destination-stating name', () => {
+    renderApp()
+    expect(
+      screen.getAllByRole('button', { name: /switch to (light|dark) theme/i }).length
+    ).toBeGreaterThan(0)
+  })
+
   it('links LinkedIn and GitHub from the hero with accessible names', () => {
     renderApp()
     expect(screen.getByRole('link', { name: /Rahul Agarwal on LinkedIn/i })).toBeInTheDocument()

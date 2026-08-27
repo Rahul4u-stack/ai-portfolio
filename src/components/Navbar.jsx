@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import useReducedMotion from '../hooks/useReducedMotion'
+import ThemeToggle from './ui/ThemeToggle'
 
 /**
  * Fixed header + mobile menu.
@@ -196,7 +197,7 @@ export default function Navbar() {
                         className={`inline-flex min-h-[2.75rem] items-center rounded-card px-3 text-sm transition-colors
                           ${
                             isActive
-                              ? 'bg-[rgba(91,91,240,0.18)] text-indigo-text'
+                              ? 'bg-indigo-soft text-indigo-text'
                               : 'text-text-muted hover:text-text-primary'
                           }`}
                       >
@@ -208,21 +209,24 @@ export default function Navbar() {
               </ul>
             </nav>
 
-            <button
-              ref={triggerRef}
-              type="button"
-              onClick={() => setIsOpen((open) => !open)}
-              aria-expanded={isOpen}
-              // Only reference the dialog while it exists — a dangling aria-controls promises
-              // assistive tech a relationship that isn't in the DOM.
-              aria-controls={isOpen ? 'mobile-menu' : undefined}
-              aria-label={isOpen ? 'Close menu' : 'Open menu'}
-              className="btn-secondary md:hidden"
-            >
-              <span aria-hidden="true" className="label normal-case tracking-normal">
-                {isOpen ? 'Close' : 'Menu'}
-              </span>
-            </button>
+            <div className="flex items-center gap-1">
+              <ThemeToggle />
+              <button
+                ref={triggerRef}
+                type="button"
+                onClick={() => setIsOpen((open) => !open)}
+                aria-expanded={isOpen}
+                // Only reference the dialog while it exists — a dangling aria-controls promises
+                // assistive tech a relationship that isn't in the DOM.
+                aria-controls={isOpen ? 'mobile-menu' : undefined}
+                aria-label={isOpen ? 'Close menu' : 'Open menu'}
+                className="btn-secondary md:hidden"
+              >
+                <span aria-hidden="true" className="label normal-case tracking-normal">
+                  {isOpen ? 'Close' : 'Menu'}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </header>

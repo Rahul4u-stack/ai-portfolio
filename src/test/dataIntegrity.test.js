@@ -123,7 +123,7 @@ describe('Decision records', () => {
 
 describe('Timeline claims stay traceable', () => {
   it('keeps the résumé numbers that the rest of the site quotes', () => {
-    const paysecure = experiences.find((role) => role.company === 'Paysecure Technologies')
+    const paysecure = experiences.find((role) => role.company === 'Paysecure Technology Ltd.')
     const juspay = experiences.find((role) => role.company === 'Juspay Technologies')
 
     expect(paysecure.highlights.join(' ')).toMatch(/300\+ end-to-end integrations/)

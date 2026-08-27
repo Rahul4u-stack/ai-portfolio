@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -11,8 +11,40 @@
     />
     <meta name="author" content="Rahul Agarwal" />
     <link rel="canonical" href="https://ai-portfolio-seven-drab.vercel.app/" />
+    <!-- Un-media'd tag is the live one (updated by the theme toggle); the media pair covers
+         the pre-JS moment for browsers that read them. -->
     <meta name="theme-color" content="#0b0d12" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#f5f3ed" media="(prefers-color-scheme: light)" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!--
+      Theme must be decided before first paint or the page flashes the wrong colours.
+      Order: explicit visitor choice (localStorage) → OS preference → dark (the brand default).
+      Kept inline and dependency-free on purpose.
+    -->
+    <script>
+      ;(function () {
+        var theme = 'dark'
+        try {
+          var stored = localStorage.getItem('theme')
+          if (stored === 'light' || stored === 'dark') {
+            theme = stored
+          } else if (
+            window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: light)').matches
+          ) {
+            theme = 'light'
+          }
+        } catch (e) {
+          /* storage blocked — fall through to dark */
+        }
+        document.documentElement.setAttribute('data-theme', theme)
+        if (theme === 'light') {
+          var meta = document.querySelector('meta[name="theme-color"]:not([media])')
+          if (meta) meta.setAttribute('content', '#f5f3ed')
+        }
+      })()
+    </script>
 
     <!-- Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -39,7 +71,10 @@
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Rahul Agarwal — Payments Product Manager &amp; AI Builder" />
+    <meta
+      name="twitter:title"
+      content="Rahul Agarwal — Payments Product Manager &amp; AI Builder"
+    />
     <meta
       name="twitter:description"
       content="I turn payment complexity into shipped AI products. 300+ PSP integrations led. Integration turnaround cut from 2 weeks to 2 days."
@@ -61,8 +96,8 @@
         "name": "Rahul Agarwal",
         "url": "https://ai-portfolio-seven-drab.vercel.app/",
         "image": "https://ai-portfolio-seven-drab.vercel.app/og-image.png",
-        "jobTitle": "Product Manager",
-        "description": "Product Manager specialising in payments infrastructure and AI-assisted delivery. Led 300+ PSP integrations and built the LLM pipeline that cut integration turnaround from two weeks to two days.",
+        "jobTitle": "Technical Product Manager",
+        "description": "Technical Product Manager specialising in payments infrastructure and AI-assisted delivery. Led 300+ PSP integrations and built the LLM pipeline that cut integration turnaround from two weeks to two days.",
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "Jaipur",
@@ -71,7 +106,7 @@
         "email": "mailto:rahulisatiitr@gmail.com",
         "worksFor": {
           "@type": "Organization",
-          "name": "Paysecure Technologies"
+          "name": "Paysecure Technology Ltd."
         },
         "alumniOf": [
           {

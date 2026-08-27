@@ -59,8 +59,9 @@ describe('RoutingNetwork', () => {
   it('draws one packet in the tension colour, showing a route being rejected', () => {
     setPrefersReducedMotion(true)
     const { container } = render(<RoutingNetwork />)
+    // Colours resolve through theme variables now — the tension colour is a var reference.
     const failing = [...container.querySelectorAll('circle[r="3.5"]')].filter(
-      (c) => c.getAttribute('fill') === '#ff8a73'
+      (c) => c.style.fill === 'var(--net-packet-fail)'
     )
     expect(failing.length).toBeGreaterThanOrEqual(1)
   })
@@ -88,7 +89,7 @@ describe('RoutingNetwork', () => {
     const placed = [...container.querySelectorAll('circle[r="3.5"][cx]')]
     expect(placed.length).toBeGreaterThanOrEqual(3)
     expect(
-      placed.some((c) => c.getAttribute('fill') === '#ff8a73'),
+      placed.some((c) => c.style.fill === 'var(--net-packet-fail)'),
       'one still packet should show the reroute in progress'
     ).toBe(true)
   })

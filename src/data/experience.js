@@ -16,8 +16,8 @@ export const ERAS = {
 
 export const experiences = [
   {
-    company: 'Paysecure Technologies',
-    role: 'Product Manager',
+    company: 'Paysecure Technology Ltd.',
+    role: 'Technical Product Manager',
     period: 'Mar 2025 – Present',
     location: 'Remote',
     era: 'ai',

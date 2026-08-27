@@ -80,17 +80,24 @@ const WIDE_MIN_WIDTH = 420
 /** Circles are pooled and reused by `packet.index % POOL_SIZE`, so the DOM never churns. */
 const POOL_SIZE = 12
 
+/**
+ * Theme-aware diagram colours. SVG presentation attributes (fill=/stroke=) cannot resolve
+ * var(), so every consumer sets these through `style` — which can. Values per theme live in
+ * src/index.css as --net-* variables.
+ */
 const TONE = {
-  trunk: 'rgba(91,91,240,0.42)',
-  trunkLive: '#5b5bf0',
-  reroute: 'rgba(255,138,115,0.42)',
-  node: '#0b0d12',
-  nodeRing: 'rgba(165,166,255,0.65)',
-  nodeRingShipped: 'rgba(78,214,155,0.85)',
-  packet: '#56dce4',
-  packetFailing: '#ff8a73',
-  label: '#949aaa',
-  labelStrong: '#c6cad6',
+  trunk: 'var(--net-trunk)',
+  reroute: 'var(--net-reroute)',
+  node: 'var(--net-node)',
+  nodeRing: 'var(--net-node-ring)',
+  nodeRingShipped: 'var(--net-node-ring-shipped)',
+  packet: 'var(--net-packet)',
+  packetFailing: 'var(--net-packet-fail)',
+  label: 'var(--net-label)',
+  labelStrong: 'var(--net-label-strong)',
+  nearRing: 'var(--net-near-ring)',
+  gate: 'var(--net-gate)',
+  index: 'var(--net-index)',
 }
 
 function useLayout(containerRef) {
@@ -144,7 +151,7 @@ const PacketPool = memo(function PacketPool({ register }) {
           key={slot}
           ref={(el) => register(slot, el)}
           r="3.5"
-          fill={TONE.packet}
+          style={{ fill: TONE.packet }}
           opacity="0"
         />
       ))}
@@ -224,7 +231,7 @@ export default function RoutingNetwork() {
         const seg = packetSegment(packet)
         const { x, y } = interpolate(layout, seg.from, seg.to, seg.t)
         el.setAttribute('transform', `translate(${x} ${y})`)
-        el.setAttribute('fill', seg.failing || seg.warning ? TONE.packetFailing : TONE.packet)
+        el.style.fill = seg.failing || seg.warning ? TONE.packetFailing : TONE.packet
         el.setAttribute('opacity', '1')
       }
 
@@ -321,7 +328,7 @@ export default function RoutingNetwork() {
                   y1={from.y}
                   x2={to.x}
                   y2={to.y}
-                  stroke={isReroute ? TONE.reroute : TONE.trunk}
+                  style={{ stroke: isReroute ? TONE.reroute : TONE.trunk }}
                   strokeWidth={isReroute ? 1 : 1.5}
                   strokeDasharray={isReroute ? '3 5' : undefined}
                 />
@@ -354,7 +361,7 @@ export default function RoutingNetwork() {
                       cy={point.y}
                       r={r + 7}
                       fill="none"
-                      stroke="rgba(165,166,255,0.28)"
+                      style={{ stroke: TONE.nearRing }}
                       strokeWidth="1"
                     />
                   )}
@@ -367,7 +374,7 @@ export default function RoutingNetwork() {
                       height={(r + 4) * 2}
                       rx="3"
                       fill="none"
-                      stroke="rgba(255,138,115,0.45)"
+                      style={{ stroke: TONE.gate }}
                       strokeWidth="1"
                     />
                   )}
@@ -375,8 +382,10 @@ export default function RoutingNetwork() {
                     cx={point.x}
                     cy={point.y}
                     r={r}
-                    fill={TONE.node}
-                    stroke={isShipped ? TONE.nodeRingShipped : TONE.nodeRing}
+                    style={{
+                      fill: TONE.node,
+                      stroke: isShipped ? TONE.nodeRingShipped : TONE.nodeRing,
+                    }}
                     strokeWidth="1.75"
                   />
                   <text
@@ -386,7 +395,7 @@ export default function RoutingNetwork() {
                     fontSize={layout.labelSize}
                     fontFamily="'JetBrains Mono', ui-monospace, monospace"
                     letterSpacing="0.08em"
-                    fill={isShipped || isGate ? TONE.labelStrong : TONE.label}
+                    style={{ fill: isShipped || isGate ? TONE.labelStrong : TONE.label }}
                   >
                     {node.short.toUpperCase()}
                   </text>
@@ -398,7 +407,7 @@ export default function RoutingNetwork() {
                       textAnchor={layout.id === 'wide' ? 'middle' : 'end'}
                       fontSize="9"
                       fontFamily="'JetBrains Mono', ui-monospace, monospace"
-                      fill="rgba(148,154,170,0.7)"
+                      style={{ fill: TONE.index }}
                     >
                       {String(i + 1).padStart(2, '0')}
                     </text>
@@ -427,7 +436,7 @@ export default function RoutingNetwork() {
                   cx={x}
                   cy={y}
                   r="3.5"
-                  fill={seg.failing || seg.warning ? TONE.packetFailing : TONE.packet}
+                  style={{ fill: seg.failing || seg.warning ? TONE.packetFailing : TONE.packet }}
                 />
               )
             })}

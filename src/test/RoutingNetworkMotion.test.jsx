@@ -51,7 +51,7 @@ function livePackets(container) {
     .filter((c) => c.getAttribute('opacity') === '1')
     .map((c) => {
       const [, x, y] = /translate\(([-\d.]+) ([-\d.]+)\)/.exec(c.getAttribute('transform')) ?? []
-      return { x: Number(x), y: Number(y), fill: c.getAttribute('fill') }
+      return { x: Number(x), y: Number(y), fill: c.style.fill }
     })
 }
 
@@ -163,7 +163,7 @@ describe('RoutingNetwork — driven animation', () => {
     for (let i = 0; i < 80 && !(sawCoral && sawOffTrunk); i += 1) {
       flushFrames(10)
       const packets = livePackets(container)
-      if (packets.some((p) => p.fill === '#ff8a73')) sawCoral = true
+      if (packets.some((p) => p.fill === 'var(--net-packet-fail)')) sawCoral = true
       // The wide layout keeps the trunk at y=140; the detour sits well above it.
       if (packets.some((p) => p.y < 130)) sawOffTrunk = true
     }

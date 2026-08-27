@@ -176,7 +176,7 @@ export default function BuildLab() {
                 onClick={() => setActiveFilter(filter.id)}
                 className={`btn rounded-full border px-4 text-xs sm:text-sm ${
                   active
-                    ? 'border-transparent bg-[rgba(91,91,240,0.18)] text-indigo-text'
+                    ? 'border-transparent bg-indigo-soft text-indigo-text'
                     : 'border-rule-strong text-text-secondary hover:border-indigo-text hover:text-indigo-text'
                 }`}
               >
