@@ -2,7 +2,7 @@ export const frameworks = [
   {
     title: 'Payment retries are a classification problem',
     mostPeopleThink: 'A failed payment is a lost sale; retry everything.',
-    reality: 'Failures have types — insufficient funds behaves nothing like a hard decline.',
+    reality: 'Failures have types: insufficient funds behaves nothing like a hard decline.',
     whyItMatters: 'Blind retries create fraud exposure and duplicates; classified retries recover revenue safely.',
   },
   {

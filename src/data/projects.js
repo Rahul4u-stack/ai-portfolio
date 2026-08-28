@@ -8,9 +8,9 @@ import aiPortfolioImage from '../assets/projects/ai-portfolio.webp';
 export const projects = [
   {
     title: 'Snake',
-    subtitle: 'Pseudo-3D Snake — vanilla JS, no game engine',
+    subtitle: 'Pseudo-3D Snake in vanilla JS, no game engine',
     description:
-      'Classic Snake rebuilt from first principles — playable right in the card. Fixed-timestep game loop, pure-function rules, hand-shaded pseudo-3D look on plain Canvas 2D.',
+      'Classic Snake rebuilt from first principles, playable right in the card. Fixed-timestep game loop, pure-function rules, hand-shaded pseudo-3D look on plain Canvas 2D.',
     metric: 'Shipped in 1 day · 25/25 tests in CI',
     impact: [
       { value: '1 day', label: 'Shipped' },
@@ -20,7 +20,7 @@ export const projects = [
     github: 'https://github.com/Rahul4u-stack/snake-game',
     live: 'https://snake-game-nu-two-85.vercel.app',
     icon: '🐍',
-    highlight: 'Fixed-timestep loop + pure-logic tests — the game-dev fundamentals project',
+    highlight: 'Fixed-timestep loop + pure-logic tests: the game-dev fundamentals project',
     featured: true,
     embedUrl: 'https://snake-game-nu-two-85.vercel.app',
     caseStudy: 'snake',
@@ -28,15 +28,15 @@ export const projects = [
   },
   {
     title: 'Breakout',
-    subtitle: 'True-3D Breakout — Three.js over pure tested game logic',
+    subtitle: 'True-3D Breakout: Three.js over pure tested game logic',
     description:
-      'Arkanoid-cabinet Breakout rendered in real WebGL: lit candy bricks, glossy ball, angled 3D camera. The 2D physics stayed pure functions — swapping the whole renderer to Three.js touched zero logic lines and zero tests.',
+      'Arkanoid-cabinet Breakout rendered in real WebGL: lit candy bricks, glossy ball, angled 3D camera. The 2D physics stayed pure functions, so swapping the whole renderer to Three.js touched zero logic lines and zero tests.',
     metric: 'Shipped in 1 day · 33/33 tests in CI · 60fps',
     tech: ['Three.js', 'WebGL', 'Vanilla JavaScript', 'Vite', 'Vitest', 'GitHub Actions', 'localStorage'],
     github: 'https://github.com/Rahul4u-stack/breakout-game',
     live: 'https://breakout-game-delta.vercel.app',
     icon: '🧱',
-    highlight: 'Collision math in true 3D — circle-vs-rect detection, reflection-axis selection, paddle english',
+    highlight: 'Collision math in true 3D: circle-vs-rect detection, reflection-axis selection, paddle english',
     featured: false,
     embedUrl: null,
     image: breakoutImage,
@@ -55,7 +55,7 @@ export const projects = [
     github: 'https://github.com/Rahul4u-stack/personal-chatbot',
     live: 'https://personal-chatbot-rust.vercel.app/',
     icon: '🧠',
-    highlight: "Anthropic's Memory Tool — model-managed persistence with adversarial sandbox",
+    highlight: "Anthropic's Memory Tool: model-managed persistence with adversarial sandbox",
     featured: true,
     embedUrl: null,
     caseStudy: 'personal-chatbot',
@@ -65,7 +65,7 @@ export const projects = [
     title: 'AI Video Resume',
     subtitle: 'Coded with Hyperframes + Claude Code',
     description:
-      'A 94-second video resume coded with Hyperframes, narrated by Kokoro TTS, captioned via Whisper — orchestrated end-to-end with Claude Code.',
+      'A 94-second video resume coded with Hyperframes, narrated by Kokoro TTS, captioned via Whisper, and orchestrated end-to-end with Claude Code.',
     metric: '94s coded video · 7 scenes · shipped in a week',
     impact: [
       { value: '94s', label: 'Coded video' },
@@ -85,7 +85,7 @@ export const projects = [
     title: 'YouTube Summarizer',
     subtitle: 'Long-context AI with prompt caching',
     description:
-      'Paste a YouTube URL, get a structured AI summary — executive summary, key insights, action items. Long-context Claude with prompt caching, no chunking.',
+      'Paste a YouTube URL, get a structured AI summary: executive summary, key insights, action items. Long-context Claude with prompt caching, no chunking.',
     metric: '~90% cost cut on repeat lookups via prompt caching',
     impact: [
       { value: '~90%', label: 'Cost cut via caching' },
@@ -116,22 +116,22 @@ export const projects = [
   },
   {
     title: 'Personal AI News Assistant',
-    subtitle: 'Khabar — a Hermes agent that DMs me daily AI news',
+    subtitle: 'Khabar, a Hermes agent that DMs me daily AI news',
     description:
       'A Hermes 3 agent that DMs a 5-story AI news brief to Telegram every morning at 9 AM IST. LLM-driven web search, not brittle RSS feeds.',
     metric: 'Running daily since 2026-05-12',
     tech: ['Hermes 3', 'OpenRouter', 'MiniMax M2.5', 'Telegram Bot API', 'Python', 'Cron / Scheduler'],
     github: 'https://github.com/Rahul4u-stack/khabar',
     icon: '📰',
-    highlight: 'Agent + scheduler + LLM-driven retrieval — running daily since 2026-05-12',
+    highlight: 'Agent + scheduler + LLM-driven retrieval, running daily since 2026-05-12',
     featured: false,
     image: null,
   },
   {
     title: 'AI Portfolio Website',
-    subtitle: 'This Website — Built with AI',
+    subtitle: 'This Website, Built with AI',
     description:
-      'This portfolio itself — built end-to-end by a 4-agent Claude Code system (supervisor, frontend, backend, testing) working in parallel.',
+      'This portfolio itself, built end-to-end by a 4-agent Claude Code system (supervisor, frontend, backend, testing) working in parallel.',
     metric: 'Built entirely by orchestrated AI agents, zero hand-written boilerplate',
     tech: ['React', 'Tailwind CSS', 'Framer Motion', 'Claude Code', 'Vite'],
     github: 'https://github.com/Rahul4u-stack/ai-portfolio',

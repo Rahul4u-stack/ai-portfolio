@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-const DEFAULT_TITLE = 'Rahul Agarwal — Product Manager & AI Builder'
+const DEFAULT_TITLE = 'Rahul Agarwal | Product Manager & AI Builder'
 const DEFAULT_DESCRIPTION =
   'Technical Product Manager building AI-powered products across payments, fintech, and beyond.'
 

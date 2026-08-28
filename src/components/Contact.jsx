@@ -134,7 +134,7 @@ export default function Contact() {
         </motion.h3>
         <motion.p {...columnVariants(0.1)} className="text-text-muted max-w-2xl mb-4">
           I'm always open to discussing product management, AI, payments, or
-          potential collaborations — based in Jaipur, India and open to remote
+          potential collaborations. Based in Jaipur, India and open to remote
           opportunities globally.
         </motion.p>
         <motion.div {...columnVariants(0.15)} className="mb-12">
@@ -310,7 +310,7 @@ export default function Contact() {
                 </button>
                 {formStatus === 'error' && (
                   <p role="alert" className="mt-3 text-sm text-text-muted">
-                    Couldn&apos;t send right now — please email me directly at{' '}
+                    Couldn&apos;t send right now. Please email me directly at{' '}
                     <a href={`mailto:${CONTACT_EMAIL}`} className="text-accent-text underline">
                       {CONTACT_EMAIL}
                     </a>

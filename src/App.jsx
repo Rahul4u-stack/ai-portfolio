@@ -32,7 +32,7 @@ function HomePage() {
       <Frameworks />
       <Education />
       <Testimonials />
-      <PullQuote quote="AI doesn't replace product judgment — it removes everything standing between judgment and shipping." />
+      <PullQuote quote="AI doesn't replace product judgment. It removes everything standing between judgment and shipping." />
       <Contact />
       <Footer />
     </>

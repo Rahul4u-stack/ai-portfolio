@@ -114,7 +114,7 @@ export default function About() {
                 />
               </div>
               <figcaption className="mt-4 text-center font-mono text-xs uppercase tracking-[0.2em] text-text-muted">
-                Rahul Agarwal — Jaipur, India
+                Rahul Agarwal &middot; Jaipur, India
               </figcaption>
             </figure>
           </motion.div>
@@ -134,7 +134,7 @@ export default function About() {
               className="text-text-muted text-lg leading-relaxed"
             >
               My journey spans Amazon, Infosys, Shaadi.com, Juspay, and now
-              Paysecure — where I've led 300+ payment integrations across SEA,
+              Paysecure, where I've led 300+ payment integrations across SEA,
               MENA, and global markets.
             </motion.p>
             <motion.p
@@ -142,7 +142,7 @@ export default function About() {
               className="text-text-muted text-lg leading-relaxed"
             >
               What sets me apart is my hands-on approach to AI. I use LLMs like
-              Claude, ChatGPT, and Gemini to automate complex workflows —
+              Claude, ChatGPT, and Gemini to automate complex workflows,
               reducing integration turnaround times from weeks to days. I also
               build AI-powered products like Smart Pantry in my spare time.
             </motion.p>
@@ -150,8 +150,8 @@ export default function About() {
               variants={itemVariants}
               className="text-text-muted text-lg leading-relaxed"
             >
-              IIT Roorkee (CS) + IIM Kozhikode (MBA) — I bridge the gap between
-              technology and business.
+              An IIT Roorkee (CS) + IIM Kozhikode (MBA) background means I
+              bridge the gap between technology and business.
             </motion.p>
             <motion.div variants={itemVariants} className="pt-2">
               <p className="font-mono text-xs uppercase tracking-[0.2em] text-text-muted mb-3">

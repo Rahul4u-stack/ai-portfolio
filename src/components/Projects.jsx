@@ -102,7 +102,7 @@ function FeaturedProjectCard({ project, cardVariants }) {
           </div>
         )}
         <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-text-muted mt-3">
-          {project.title} — {project.tech[0]}
+          {project.title} &middot; {project.tech[0]}
         </p>
       </div>
 

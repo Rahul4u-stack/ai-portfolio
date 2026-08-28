@@ -10,8 +10,8 @@
     <meta name="color-scheme" content="dark light" />
 
     <!--
-      Applies a STORED theme choice before first paint (no flash). Dark is always the default —
-      the site never opens light because of an OS preference; light is reached only through
+      Applies a STORED theme choice before first paint (no flash). Dark is always the default;
+      the site never opens light because of an OS preference. Light is reached only through
       the visible toggle.
     -->
     <script>
@@ -23,7 +23,7 @@
             if (meta) meta.setAttribute('content', '#f6f6f8')
           }
         } catch (e) {
-          /* storage blocked — stay dark */
+          /* storage blocked; stay dark */
         }
       })()
     </script>

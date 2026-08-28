@@ -14,7 +14,7 @@ export const decisions = [
   {
     title: 'Personal AI News Assistant (Khabar)',
     tradeoff: 'Frontier-model quality vs. zero running cost for a daily personal news agent.',
-    call: 'Free open-weight model (Hermes 3 via OpenRouter) + Telegram delivery — good enough beats gold-plated for summarization.',
+    call: 'Free open-weight model (Hermes 3 via OpenRouter) + Telegram delivery. Good enough beats gold-plated for summarization.',
     outcome: 'Daily 9AM brief · ~$0/mo',
   },
 ];

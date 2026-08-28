@@ -85,7 +85,7 @@ export default function CaseStudyPage() {
   const project = useMemo(() => projects.find((p) => p.caseStudy === slug), [slug])
 
   useDocumentMeta(
-    project ? `${project.title} — Case Study — Rahul Agarwal` : undefined,
+    project ? `${project.title} | Case Study | Rahul Agarwal` : undefined,
     project ? project.description : undefined
   )
 
