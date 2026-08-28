@@ -68,7 +68,7 @@ export default function CursorGlow() {
       style={{
         width: GLOW_SIZE,
         height: GLOW_SIZE,
-        background: 'radial-gradient(circle at center, rgba(99,102,241,0.22), transparent 60%)',
+        background: 'var(--cursor-glow)',
         transform: 'translate3d(-9999px, -9999px, 0) translate(-50%, -50%)',
         willChange: 'transform',
       }}

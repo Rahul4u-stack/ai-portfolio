@@ -19,7 +19,7 @@ function TestimonialCard({ testimonial, index, isInView, prefersReducedMotion })
       initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : index * 0.12 }}
-      className="bg-white/[0.05] border-white/[0.08] hover:border-white/[0.16] backdrop-blur-sm rounded-xl2 p-6 border transition-colors duration-300"
+      className="bg-glass border-border-subtle hover:border-border-muted backdrop-blur-sm rounded-xl2 p-6 border transition-colors duration-300"
     >
       <p className="text-text-muted text-sm leading-relaxed mb-6">&ldquo;{testimonial.quote}&rdquo;</p>
       <div className="flex items-center gap-3">

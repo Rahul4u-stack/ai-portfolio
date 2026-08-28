@@ -71,7 +71,7 @@ function FeaturedProjectCard({ project, cardVariants }) {
   return (
     <motion.div
       variants={cardVariants}
-      className="border border-white/[0.08] hover:border-white/[0.16] transition-colors duration-300 hover:-translate-y-1 bg-white/[0.05] backdrop-blur-sm rounded-xl2 overflow-hidden flex flex-col h-full"
+      className="border border-border-subtle hover:border-border-muted transition-colors duration-300 hover:-translate-y-1 bg-glass backdrop-blur-sm rounded-xl2 overflow-hidden flex flex-col h-full"
     >
       <div className="p-5 pb-0 flex flex-col">
         {project.embedUrl ? (
@@ -95,7 +95,7 @@ function FeaturedProjectCard({ project, cardVariants }) {
             />
           </div>
         ) : (
-          <div className="w-full aspect-video flex items-center justify-center bg-white/[0.05] rounded-lg">
+          <div className="w-full aspect-video flex items-center justify-center bg-glass rounded-lg">
             <span className="text-5xl" role="img" aria-label={project.title}>
               {project.icon}
             </span>
@@ -156,7 +156,7 @@ function CompactProjectRow({ project, cardVariants }) {
   return (
     <motion.div
       variants={cardVariants}
-      className="border border-white/[0.08] hover:border-white/[0.16] transition-colors duration-300 bg-white/[0.05] backdrop-blur-sm rounded-xl2 p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6"
+      className="border border-border-subtle hover:border-border-muted transition-colors duration-300 bg-glass backdrop-blur-sm rounded-xl2 p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6"
     >
       {project.image ? (
         <img

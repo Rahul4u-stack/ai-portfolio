@@ -60,7 +60,7 @@ export default function HeroContent() {
         {/* Greeting */}
         <motion.p
           variants={itemVariants}
-          className="text-sm font-mono font-bold uppercase tracking-[0.2em] text-accent-text mb-3 [text-shadow:0_1px_3px_rgba(0,0,0,0.95),0_2px_12px_rgba(0,0,0,0.9)]"
+          className="text-sm font-mono font-bold uppercase tracking-[0.2em] text-accent-text mb-3 [text-shadow:var(--hero-ts-label)]"
         >
           Hello, I'm
         </motion.p>
@@ -68,7 +68,7 @@ export default function HeroContent() {
         {/* Name */}
         <motion.h1
           variants={itemVariants}
-          className="text-6xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight text-text-primary mb-4 [text-shadow:0_2px_6px_rgba(0,0,0,0.85),0_10px_36px_rgba(0,0,0,0.75)]"
+          className="text-6xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight text-text-primary mb-4 [text-shadow:var(--hero-ts-h1)]"
         >
           Rahul Agarwal
         </motion.h1>
@@ -77,30 +77,23 @@ export default function HeroContent() {
         <motion.div variants={itemVariants}>
           <TypingAnimation
             text="Product Manager & AI Builder"
-            className="text-xl sm:text-2xl md:text-3xl mb-4 text-accent-text font-display font-semibold [text-shadow:0_2px_5px_rgba(0,0,0,0.85),0_8px_28px_rgba(0,0,0,0.7)]"
+            className="text-xl sm:text-2xl md:text-3xl mb-4 text-accent-text font-display font-semibold [text-shadow:var(--hero-ts-sub)]"
           />
         </motion.div>
 
         {/* One-liner */}
         <motion.p
           variants={itemVariants}
-          className="text-text-secondary text-lg md:text-xl mb-4 max-w-2xl mx-auto [text-shadow:0_1px_4px_rgba(0,0,0,0.9),0_6px_20px_rgba(0,0,0,0.7)]"
+          className="text-text-secondary text-lg md:text-xl mb-4 max-w-2xl mx-auto [text-shadow:var(--hero-ts-body)]"
         >
           Building the future of payments with AI
         </motion.p>
 
-        {/* POV line */}
-        <motion.p
-          variants={itemVariants}
-          className="text-base md:text-lg text-text-muted mb-1 max-w-2xl mx-auto [text-shadow:0_1px_4px_rgba(0,0,0,0.9),0_6px_20px_rgba(0,0,0,0.7)]"
-        >
-          I taught AI to read payment docs — integrations that took 2 weeks now take 2 days.
-        </motion.p>
 
         {/* Credentials line */}
         <motion.p
           variants={itemVariants}
-          className="font-mono text-xs uppercase tracking-[0.2em] text-text-muted mb-3 [text-shadow:0_1px_3px_rgba(0,0,0,0.95),0_2px_12px_rgba(0,0,0,0.9)]"
+          className="font-mono text-xs uppercase tracking-[0.2em] text-text-muted mb-3 [text-shadow:var(--hero-ts-label)]"
         >
           IIT Roorkee &middot; IIM Kozhikode &middot; Product @ Paysecure
         </motion.p>
@@ -141,7 +134,7 @@ export default function HeroContent() {
                 href={link.href}
                 target={isMail ? undefined : '_blank'}
                 rel={isMail ? undefined : 'noopener noreferrer'}
-                className="text-text-secondary hover:text-accent-text transition-colors duration-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
+                className="text-text-secondary hover:text-accent-text transition-colors duration-300 [filter:var(--hero-icon-shadow)]"
                 aria-label={link.label}
               >
                 <Icon size={24} />

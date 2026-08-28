@@ -57,4 +57,13 @@ describe('IntroScrub', () => {
     expect(screen.getByRole('link', { name: 'View Projects' })).toHaveAttribute('href', '#projects')
     expect(screen.getByText('Scroll')).toBeInTheDocument()
   })
+
+  it('pins the video hero to the dark palette in both themes', () => {
+    // The hero text sits on a dark video clip; if the page theme flipped its variables to
+    // light, white-on-video text would become ink-on-video. The sticky band re-scopes the
+    // CSS variables by carrying an explicit data-theme="dark".
+    const { container } = renderIntroScrub()
+    const band = container.querySelector('.sticky')
+    expect(band).toHaveAttribute('data-theme', 'dark')
+  })
 })

@@ -8,7 +8,7 @@ function SkillCard({ category, cardVariants }) {
   return (
     <motion.div
       variants={cardVariants}
-      className="bg-white/[0.05] border-white/[0.08] hover:border-white/[0.16] backdrop-blur-sm rounded-xl2 p-6 border transition-colors duration-300"
+      className="bg-glass border-border-subtle hover:border-border-muted backdrop-blur-sm rounded-xl2 p-6 border transition-colors duration-300"
     >
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">

@@ -8,7 +8,7 @@ function FrameworkCard({ framework, cardVariants }) {
   return (
     <motion.div
       variants={cardVariants}
-      className="border border-white/[0.08] hover:border-white/[0.16] transition-colors duration-300 bg-white/[0.05] backdrop-blur-sm rounded-xl2 p-6"
+      className="border border-border-subtle hover:border-border-muted transition-colors duration-300 bg-glass backdrop-blur-sm rounded-xl2 p-6"
     >
       <h3 className="text-lg font-bold text-text-primary mb-4">{framework.title}</h3>
 

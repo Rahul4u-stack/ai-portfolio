@@ -5,7 +5,7 @@ describe('About', () => {
   it('renders the final stat values on first render, before any scroll/inView', () => {
     render(<About />)
 
-    expect(screen.getByText('7+')).toBeInTheDocument()
+    expect(screen.getByText('5+')).toBeInTheDocument()
     expect(screen.getByText('$3.4M+')).toBeInTheDocument()
     expect(screen.getByText('300+')).toBeInTheDocument()
     expect(screen.getByText('10+')).toBeInTheDocument()

@@ -32,7 +32,9 @@ export default function IntroScrub() {
 
   return (
     <div ref={runwayRef} aria-label="Intro" className="relative" style={{ height: `${RUNWAY_VH}vh` }}>
-      <div className="sticky top-0 h-screen overflow-hidden bg-surface">
+      {/* data-theme="dark" re-scopes the CSS variables: the hero text sits on a dark
+          video in BOTH themes, so it must always use the dark palette. */}
+      <div data-theme="dark" className="sticky top-0 h-screen overflow-hidden bg-surface">
         {INTRO_MEDIA === 'video' ? (
           <ScrubVideo
             src={INTRO_VIDEO_SRC}

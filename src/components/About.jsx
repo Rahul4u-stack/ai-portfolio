@@ -12,7 +12,7 @@ const exploringTopics = [
 ]
 
 const stats = [
-  { label: 'Years in Product', value: 7, suffix: '+' },
+  { label: 'Years in Product', value: 5, suffix: '+' },
   { label: 'AI Products Shipped', value: 10, suffix: '+' },
   { label: 'PSP Integrations Led', value: 300, suffix: '+' },
   { label: 'GMV Managed', value: 3.4, suffix: 'M+', prefix: '$', decimals: 1 },
@@ -103,7 +103,7 @@ export default function About() {
           {/* Left: Profile Photo */}
           <motion.div variants={itemVariants} className="flex justify-center">
             <figure className="relative">
-              <div className="rounded-2xl overflow-hidden border border-white/[0.08] shadow-card-lift group">
+              <div className="rounded-2xl overflow-hidden border border-border-subtle shadow-card-lift group">
                 <img
                   src={heroPhoto}
                   alt="Rahul Agarwal, Technical Product Manager"
@@ -185,7 +185,7 @@ export default function About() {
                 initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
                 animate={statsInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : index * 0.12 }}
-                className="bg-white/[0.05] border-white/[0.08] hover:border-white/[0.16] backdrop-blur-sm rounded-xl2 p-6 text-center border transition-colors duration-300"
+                className="bg-glass border-border-subtle hover:border-border-muted backdrop-blur-sm rounded-xl2 p-6 text-center border transition-colors duration-300"
               >
                 <div className="text-3xl font-bold text-accent-text mb-2">
                   <AnimatedCounter

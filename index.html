@@ -7,6 +7,26 @@
     <meta name="description" content="Rahul Agarwal - Product Manager & AI Builder. Portfolio showcasing AI projects and fintech expertise." />
     <meta name="author" content="Rahul Agarwal" />
     <meta name="theme-color" content="#0a0a0f" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!--
+      Applies a STORED theme choice before first paint (no flash). Dark is always the default —
+      the site never opens light because of an OS preference; light is reached only through
+      the visible toggle.
+    -->
+    <script>
+      ;(function () {
+        try {
+          if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light')
+            var meta = document.querySelector('meta[name="theme-color"]')
+            if (meta) meta.setAttribute('content', '#f6f6f8')
+          }
+        } catch (e) {
+          /* storage blocked — stay dark */
+        }
+      })()
+    </script>
 
     <!-- Open Graph / Facebook / LinkedIn -->
     <meta property="og:type" content="website" />

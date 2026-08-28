@@ -5,22 +5,26 @@ export default {
   theme: {
     extend: {
       colors: {
-        surface: '#0a0a0f',
-        'surface-raised': '#121218',
-        'surface-elevated': '#16161d',
-        'border-subtle': 'rgba(255,255,255,0.08)',
-        'border-muted': 'rgba(255,255,255,0.16)',
-        'text-primary': '#e5e7eb',
-        'text-secondary': '#d1d5db',
-        'text-muted': '#9ca3af',
+        // Every token resolves through a CSS variable so [data-theme] flips the site.
+        // Triplets (rgb(var(--x) / <alpha-value>)) keep modifiers like bg-surface/80 working.
+        // Values live in src/index.css, mirrored by src/theme/palette.js (tested in sync).
+        surface: 'rgb(var(--surface) / <alpha-value>)',
+        'surface-raised': 'rgb(var(--surface-raised) / <alpha-value>)',
+        'surface-elevated': 'rgb(var(--surface-elevated) / <alpha-value>)',
+        'border-subtle': 'var(--border-subtle)',
+        'border-muted': 'var(--border-muted)',
+        glass: 'var(--glass)',
+        'text-primary': 'rgb(var(--text-primary) / <alpha-value>)',
+        'text-secondary': 'rgb(var(--text-secondary) / <alpha-value>)',
+        'text-muted': 'rgb(var(--text-muted) / <alpha-value>)',
         accent: {
-          DEFAULT: '#6366f1',
-          text: '#818cf8',
-          hover: '#4f46e5',
+          DEFAULT: 'rgb(var(--accent) / <alpha-value>)',
+          text: 'rgb(var(--accent-text) / <alpha-value>)',
+          hover: 'rgb(var(--accent-hover) / <alpha-value>)',
         },
         emerald: {
-          DEFAULT: '#10b981',
-          bg: 'rgba(16,185,129,0.15)',
+          DEFAULT: 'rgb(var(--emerald) / <alpha-value>)',
+          bg: 'var(--emerald-bg)',
         },
       },
       fontFamily: {
@@ -48,7 +52,7 @@ export default {
         'card-lift': '0 8px 30px -12px rgba(0,0,0,0.5)',
       },
       backgroundImage: {
-        'brand-gradient': 'linear-gradient(90deg, #6366f1, #ec4899 50%, #38bdf8)',
+        'brand-gradient': 'var(--brand-gradient)',
       },
     },
   },

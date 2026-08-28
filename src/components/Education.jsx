@@ -21,7 +21,7 @@ export default function Education() {
               initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : (prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 40 })}
               transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.2 + index * 0.15 }}
-              className="bg-white/[0.05] border-white/[0.08] hover:border-white/[0.16] backdrop-blur-sm rounded-xl2 p-8 border transition"
+              className="bg-glass border-border-subtle hover:border-border-muted backdrop-blur-sm rounded-xl2 p-8 border transition"
             >
               <span className="text-4xl" role="img" aria-label={item.institution}>
                 {item.icon}

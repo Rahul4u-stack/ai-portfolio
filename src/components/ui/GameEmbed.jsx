@@ -34,7 +34,7 @@ export default function GameEmbed({ embedUrl, coverImage, title }) {
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       ) : (
-        <div className="w-full h-full bg-white/[0.05]" />
+        <div className="w-full h-full bg-glass" />
       )}
       <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors duration-300">
         <span className="flex items-center gap-2 px-6 py-3 rounded-full bg-accent-hover group-hover:brightness-110 text-white font-medium">

@@ -50,13 +50,11 @@ describe('Hero', () => {
     setPrefersReducedMotion(false)
   })
 
-  it('renders the POV line with the locked copy', () => {
+  it('does not render the removed POV line (Rahul, 2026-08-27: "looks weird")', () => {
     renderHero()
     expect(
-      screen.getByText(
-        'I taught AI to read payment docs — integrations that took 2 weeks now take 2 days.'
-      )
-    ).toBeInTheDocument()
+      screen.queryByText(/I taught AI to read payment docs/)
+    ).not.toBeInTheDocument()
   })
 
   it('renders the credentials line with the locked copy', () => {

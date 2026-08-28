@@ -1,108 +1,161 @@
-import { describe, it, expect } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
+import { describe, expect, it } from 'vitest'
 import tailwindConfig from '../../tailwind.config.js'
+import { hex, palettes } from '../theme/palette'
 
 // WCAG 2.1 relative luminance / contrast ratio helpers.
-function srgbToLinear(c) {
-  const cs = c / 255
+function srgbToLinear(channel) {
+  const cs = channel / 255
   return cs <= 0.03928 ? cs / 12.92 : ((cs + 0.055) / 1.055) ** 2.4
 }
 
-function relativeLuminance(hex) {
-  const h = hex.replace('#', '')
-  const r = parseInt(h.slice(0, 2), 16)
-  const g = parseInt(h.slice(2, 4), 16)
-  const b = parseInt(h.slice(4, 6), 16)
+function relativeLuminance(h) {
+  const v = h.replace('#', '')
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(v.slice(i, i + 2), 16))
   const [rl, gl, bl] = [r, g, b].map(srgbToLinear)
   return 0.2126 * rl + 0.7152 * gl + 0.0722 * bl
 }
 
-function contrastRatio(hex1, hex2) {
-  const l1 = relativeLuminance(hex1)
-  const l2 = relativeLuminance(hex2)
-  const lighter = Math.max(l1, l2)
-  const darker = Math.min(l1, l2)
-  return (lighter + 0.05) / (darker + 0.05)
+function contrastRatio(a, b) {
+  const l1 = relativeLuminance(a)
+  const l2 = relativeLuminance(b)
+  return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05)
 }
 
-// Composites a translucent hex/rgba foreground over an opaque hex background,
-// so we can test tokens (e.g. glass cards) that are only ever rendered with
-// alpha, not as flat opaque colors.
-function compositeOverBackground(rgba, backgroundHex) {
-  const match = rgba.match(
-    /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+)\s*)?\)/
-  )
-  if (!match) return rgba // already opaque hex
-  const [, r, g, b, a = '1'] = match
-  const alpha = parseFloat(a)
-  const bg = backgroundHex.replace('#', '')
-  const bgR = parseInt(bg.slice(0, 2), 16)
-  const bgG = parseInt(bg.slice(2, 4), 16)
-  const bgB = parseInt(bg.slice(4, 6), 16)
-  const blend = (fg, bgChannel) => Math.round(fg * alpha + bgChannel * (1 - alpha))
+function composite(fg, alpha, bg) {
+  const parse = (h) => {
+    const v = h.replace('#', '')
+    return [0, 2, 4].map((i) => parseInt(v.slice(i, i + 2), 16))
+  }
+  const [r, g, b] = parse(fg)
+  const [br, bgc, bb] = parse(bg)
+  const blend = (f, k) => Math.round(f * alpha + k * (1 - alpha))
   const toHex = (n) => n.toString(16).padStart(2, '0')
-  return `#${toHex(blend(+r, bgR))}${toHex(blend(+g, bgG))}${toHex(blend(+b, bgB))}`
+  return `#${toHex(blend(r, br))}${toHex(blend(g, bgc))}${toHex(blend(b, bb))}`
 }
 
-const { colors, backgroundImage } = tailwindConfig.theme.extend
-const SURFACE = colors.surface // #0a0a0f
-// Worst-case glass composite: white/[0.06] card over the base surface, per the
-// strategy's computed pair (#19191d).
-const GLASS = compositeOverBackground('rgba(255,255,255,0.06)', SURFACE)
+const AA_TEXT = 4.5
+const AA_LARGE = 3
 
-describe('contrast-safe color tokens (dark gradient restyle)', () => {
-  it('text-primary passes AA (>=4.5:1) on surface and on the glass composite', () => {
-    expect(contrastRatio(colors['text-primary'], SURFACE)).toBeGreaterThanOrEqual(4.5)
-    expect(contrastRatio(colors['text-primary'], GLASS)).toBeGreaterThanOrEqual(4.5)
-  })
+describe.each(['dark', 'light'])('%s palette — WCAG 2.1 AA', (theme) => {
+  const surfaces = ['surface', 'surface-raised', 'surface-elevated'].map((t) => [t, hex(theme, t)])
 
-  it('text-secondary passes AA (>=4.5:1) on surface and on the glass composite', () => {
-    expect(contrastRatio(colors['text-secondary'], SURFACE)).toBeGreaterThanOrEqual(4.5)
-    expect(contrastRatio(colors['text-secondary'], GLASS)).toBeGreaterThanOrEqual(4.5)
-  })
-
-  it('text-muted passes AA (>=4.5:1) on surface and on the glass composite', () => {
-    expect(contrastRatio(colors['text-muted'], SURFACE)).toBeGreaterThanOrEqual(4.5)
-    expect(contrastRatio(colors['text-muted'], GLASS)).toBeGreaterThanOrEqual(4.5)
-  })
-
-  it('accent.text passes AA (>=4.5:1) on surface and on the glass composite', () => {
-    expect(contrastRatio(colors.accent.text, SURFACE)).toBeGreaterThanOrEqual(4.5)
-    expect(contrastRatio(colors.accent.text, GLASS)).toBeGreaterThanOrEqual(4.5)
-  })
-
-  it('accent.DEFAULT clears the large-text/non-text 3:1 minimum on surface but is documented as text-unsafe', () => {
-    const ratio = contrastRatio(colors.accent.DEFAULT, SURFACE)
-    expect(ratio).toBeGreaterThanOrEqual(3)
-    expect(ratio).toBeLessThan(4.5) // must stay large/bold-text or non-text only
-  })
-
-  it('white text on the solid button fill (accent.hover, #4f46e5) passes AA (>=4.5:1)', () => {
-    const ratio = contrastRatio('#ffffff', colors.accent.hover)
-    expect(ratio).toBeGreaterThanOrEqual(4.5)
-  })
-
-  it('white text on the raw indigo fill (accent.DEFAULT) fails AA, confirming buttons must use accent.hover instead', () => {
-    const ratio = contrastRatio('#ffffff', colors.accent.DEFAULT)
-    expect(ratio).toBeLessThan(4.5)
-  })
-
-  it('every brand-gradient stop clears the large-text/non-text 3:1 minimum on surface', () => {
-    // indigo, pink, sky — the three stops of the signature tri-gradient.
-    const stops = ['#6366f1', '#ec4899', '#38bdf8']
-    for (const stop of stops) {
-      expect(contrastRatio(stop, SURFACE), `${stop} on surface`).toBeGreaterThanOrEqual(3)
+  it.each(['text-primary', 'text-secondary', 'text-muted', 'accent-text', 'emerald'])(
+    '%s reaches 4.5:1 on every surface',
+    (token) => {
+      for (const [surfaceName, surface] of surfaces) {
+        expect(
+          contrastRatio(hex(theme, token), surface),
+          `${theme}/${token} on ${surfaceName}`
+        ).toBeGreaterThanOrEqual(AA_TEXT)
+      }
     }
+  )
+
+  it('keeps white readable on the solid button fill (accent-hover)', () => {
+    expect(contrastRatio('#ffffff', hex(theme, 'accent-hover'))).toBeGreaterThanOrEqual(AA_TEXT)
   })
 
-  it('brand-gradient background-image is defined with the three documented stops in order', () => {
-    expect(backgroundImage['brand-gradient']).toBe(
-      'linear-gradient(90deg, #6366f1, #ec4899 50%, #38bdf8)'
+  it('keeps raw accent above the 3:1 non-text minimum on the page surface', () => {
+    expect(contrastRatio(hex(theme, 'accent'), hex(theme, 'surface'))).toBeGreaterThanOrEqual(
+      AA_LARGE
     )
   })
 
-  it('emerald status text passes AA (>=4.5:1) composited on its own translucent badge background', () => {
-    const emeraldBadgeOnSurface = compositeOverBackground(colors.emerald.bg, SURFACE)
-    const ratio = contrastRatio(colors.emerald.DEFAULT, emeraldBadgeOnSurface)
-    expect(ratio).toBeGreaterThanOrEqual(4.5)
+  it('keeps the availability badge readable: emerald on its own tint', () => {
+    const alpha = theme === 'dark' ? 0.15 : 0.12
+    const tint = composite(hex(theme, 'emerald'), alpha, hex(theme, 'surface'))
+    expect(contrastRatio(hex(theme, 'emerald'), tint)).toBeGreaterThanOrEqual(AA_TEXT)
+  })
+
+  it('keeps text readable on the glass card composite', () => {
+    // Worst case: muted text on a glass card over the raised surface.
+    const glass =
+      theme === 'dark'
+        ? composite('#ffffff', 0.05, hex(theme, 'surface-raised'))
+        : composite('#0a0a0f', 0.045, hex(theme, 'surface-raised'))
+    expect(contrastRatio(hex(theme, 'text-muted'), glass)).toBeGreaterThanOrEqual(AA_TEXT)
+  })
+})
+
+describe('brand gradient stays legible as clipped heading text', () => {
+  const stops = {
+    dark: ['#6366f1', '#ec4899', '#38bdf8'],
+    light: ['#4f46e5', '#db2777', '#0284c7'],
+  }
+  it.each(['dark', 'light'])('%s stops clear the large-text 3:1 minimum on every surface', (theme) => {
+    for (const stop of stops[theme]) {
+      for (const surfaceToken of ['surface', 'surface-raised', 'surface-elevated']) {
+        expect(
+          contrastRatio(stop, hex(theme, surfaceToken)),
+          `${theme} ${stop} on ${surfaceToken}`
+        ).toBeGreaterThanOrEqual(3)
+      }
+    }
+  })
+})
+
+describe('palette.js and index.css cannot drift apart', () => {
+  const cssPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'index.css')
+  const css = readFileSync(cssPath, 'utf8')
+  const rootBlock = css.slice(css.indexOf(':root {'), css.indexOf("[data-theme='light'] {"))
+  const lightBlock = css.slice(css.indexOf("[data-theme='light'] {"), css.indexOf('html {'))
+
+  function tripletsOf(block) {
+    const out = {}
+    for (const match of block.matchAll(/--([a-z-]+):\s*(\d+ \d+ \d+);/g)) {
+      out[match[1]] = match[2]
+    }
+    return out
+  }
+
+  it('dark triplets in index.css match palette.js exactly', () => {
+    const cssTriplets = tripletsOf(rootBlock)
+    for (const [token, triplet] of Object.entries(palettes.dark)) {
+      expect(cssTriplets[token], `dark --${token}`).toBe(triplet)
+    }
+  })
+
+  it('light triplets in index.css match palette.js exactly', () => {
+    const cssTriplets = tripletsOf(lightBlock)
+    for (const [token, triplet] of Object.entries(palettes.light)) {
+      expect(cssTriplets[token], `light --${token}`).toBe(triplet)
+    }
+  })
+
+  it('the light theme overrides every full-value token the dark theme defines', () => {
+    for (const name of ['--border-subtle', '--border-muted', '--glass', '--emerald-bg', '--brand-gradient', '--atmosphere', '--atmo-grid', '--cursor-glow']) {
+      expect(rootBlock.includes(name), `${name} in :root`).toBe(true)
+      expect(lightBlock.includes(name), `${name} in light`).toBe(true)
+    }
+  })
+})
+
+describe('tailwind config resolves through the variables', () => {
+  it('every colour token is var-backed — a hex here would silently ignore the theme', () => {
+    const { colors } = tailwindConfig.theme.extend
+    const flat = []
+    for (const value of Object.values(colors)) {
+      if (typeof value === 'string') flat.push(value)
+      else flat.push(...Object.values(value))
+    }
+    for (const value of flat) expect(value, value).toMatch(/var\(--/)
+    expect(tailwindConfig.theme.extend.backgroundImage['brand-gradient']).toBe(
+      'var(--brand-gradient)'
+    )
+  })
+})
+
+describe('the theme boot script', () => {
+  const htmlPath = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'index.html')
+  const html = readFileSync(htmlPath, 'utf8')
+
+  it('applies only a STORED light choice — dark is the default, with no OS sniffing', () => {
+    const inline = html.slice(html.indexOf('<script>'), html.indexOf('</script>'))
+    expect(inline).toContain("localStorage.getItem('theme') === 'light'")
+    expect(inline).not.toContain('prefers-color-scheme')
+    expect(html.indexOf('<script>')).toBeLessThan(html.indexOf('type="module"'))
   })
 })

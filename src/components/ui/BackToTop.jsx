@@ -28,7 +28,7 @@ export default function BackToTop() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
-          className="fixed bottom-6 right-6 z-50 w-11 h-11 flex items-center justify-center rounded-full bg-white/[0.06] backdrop-blur-md border border-white/[0.08] text-text-primary hover:border-white/[0.16] transition-colors duration-300"
+          className="fixed bottom-6 right-6 z-50 w-11 h-11 flex items-center justify-center rounded-full bg-glass backdrop-blur-md border border-border-subtle text-text-primary hover:border-border-muted transition-colors duration-300"
         >
           <FaArrowUp />
         </motion.button>

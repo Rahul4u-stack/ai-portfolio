@@ -32,7 +32,7 @@ function TimelineCard({ experience, index }) {
         initial={{ opacity: 0, x: hiddenX }}
         animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: hiddenX }}
         transition={{ duration: prefersReducedMotion ? 0 : 0.75, ease: "easeOut" }}
-        className={`w-full md:w-[45%] bg-white/[0.05] border-white/[0.08] hover:border-white/[0.16] backdrop-blur-sm rounded-xl2 p-6 border transition-colors duration-300 ${
+        className={`w-full md:w-[45%] bg-glass border-border-subtle hover:border-border-muted backdrop-blur-sm rounded-xl2 p-6 border transition-colors duration-300 ${
           isLeft ? 'md:mr-auto' : 'md:ml-auto'
         }`}
       >
@@ -71,7 +71,7 @@ export default function Experience() {
         {/* Timeline container */}
         <div className="relative">
           {/* Center line (desktop only) */}
-          <div className="hidden md:block absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-0.5 bg-white/[0.10]" />
+          <div className="hidden md:block absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-0.5 bg-border-muted" />
 
           {experiences.map((experience, index) => (
             <TimelineCard key={index} experience={experience} index={index} />
