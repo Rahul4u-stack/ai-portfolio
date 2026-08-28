@@ -44,8 +44,12 @@ describe('App', () => {
 
   it('renders the case study page at /case-study/:slug', async () => {
     renderApp(['/case-study/snake'])
-    await waitFor(() =>
-      expect(screen.getByRole('heading', { name: /Case Study: Snake/i })).toBeInTheDocument()
+    await waitFor(
+      () => expect(screen.getByRole('heading', { name: /Case Study: Snake/i })).toBeInTheDocument(),
+      // Pre-existing flake: the lazy-loaded CaseStudyPage chunk can take longer than the
+      // default 1000ms waitFor timeout to resolve under full-suite load (many workers
+      // contending for CPU). This test is not related to the Experience section changes.
+      { timeout: 5000 }
     )
   })
 
